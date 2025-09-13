@@ -1,0 +1,75 @@
+<div class="ibox">
+                    <div class="ibox-content">
+                        <div class="row mb10">
+                            <div class="col-lg-12">
+                                <div class="form-row">
+                                    <label for="" class="control-label text-left">Chọn danh mục cha</label>
+                                    <span class="text-danger">(*)</span>
+                                    <span class="text-danger noitce">Chọn root nếu ko có danh mục cha</span>
+                                    <select name="parent_id" class="form-control">
+                                        @foreach($dropdown as $key => $val)
+                                            <option value="{{ $key }}" 
+                                                {{ $key == old('parent_id', $postCatalogue->parent_id ?? '') ? 'selected' : '' }}>
+                                                {{ $val }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+
+                                </div>
+
+                        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox">
+                    <div class="ibox-title">Chon anh dai dien</div>
+                    <div class="ibox-content">
+                        <div class="row mb10">
+                            <div class="col-lg-12">
+                                <div class="form-row">
+                                    <span class="image img-cover image-target">
+                                        <img src="{{ old('image', $postCatalogue->image ?? '/backend/img/notfound.jpg') }}" alt="">
+                                    </span>
+                                    <input type="hidden" name="image" value="{{ old('image', $postCatalogue->image ?? '') }}">
+                                    
+                                </div>
+
+                        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox">
+                    <div class="ibox-title">Cấu hình nâng cao</div>
+                    <div class="ibox-content">
+                        <div class="row mb10">
+                            <div class="col-lg-12">
+                                <div class="form-row">
+                                    <div class="mb10">
+                                        <select name="publish" id="publish" class="form-control">
+                                            @foreach(config('apps.general.publish') as $key => $val)
+                                                <option value="{{ $key }}" {{ $key == old('publish', $postCatalogue->publish ?? '') ? 'selected' : '' }}>
+                                                    {{ $val }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="mb10">
+                                        <select name="follow" id="follow" class="form-control">
+                                            @foreach(config('apps.general.follow') as $key => $val)
+                                                <option value="{{ $key }}" {{ $key == old('follow', $postCatalogue->follow ?? '') ? 'selected' : '' }}>
+                                                    {{ $val }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>

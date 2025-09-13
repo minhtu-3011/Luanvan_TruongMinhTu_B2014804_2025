@@ -1,0 +1,131 @@
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.mt20 {
+    margin-top: 20px;
+}
+
+.mb20 {
+    margin-bottom: 20px;
+}
+
+.mb10 {
+    margin-bottom: 10px;
+}
+
+table .image img {
+    height: 73px;
+    display: block;
+}
+
+.image img {
+    height: 73px;
+    display: block;
+}
+
+.img-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image {
+    display: block;
+    width: 150px; /* set khung cha */
+    height: 150px;
+    overflow: hidden; /* tránh ảnh bị tràn */
+}
+
+.filter-wrapper {
+    margin-bottom: 20px;
+}
+
+.uk-flex-space-between {
+    -ms-flex-pack: justify;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+}
+
+.uk-flex-middle {
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.uk-flex {
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+
+.filter-wrapper .perpage {
+    display: inline-block;
+}
+
+.filter-wrapper .form-control {
+    height: 32px;
+    max-width: 200px;
+}
+
+.mr10 {
+    margin-right: 10px;
+}
+
+.box .ibox {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.active-bg {
+    background-color: #ecea9d !important; /* bạn đổi màu theo ý */
+}
+
+.meta-title {
+    font-size: 20px;
+    color: #1a0dab;
+}
+
+.canonical {
+    color: green;
+    margin-bottom: 8px;
+}
+
+.meta-descripton {
+    font-size: 14px;
+}
+
+.control-label {
+    width: 100%;
+}
+
+.notice {
+    font-size: 12px;
+    font-style: italic;
+}
+
+.image-target {
+    cursor: pointer;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper .baseUrl {
+    position: absolute;
+    background-color: black;
+    height: 34px;
+    line-height: 34px;
+    display: inline-block;
+    padding: 0 10px;
+    left: 0;
+    top: 0;
+}
+
+.button-fix {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+}
