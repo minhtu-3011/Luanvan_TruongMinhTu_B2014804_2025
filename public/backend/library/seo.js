@@ -14,7 +14,7 @@
         });
         $("input[name=canonical]").on("keyup", function () {
             let input = $(this);
-            let value = input.val();
+            let value = HT.removeUtf8(input.val());
             $(".canonical").html(BASE_URL + value + SUFFIX);
         });
 
@@ -23,6 +23,20 @@
             let value = input.val();
             $(".meta-description").html(value);
         });
+    };
+
+    HT.removeUtf8 = (str) => {
+        if (typeof str !== "string") return "";
+        return str
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "") // bỏ dấu
+            .replace(/đ/g, "d")
+            .replace(/Đ/g, "D") // thay đ
+            .replace(/[^a-zA-Z0-9\s-]/g, "") // bỏ ký tự đặc biệt
+            .trim()
+            .replace(/\s+/g, "-") // thay space thành -
+            .replace(/-+/g, "-") // gộp nhiều dấu - thành 1
+            .toLowerCase();
     };
 
     $(document).ready(function () {

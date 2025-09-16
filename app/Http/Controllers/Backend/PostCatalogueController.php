@@ -8,8 +8,11 @@ use App\Services\Interfaces\PostCatalogueServiceInterface as PostCatalogueServic
 use App\Repositories\Interfaces\PostCatalogueRepositoryInterface as PostCatalogueRepository;
 use App\Http\Requests\StorePostCatalogueRequest;
 use App\Http\Requests\UpdatePostCatalogueRequest;
+use App\Http\Requests\DetelePostCatalogueRequest;
+
 
 use App\Classes\Nestedsetbie;
+use App\Http\Requests\DeletePostCatalogueRequest;
 
 class PostCatalogueController extends Controller
 {
@@ -85,15 +88,14 @@ class PostCatalogueController extends Controller
         foreach ($postCatalogue->post_catalogue_language as $language) {
             echo $language->name . '<br>';
         }
-
-        // die();
         $config = $config = $this->configData();
         $config["seo"] = config('apps.postcatalogue');
         $config["method"] = 'edit';
         $template = 'backend.post.catalogue.store';
         $dropdown = $this->nestedsetbie->Dropdown();
+        $album = json_decode($postCatalogue->album);
 
-        return view('backend.dashboard.layout', compact('template', 'config', 'dropdown', 'postCatalogue'));
+        return view('backend.dashboard.layout', compact('template', 'config', 'dropdown', 'postCatalogue', 'album'));
     }
 
     public function update($id, UpdatePostCatalogueRequest $request)
@@ -108,12 +110,15 @@ class PostCatalogueController extends Controller
     {
         $template = 'backend.post.catalogue.delete';
         $config["seo"] = config('apps.postcatalogue');
-        $postCatalogue = $this->postCatalogueRepository->findById($id);
+        $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($id, $this->language);
+        // dd($postCatalogue);
         return view('backend.dashboard.layout', compact('template', 'postCatalogue', 'config'));
     }
 
-    public function destroy($id)
+    public function destroy($id, DeletePostCatalogueRequest $request)
     {
+        // echo 123;
+        // die();
         if ($this->postCatalogueService->destroy($id)) {
             return redirect()->route('post.catalogue.index')->with('success', 'Xoá bản ghi thành công');
         }

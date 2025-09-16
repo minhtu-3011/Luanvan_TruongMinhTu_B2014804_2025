@@ -10,7 +10,7 @@
     </div>
 @endif
 
-<form action="{{route('post.catalogue.destroy', $postCatalogue->id)}}" method="post" class="box">
+<form action="{{route('post.destroy', $post->id)}}" method="post" class="box">
     @csrf
     @method('DELETE')
     <div class="wrapper wrapper-content animated fadeInRight">
@@ -18,7 +18,7 @@
             <div class="col-lg-5">
                 <div class="panel-title"></div>
                 <div class="panel_description">
-                    <p>Bạn muốn xoá Ngôn ngữ : {{$postCatalogue->email}}</p>
+                    <p>Bạn muốn xoá Ngôn ngữ : {{$post->email}}</p>
                     <p>Lưu ý thông tin không thể khôi phục sau khi xoá !</p>
                 </div>
 
@@ -32,7 +32,7 @@
                                 <div class="form-row">
                                     <label for="" class="control-lable text-right">Name</label>
                                     <span class="text-danger">(*)</span>
-                                    <input type="text" name="name"  value="{{ old('name', $postCatalogue->name ?? '') }}"  class="form-control" placeholder=""
+                                    <input type="text" name="name"  value="{{ old('name', $post->name ?? '') }}"  class="form-control" placeholder=""
                                         autocomplete="off" id="" readonly>
                                 </div>
                             </div>

@@ -3,10 +3,24 @@
     var HT = {};
     var _token = $('meta[name="csrf-token"]').attr("content");
 
+    HT.select2 = () => {
+        if ($(".select2").length) {
+            $(".select2").select2({
+                placeholder: "Chọn mục...",
+                allowClear: true,
+            });
+        }
+    };
+
     HT.switchery = () => {
         $(".js-switch").each(function () {
             var switchery = new Switchery(this, { color: "#1AB394" });
         });
+    };
+
+    HT.sortui = () => {
+        $("#sortable").sortable();
+        $("#sortable").disableSelection();
     };
 
     HT.changeStautus = () => {
@@ -142,6 +156,8 @@
         HT.changeStautus();
         HT.checkAll();
         HT.changeStatusAll();
+        HT.sortui();
+        HT.select2();
     });
 })(jQuery);
 

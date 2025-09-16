@@ -7,7 +7,7 @@ use App\Http\Controllers\Ajax\DashboardController as AjaxDashboardController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\UserCatalogueController;
 use App\Http\Controllers\Backend\PostCatalogueController;
-
+use App\Http\Controllers\Backend\PostController;
 use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Ajax\LocationController;
 use App\Http\Middleware\AuthenticateMiddleware;
@@ -96,6 +96,25 @@ Route::group(['prefix' => 'post/catalogue'], function () {
     Route::get('{id}/delete', [PostCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('post.catalogue.delete')
         ->middleware(AuthenticateMiddleware::class);
     Route::delete('{id}/destroy', [PostCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('post.catalogue.destroy')
+        ->middleware(AuthenticateMiddleware::class);
+});
+
+
+
+Route::group(['prefix' => 'post'], function () {
+    Route::get('index', [PostController::class, 'index'])->name('post.index')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::get('create', [PostController::class, 'create'])->name('post.create')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::post('store', [PostController::class, 'store'])->name('post.store')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::get('{id}/edit', [PostController::class, 'edit'])->where(['id' => '[0-9]+'])->name('post.edit')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::post('{id}/update', [PostController::class, 'update'])->where(['id' => '[0-9]+'])->name('post.update')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::get('{id}/delete', [PostController::class, 'delete'])->where(['id' => '[0-9]+'])->name('post.delete')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::delete('{id}/destroy', [PostController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('post.destroy')
         ->middleware(AuthenticateMiddleware::class);
 });
 

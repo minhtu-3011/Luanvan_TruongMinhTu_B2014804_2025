@@ -64,11 +64,11 @@ class BaseRepository implements BaseRepositoryInterface
     public function pagination(
         array $column = ['*'],
         array $condition = [],
-        array $join = [],
-        array $extends = [],
         int $perpage = 1,
-        array $relations = [],
+        array $extends = [],
         array $orderBy = ['id', 'DESC'],
+        array $join = [],
+        array $relations = [],
 
     ) {
         $query = $this->model->select($column)->where(function ($query) use ($condition) {

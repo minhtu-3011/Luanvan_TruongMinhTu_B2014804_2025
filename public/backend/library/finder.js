@@ -13,6 +13,26 @@
         }
     };
 
+    HT.multipleUploadImageCkeditor = () => {
+        // $(document).on("click", ".multipleUploadImageCkeditor", function (e) {
+        //     let object = $(this);
+        //     HT.browseServerCkeditor(object, "Images");
+        //     e.preventDefault();
+        // });
+        $(document).on("click", ".multipleUploadImageCkeditor", function (e) {
+            e.preventDefault();
+            let editorId = $(this).data("target"); // lấy id từ data-target
+            HT.browseServerCkeditor(editorId, "Images");
+        });
+    };
+
+    HT.uploadAlbum = () => {
+        $(document).on("click", ".upload-picture", function (e) {
+            HT.browseServerAlbum();
+            e.preventDefault();
+        });
+    };
+
     HT.ckeditor4 = (elementId, elementHeight) => {
         if (typeof elementHeight == "undefined") {
             elementHeight = 500;
@@ -110,9 +130,99 @@
         });
     };
 
+    HT.browseServerCkeditor = (editorId, type = "Images") => {
+        CKFinder.popup({
+            resourceType: type,
+            chooseFiles: true,
+            onInit: function (finder) {
+                finder.on("files:choose", function (evt) {
+                    evt.data.files.forEach(function (file) {
+                        var fileUrl = file.getUrl();
+
+                        let html = `
+                        <figure class="image-box">
+                            <img src="${fileUrl}" alt="">
+                            <figcaption>Nhập chú thích...</figcaption>
+                        </figure>
+                        <p>&nbsp;</p>
+                    `;
+
+                        CKEDITOR.instances[editorId].insertHtml(html);
+                    });
+                });
+
+                finder.on("file:choose:resizedImage", function (evt) {
+                    var fileUrl = evt.data.resizedUrl;
+
+                    let html = `
+                    <figure class="image-box">
+                        <img src="${fileUrl}" alt="">
+                        <figcaption>Nhập chú thích...</figcaption>
+                    </figure>
+                    <p>&nbsp;</p>
+                `;
+
+                    CKEDITOR.instances[editorId].insertHtml(html);
+                });
+            },
+        });
+    };
+
+    HT.browseServerAlbum = () => {
+        CKFinder.popup({
+            resourceType: "Images",
+            chooseFiles: true,
+            onInit: function (finder) {
+                finder.on("files:choose", function (evt) {
+                    let html = "";
+                    evt.data.files.forEach(function (file) {
+                        let fileUrl = file.getUrl();
+                        html += '<li class="ui-state-default">';
+                        html += '  <div class="thumb">';
+                        html += '    <span class="span image img-scaledown">';
+                        html +=
+                            '      <img src="' +
+                            fileUrl +
+                            '" alt="' +
+                            fileUrl +
+                            '">';
+                        html +=
+                            '      <input type="hidden" name="album[]" value="' +
+                            fileUrl +
+                            '">';
+                        html += "    </span>";
+                        html +=
+                            '    <button class="delete-image"><i class="fa fa-trash"></i></button>';
+                        html += "  </div>";
+                        html += "</li>";
+                    });
+
+                    $(".click-to-upload").addClass("hidden");
+                    $("#sortable").append(html);
+                    $(".upload-list").removeClass("hidden");
+                });
+            },
+        });
+    };
+
+    HT.deletePicture = () => {
+        $(document).on("click", ".delete-image", function () {
+            let _this = $(this);
+            _this.parents(".ui-state-default").remove();
+
+            if ($(".ui-state-default").length == 0) {
+                $(".click-to-upload").removeClass("hidden");
+                $(".upload-list").addClass("hidden");
+            }
+        });
+    };
+
     $(document).ready(function () {
         HT.uploadImageToInput();
         HT.setupCkeditor();
         HT.uploadImageAvatar();
+        HT.multipleUploadImageCkeditor();
+        HT.uploadAlbum();
+        HT.deletePicture();
     });
 })(jQuery);

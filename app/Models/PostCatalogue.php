@@ -40,10 +40,20 @@ class PostCatalogue extends Model
         return $this->hasMany(PostCatalogueLanguage::class, 'post_catalogue_id', 'id');
     }
 
-    public function inChildrenNode()
+    public function posts()
     {
-        return Rule::exits($this->table, 'id')->where(function ($query) {
-            $query->whereRaw('');
-        });
+        return $this->belongsToMany(Post::class, 'post_catalogue_post', 'post_id', 'post_catalogue_id');
+    }
+
+
+    public static function isNodeCheck($id = 0)
+    {
+        $postCatalogue = PostCatalogue::find($id);
+        if ($postCatalogue->rgt - $postCatalogue->lft > 1) {
+
+            return false;
+        }
+
+        return true;
     }
 }

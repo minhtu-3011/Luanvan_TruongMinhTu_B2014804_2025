@@ -9,7 +9,7 @@
     </div>
 @endif
 @php
-    $url = ($config['method'] == 'create') ? route('post.catalogue.store') : route('post.catalogue.update', $postCatalogue->id);
+    $url = ($config['method'] == 'create') ? route('post.store') : route('post.update', $post->id);
 @endphp
 
 
@@ -23,15 +23,15 @@
                         <h5>Thong tin chung</h5>
                     </div>
                     <div class="ibox-content">
-                        @include('backend.post.catalogue.component.general')
+                        @include('backend.post.post.component.general')
                     </div>
                 </div>
                 @include('backend.dashboard.component.album')
-                @include('backend.post.catalogue.component.seo')
+                @include('backend.post.post.component.seo')
 
             </div>
             <div class="col-lg-3">
-                @include('backend.post.catalogue.component.aside')
+                @include('backend.post.post.component.aside')
             </div>
         </div>
         <hr>
