@@ -5,6 +5,7 @@
                 <input type="checkbox" value="" id="checkAll" class="input-checkbox">
             </th>
             <th >Tên Nhóm</th>
+            <th style="width: 80px">Vi tri</th>
             <th style="width: 100px">Tình trạng</th>
 
             {{-- <th>Tình trạng</th> --}}
@@ -20,18 +21,26 @@
                         <input type="checkbox" value="{{$post->id}}"  class="input-checkbox checkboxItem">
                     </td>
                     <td>
-                        {{ $post->name}}
+                        {{ $post->name }}
 
-
-
-
+                        <div class="catalogue">
+                            <span class="text-danger">Nhóm hiển thị: </span>
+                            @foreach($post->post_catalogues as $val)
+                                @foreach($val->post_catalogue_language as $cat)
+                                    <a href="{{route('post.index', ['post_catalogue_id'=>$val->id])}}" title="">{{ $cat->name }}</a>
+                                @endforeach
+                            @endforeach
+                        </div>
+                    </td>
+                    <td>
+                        <input value="{{$post->order}}" type="text" name="order" class="form-control sort-order" data-id="{{$post->id}}" data-model="{{$config['model']}}">
                     </td>
 
                     
                     
 
                     <td class="js-switch-{{$post->id}}">
-                        <input type="checkbox" value="{{$post->publish}}" class="js-switch status" data-field = "publish" data-model = "PostCatalogue" 
+                        <input type="checkbox" value="{{$post->publish}}" class="js-switch status" data-field = "publish" data-model = "{{$config['model']}}" 
                         {{($post->publish == 1)?'checked':'' }} data-modelid = "{{$post->id}}"/>
                     </td>
                     <td class="text-center">

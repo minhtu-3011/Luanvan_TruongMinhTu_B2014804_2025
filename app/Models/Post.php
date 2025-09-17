@@ -18,7 +18,8 @@ class Post extends Model
         'publish',
         'follow',
         'order',
-        'user_id'
+        'user_id',
+        'post_catalogue_id'
     ];
 
     protected $table = 'posts';
@@ -26,12 +27,13 @@ class Post extends Model
 
     public function languages()
     {
-        return $this->belongsToMany(Language::class, 'post_language', 'post_id', 'post_id')
+        return $this->belongsToMany(Language::class, 'post_language', 'post_id', 'language_id')
             ->withPivot('name', 'canonical', 'meta-title', 'meta-keyword', 'meta-description', 'description', 'content')
             ->withTimestamps();
     }
+
     public function post_catalogues()
     {
-        return $this->belongsToMany(PostCatalogue::class, 'post_catalogue_post', 'post_catalogue_id', 'post_id');
+        return $this->belongsToMany(PostCatalogue::class, 'post_catalogue_post', 'post_id', 'post_catalogue_id');
     }
 }

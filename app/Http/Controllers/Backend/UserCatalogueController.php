@@ -42,6 +42,7 @@ class UserCatalogueController extends Controller
             'css' => [
                 '/backend/css/plugins/switchery/switchery.css'
             ],
+            'model' => 'UserCatalogue'
         ];
     }
 

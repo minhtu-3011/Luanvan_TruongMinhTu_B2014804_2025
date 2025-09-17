@@ -6,9 +6,9 @@
         <i class="fa fa-wrench"></i>
     </a>
     <ul class="dropdown-menu dropdown-user">
-        <li><a href="#" class="changeStatusAll" data-field="publish" data-model="{{$model}}" data-value="1">Xuất bản toàn bộ</a>
+        <li><a href="#" class="changeStatusAll" data-field="publish" data-model="{{$config['model']}}" data-value="1">Xuất bản toàn bộ</a>
         </li>
-        <li><a href="#" class="changeStatusAll" data-field="publish" data-model="{{$model}}" data-value="0">Bỏ xuất bản toàn bộ</a>
+        <li><a href="#" class="changeStatusAll" data-field="publish" data-model="{{$config['model']}}" data-value="0">Bỏ xuất bản toàn bộ</a>
         </li>
     </ul>
     <a class="close-link">

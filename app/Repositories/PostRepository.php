@@ -22,13 +22,13 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
     public function getPostById(int $id = 0, $language_id = 0)
     {
         return $this->model->select([
-            'post_catalogues.id',
-            'post_catalogues.parent_id',
-            'post_catalogues.image',
-            'post_catalogues.icon',
-            'post_catalogues.album',
-            'post_catalogues.publish',
-            'post_catalogues.follow',
+            'posts.id',
+            'posts.post_catalogue_id',
+            'posts.image',
+            'posts.icon',
+            'posts.album',
+            'posts.publish',
+            'posts.follow',
             'tb2.name',          // nếu cần lấy name từ bảng language
             'tb2.description',   // nếu có
             'tb2.content',          // nếu cần lấy name từ bảng language
@@ -38,8 +38,9 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
             'tb2.canonical',   // nếu có
             // nếu có
         ])
-            ->join('post_catalogue_language as tb2', 'tb2.post_catalogue_id', '=', 'post_catalogues.id')
+            ->join('post_language as tb2', 'tb2.post_id', '=', 'posts.id')
             ->where('tb2.language_id', '=', $language_id)
+            ->with('post_catalogues')
             ->findOrFail($id);
     }
 }

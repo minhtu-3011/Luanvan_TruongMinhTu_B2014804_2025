@@ -69,6 +69,8 @@ class BaseRepository implements BaseRepositoryInterface
         array $orderBy = ['id', 'DESC'],
         array $join = [],
         array $relations = [],
+        array $rawQuery = [],
+
 
     ) {
         $query = $this->model->select($column)->where(function ($query) use ($condition) {
@@ -82,6 +84,13 @@ class BaseRepository implements BaseRepositoryInterface
             return $query;
         });
 
+        if (isset($rawQuery['whereRaw']) && count($rawQuery['whereRaw'])) {
+            foreach ($rawQuery['whereRaw'] as $key => $val) {
+                $query->whereRaw($val[0], $val[1]);
+            }
+        }
+
+
         if (isset($relations) && !empty($relations)) {
             foreach ($relations as $relation) {
                 $query->withCount($relations);
@@ -92,6 +101,11 @@ class BaseRepository implements BaseRepositoryInterface
             foreach ($join as $key => $val) {
                 $query->join($val[0], $val[1], $val[2], $val[3],);
             }
+        }
+
+
+        if (in_array('posts.id', $column)) {
+            $query->distinct();
         }
 
         if (isset($orderBy) && !empty($orderBy)) {
@@ -106,5 +120,10 @@ class BaseRepository implements BaseRepositoryInterface
     public function createLanguagePivot($model, array $payload = [])
     {
         return $model->languages()->attach($model->id, $payload);
+    }
+
+    public function createPivot($model, array $payload = [], string $relation = '')
+    {
+        return $model->{$relation}()->attach($model->id, $payload);
     }
 }

@@ -25,6 +25,8 @@
                     $publishArray = ['Không xuất bản', 'Xuất bản'];
                     // $publish = request('publish')?:old('publish');
                     $publish = request('publish') ?? old('publish') ?? '-1';
+                    $postCatalogueId = request('post_catalogue_id') ?? old('post_catalogue_id');
+
                 @endphp
                 <select name="publish" class="form-control mr10">
                     {{-- <option value="-1" selected="selected">Chọn tinh trang</option> --}}
@@ -32,6 +34,15 @@
 
                     @foreach($publishArray as $key => $val)
                         <option {{ $publish == $key ? 'selected' : '' }} value="{{$key}}">{{$val}}</option>
+                    @endforeach
+                    
+                </select>
+                <select name="post_catalogue_id" class="form-control mr10">
+                    {{-- <option value="-1" selected="selected">Chọn tinh trang</option> --}}
+                    <option value="-1" {{ $publish == '-1' ? 'selected' : '' }}>Chọn tình trạng</option>
+
+                    @foreach($dropdown as $key => $val)
+                        <option {{ $postCatalogueId == $key ? 'selected' : '' }} value="{{$key}}">{{$val}}</option>
                     @endforeach
                     
                 </select>

@@ -6,10 +6,10 @@
                                     <label for="" class="control-label text-left">Chọn danh mục cha</label>
                                     <span class="text-danger">(*)</span>
                                     <span class="text-danger noitce">Chọn root nếu ko có danh mục cha</span>
-                                    <select name="parent_id" class="form-control">
+                                    <select name="post_catalogue_id" class="form-control">
                                         @foreach($dropdown as $key => $val)
                                             <option value="{{ $key }}" 
-                                                {{ $key == old('parent_id', $post->parent_id ?? '') ? 'selected' : '' }}>
+                                                {{ $key == old('post_catalogue_id', $post->post_catalogue_id ?? '') ? 'selected' : '' }}>
                                                 {{ $val }}
                                             </option>
                                         @endforeach
@@ -21,20 +21,32 @@
                         
                             </div>
                         </div>
+
+                        @php
+                            $catalogue = [];
+
+                            if (isset($post) ) {
+                                foreach ($post->post_catalogues as $key => $val) {
+                                    $catalogue[] = $val->id;
+                                }
+                            }
+                        @endphp
                         <div class="row mb10">
                             <div class="col-lg-12">
                                 <div class="form-row">
                                     <label class="control-label">Danh mục phụ</label>
                                     <select multiple name="catalogue[]" class="form-control select2" id="">
                                         @foreach($dropdown as $key => $val)
-                                            <option
-                                                @if(is_array(old('catalogue', (isset($post->catalogue)) ? $post->catalogue : [])) 
-                                                    && in_array($key, old('catalogue', (isset($post->catalogue)) ? $post->catalogue : [])))
-                                                    selected
-                                                @endif 
-                                                value="{{ $key }}">
-                                                {{ $val }}
-                                            </option>
+                                            @if($key != old('post_catalogue_id', $post->post_catalogue_id ?? ''))
+                                                <option
+                                                    @if(is_array(old('catalogue', (isset($catalogue) && count($catalogue)) ? $catalogue : [])) 
+                                                        && in_array($key, old('catalogue', (isset($catalogue)) ? $catalogue : [])))
+                                                        selected
+                                                    @endif 
+                                                    value="{{ $key }}">
+                                                    {{ $val }}
+                                                </option>
+                                            @endif
                                         @endforeach
                                     </select>
 

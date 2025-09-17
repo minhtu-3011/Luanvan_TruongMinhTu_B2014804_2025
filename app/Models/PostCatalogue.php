@@ -42,7 +42,7 @@ class PostCatalogue extends Model
 
     public function posts()
     {
-        return $this->belongsToMany(Post::class, 'post_catalogue_post', 'post_id', 'post_catalogue_id');
+        return $this->belongsToMany(Post::class, 'post_catalogue_post', 'post_catalogue_id', 'post_id');
     }
 
 

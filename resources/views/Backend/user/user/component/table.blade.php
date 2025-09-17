@@ -43,7 +43,7 @@
                     </td>
 
                     <td class="js-switch-{{$user->id}}">
-                        <input type="checkbox" value="{{$user->publish}}" class="js-switch status" data-field = "publish" data-model = "User" 
+                        <input type="checkbox" value="{{$user->publish}}" class="js-switch status" data-field = "publish" data-model = "{{$config['model']}}" 
                         {{($user->publish == 1)?'checked':'' }} data-modelid = "{{$user->id}}"/>
                     </td>
                     <td class="text-center">

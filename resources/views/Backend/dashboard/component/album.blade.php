@@ -9,11 +9,15 @@
     </div>
 
     <div class="ibox-content">
+        @php
+            $gallery = (isset($album) && count($album) ) ? $album : old('album');
+
+        @endphp
         <div class="row">
             <div class="col-lg-12">
 
                 {{-- Khung khi chưa có ảnh --}}
-                <div class="click-to-upload {{ (isset($album) && count($album)) ? 'hidden' : '' }}">
+                <div class="click-to-upload {{ (isset($gallery) && count($gallery)) ? 'hidden' : '' }}">
                     <div class="icon">
                         <a href="" class="upload-picture">
                             <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80" role="img" aria-label="Image">
@@ -26,10 +30,10 @@
                 </div>
 
                 {{-- Khung danh sách ảnh --}}
-                <div class="upload-list {{ (isset($album) && count($album)) ? '' : 'hidden' }}">
+                <div class="upload-list {{ (isset($gallery) && count($gallery)) ? '' : 'hidden' }}">
                     <ul id="sortable" class="clearfix data-album sortui ui-sortable">
-                        @if(isset($album))
-                            @foreach ($album as $val)
+                        @if(isset($gallery))
+                            @foreach ($gallery as $val)
                                 <li class="ui-state-default">
                                     <div class="thumb">
                                         <span class="span image img-scaledown">

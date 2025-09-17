@@ -44,7 +44,9 @@ class PostController extends Controller
         $config = $this->config();
         $config["seo"] = config('apps.post');
         $template = 'backend.post.post.index';
-        return view('backend.dashboard.layout', compact('template', 'config', 'posts'));
+        $dropdown = $this->nestedsetbie->Dropdown();
+
+        return view('backend.dashboard.layout', compact('template', 'config', 'dropdown', 'posts'));
     }
 
     private function config()
@@ -56,6 +58,7 @@ class PostController extends Controller
             'css' => [
                 '/backend/css/plugins/switchery/switchery.css'
             ],
+            'model' => 'Post'
         ];
     }
 
@@ -83,18 +86,15 @@ class PostController extends Controller
     public function edit($id)
     {
         $post = $this->postRepository->getPostById($id, $this->language);
-        // dd($post);
 
-        foreach ($post->post_catalogue_language as $language) {
-            echo $language->name . '<br>';
-        }
+
+
         $config = $config = $this->configData();
         $config["seo"] = config('apps.post');
         $config["method"] = 'edit';
         $template = 'backend.post.post.store';
         $dropdown = $this->nestedsetbie->Dropdown();
         $album = json_decode($post->album);
-
         return view('backend.dashboard.layout', compact('template', 'config', 'dropdown', 'post', 'album'));
     }
 
@@ -115,7 +115,7 @@ class PostController extends Controller
         return view('backend.dashboard.layout', compact('template', 'post', 'config'));
     }
 
-    public function destroy($id, DeletePostRequest $request)
+    public function destroy($id)
     {
         // echo 123;
         // die();

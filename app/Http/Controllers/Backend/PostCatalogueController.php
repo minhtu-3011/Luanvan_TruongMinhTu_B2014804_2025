@@ -56,6 +56,7 @@ class PostCatalogueController extends Controller
             'css' => [
                 '/backend/css/plugins/switchery/switchery.css'
             ],
+            'model' => 'PostCatalogue'
         ];
     }
 
