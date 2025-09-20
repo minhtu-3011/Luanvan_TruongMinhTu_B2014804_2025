@@ -32,6 +32,7 @@ class LanguageService implements LanguageServiceInterface
         $condition['keyword'] = addslashes($request->input('keyword'));
         $condition['publish'] = $request->integer('publish', -1);
         $perpage = $request->integer('perpage', 10);
+
         $language = $this->languageRepository->pagination(
             $this->paginateSelect(),
             $condition,
@@ -135,29 +136,28 @@ class LanguageService implements LanguageServiceInterface
         }
     }
 
-    // private function changeUserStatus($post, $value)
-    // {
-    //     DB::beginTransaction();
-    //     try {
-    //         $array = [];
-    //         if (isset($post['modelId'])) {
-    //             $array[] = $post['modelId'];
-    //         } else {
-    //             $array = $post['id'];
-    //         }
+    public function switch($id)
+    {
+        DB::beginTransaction();
+        try {
+            // $language = $this->languageRepository->findById($id);
+            $this->languageRepository->update($id, ['current' => 1]);
+            $this->languageRepository->updateByWhere(
+                [['id', '!=', $id]],
+                ['current' => 0]
+            );
 
-    //         $payload[$post['field']] = $value;
-    //         $this->userRepository->updateByWhereIn('user_catalogue_id', $array, $payload);
-    //         DB::commit();
-    //         return true;
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         // Log::error($e->getMessage());
-    //         echo $e->getMessage();
-    //         die();
-    //         return false;
-    //     }
-    // }
+
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Log::error($e->getMessage());
+            echo $e->getMessage();
+            die();
+            return false;
+        }
+    }
 
     private function paginateSelect()
     {

@@ -29,6 +29,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         array $orderBy = ['id', 'DESC'],
         array $join = [],
         array $relations = [],
+        array $rawQuery = [],
+
 
 
     ) {

@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Validation\Rule;
+use App\Traits\QueryScopes;
 
 class Post extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, QueryScopes;
     protected $fillable = [
 
         'image',
@@ -28,7 +29,15 @@ class Post extends Model
     public function languages()
     {
         return $this->belongsToMany(Language::class, 'post_language', 'post_id', 'language_id')
-            ->withPivot('name', 'canonical', 'meta-title', 'meta-keyword', 'meta-description', 'description', 'content')
+            ->withPivot(
+                'name',
+                'canonical',
+                'meta-title',
+                'meta-keyword',
+                'meta-description',
+                'description',
+                'content'
+            )
             ->withTimestamps();
     }
 

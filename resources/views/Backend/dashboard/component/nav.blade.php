@@ -11,7 +11,13 @@
         </div>
         <ul class="nav navbar-top-links navbar-right">
             <li>
-                <span class="m-r-sm text-muted welcome-message">Welcome to INSPINIA+ Admin Theme.</span>
+                <div class="uk-flex uk-flex-middle">
+                    @foreach ($language as $key => $val)
+                    <a href="{{route('language.switch', $val->id)}}"><img class="img img-cover language-item {{($val->current == 1) ? 'active':''}}" src="{{($val->image)}}" alt=""></a>
+                        
+                    @endforeach
+                </div>
+                
             </li>
             <li class="dropdown">
                 <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">

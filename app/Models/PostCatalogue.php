@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Validation\Rule;
+use App\Traits\QueryScopes;
+
 
 class PostCatalogue extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, QueryScopes;
     protected $fillable = [
         'parent_id',
         'lft',
@@ -20,7 +22,6 @@ class PostCatalogue extends Model
         'album',
         'publish',
         'follow',
-
         'order',
         'user_id'
     ];

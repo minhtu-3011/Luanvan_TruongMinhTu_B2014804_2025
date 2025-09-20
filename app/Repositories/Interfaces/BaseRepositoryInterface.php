@@ -31,4 +31,6 @@ interface BaseRepositoryInterface
     public function updateByWhereIn(string $whereInField = '', array $whereIn = [], array $payload = []);
     public function createLanguagePivot($model, array $payload = []);
     public function createPivot($model, array $payload = [], string $relation = '');
+    public function updateByWhere($condition = [], array $payload = []);
+    public function findByCondition($condition = []);
 }

@@ -237,7 +237,15 @@ figure.image-box figcaption {
     display: none;
 }
 
+.language-item {
+    height: 20px;
+}
+
 /* .upload-picture {
     height: 100%;
     display: block;
 } */
+.language-item.active {
+    border: 2px solid rgb(49, 220, 95);
+    border-radius: 5px;
+}

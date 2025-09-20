@@ -8,7 +8,6 @@ use App\Services\Interfaces\PostServiceInterface as PostService;
 use App\Repositories\Interfaces\PostRepositoryInterface as PostRepository;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
-use App\Http\Requests\DetelePostRequest;
 
 
 use App\Classes\Nestedsetbie;
@@ -19,11 +18,14 @@ class PostController extends Controller
 
     protected $postService;
     protected $postRepository;
+    protected $languageRepository;
+
     protected $nestedsetbie;
     protected $language;
     public function __construct(
         PostService $postService,
-        PostRepository $postRepository
+        PostRepository $postRepository,
+
     ) {
         $this->postService = $postService;
         $this->postRepository = $postRepository;
@@ -45,6 +47,8 @@ class PostController extends Controller
         $config["seo"] = config('apps.post');
         $template = 'backend.post.post.index';
         $dropdown = $this->nestedsetbie->Dropdown();
+        // $language = $this->languageRepository->all();
+        // dd($language);
 
         return view('backend.dashboard.layout', compact('template', 'config', 'dropdown', 'posts'));
     }

@@ -6,6 +6,8 @@ use App\Services\Interfaces\PostCatalogueServiceInterface;
 use App\Services\BaseService;
 // use App\Repositories\PostCatalogueRepository;
 use App\Repositories\Interfaces\PostCatalogueRepositoryInterface as PostCatalogueRepository;
+use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
@@ -21,11 +23,15 @@ use App\Classes\Nestedsetbie;
 class PostCatalogueService extends BaseService implements PostCatalogueServiceInterface
 {
     protected $postCatalogueRepository;
+    protected $routereRepository;
+
     protected $nestedsetbie;
     public function __construct(
-        PostCatalogueRepository $postCatalogueRepository
+        PostCatalogueRepository $postCatalogueRepository,
+        RouterRepository $routereRepository
     ) {
         $this->postCatalogueRepository = $postCatalogueRepository;
+        $this->routereRepository = $routereRepository;
         $this->nestedsetbie = new Nestedsetbie([
             'table' => 'post_catalogues',
             'foreignkey' => 'post_catalogue_id',
@@ -75,20 +81,27 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
 
             $payload = $request->only($this->payload());
             $payload['user_id'] = Auth::id();
-            $payload['album'] = json_encode($payload['album']);
-            // dd($payload['album']);
-            // dd($payload);
+            // Lấy album từ request, mặc định [] nếu không có
+            $album = $request->input('album', []);
+            $payload['album'] = json_encode($album);
             $postCatalogue = $this->postCatalogueRepository->create($payload);
 
             if ($postCatalogue->id > 0) {
                 $payloadlanguage = $request->only($this->payloadLanguage());
                 $payloadlanguage['canonical'] = Str::slug($payloadlanguage['canonical']);
-                // dd($payloadlanguage);
                 $payloadlanguage['language_id'] = $this->currentLanguage();
                 $payloadlanguage['post_catalogue_id'] = $postCatalogue->id;
 
                 $language = $this->postCatalogueRepository->createPivot($postCatalogue, $payloadlanguage, 'languages');
-                // dd($language);
+
+
+                $router = [
+                    'canonical' => $payloadlanguage['canonical'],
+                    'module_id' => $postCatalogue->id,
+                    'controllers' => 'App\Http\Controllers\Frontend\PostCatalogueController',
+                ];
+
+                $this->routereRepository->create($router);
             }
 
             $this->nestedsetbie->Get('level ASC, order ASC');
@@ -117,7 +130,11 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
 
 
             $payload = $request->only($this->payload());
-            $payload['album'] = json_encode($payload['album']);
+
+            // Lấy album từ request, mặc định [] nếu không có
+            $album = $request->input('album', []);
+            $payload['album'] = json_encode($album);
+
 
             $flag = $this->postCatalogueRepository->update($id, $payload);
             if ($flag == true) {
@@ -128,6 +145,23 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
 
                 $postCatalogue->languages()->detach([$payloadlanguage['language_id'], $id]);
                 $response = $this->postCatalogueRepository->createPivot($postCatalogue, $payloadlanguage, 'languages');;
+
+
+                $payloadRouter = [
+                    'canonical' => $payloadlanguage['canonical'],
+                    'module_id' => $postCatalogue->id,
+                    'controllers' => 'App\Http\Controllers\Frontend\PostCatalogueController',
+                ];
+
+                $condition = [
+                    ['module_id', '=', $id],
+                    ['controllers', '=', 'App\Http\Controllers\Frontend\PostCatalogueController'],
+                ];
+                $router = $this->routereRepository->findByCondition($condition);
+                // dd($router);
+                $this->routereRepository->update($router->id, $payloadRouter);
+
+
 
                 $this->nestedsetbie->Get('level ASC, order ASC');
                 $this->nestedsetbie->Recursive(0, $this->nestedsetbie->Set());

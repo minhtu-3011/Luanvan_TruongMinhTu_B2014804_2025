@@ -34,6 +34,16 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model->select($column)->with($relation)->findOrFail($modelId);
     }
 
+    public function findByCondition($condition = [])
+    {
+        $query  = $this->model->newQuery();
+        foreach ($condition as $key => $val) {
+            $query->where($val[0], $val[1], $val[2]);
+        }
+
+        return $query->first();
+    }
+
     public function create(array $payload = [])
     {
         $model = $this->model->create($payload);
@@ -42,8 +52,20 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function update(int $id = 0, array $payload = [])
     {
+
         $model = $this->findById($id);
+
         return $model->update($payload);
+    }
+
+    public function updateByWhere($condition = [], array $payload = [])
+    {
+        $query  = $this->model->newQuery();
+        foreach ($condition as $key => $val) {
+            $query->where($val[0], $val[1], $val[2]);
+        }
+
+        return $query->update($payload);
     }
 
     public function updateByWhereIn(string $whereInField = '', array $whereIn = [], array $payload = [])
@@ -72,49 +94,21 @@ class BaseRepository implements BaseRepositoryInterface
         array $rawQuery = [],
 
 
+
     ) {
-        $query = $this->model->select($column)->where(function ($query) use ($condition) {
-            if (isset($condition['keyword']) && !empty($condition['keyword'])) {
-                $query->where('name', 'LIKE', '%' . $condition['keyword'] . '%');
-            }
-
-            if (isset($condition['publish']) && $condition['publish'] != -1) {
-                $query->where('publish', '=', $condition['publish']);
-            }
-            return $query;
-        });
-
-        if (isset($rawQuery['whereRaw']) && count($rawQuery['whereRaw'])) {
-            foreach ($rawQuery['whereRaw'] as $key => $val) {
-                $query->whereRaw($val[0], $val[1]);
-            }
-        }
-
-
-        if (isset($relations) && !empty($relations)) {
-            foreach ($relations as $relation) {
-                $query->withCount($relations);
-            }
-        }
-
-        if (isset($join) && is_array($join) && count($join)) {
-            foreach ($join as $key => $val) {
-                $query->join($val[0], $val[1], $val[2], $val[3],);
-            }
-        }
-
-
-        if (in_array('posts.id', $column)) {
-            $query->distinct();
-        }
-
-        if (isset($orderBy) && !empty($orderBy)) {
-            $query->orderBy($orderBy[0], $orderBy[1]);
-        }
-
-        return $query->paginate($perpage)
+        $table = $this->model->getTable();
+        $query = $this->model->select($column)->distinct()->whereNull($table . '.deleted_at');
+        return $query->keyword($condition['keyword'] ?? null)
+            ->publish($condition['publish'] ?? null)
+            ->relationCount($relations ?? null)
+            ->customWhere($condition['where'] ?? null)        // ✅ đúng
+            ->customeWhereRaw($rawQuery ?? null)              // ✅ đúng
+            ->customeJoin($join ?? null)                      // ✅ đúng
+            ->customeGroupBy($extends ?? null)                // ✅ đúng
+            ->customeOrderBy($orderBy ?? null)                // ✅ đúng
+            ->paginate($perpage)
             ->withQueryString()
-            ->withPath(url('/' . $extends['path']));
+            ->withPath(url('/' . ($extends['path'] ?? '')));
     }
 
     public function createLanguagePivot($model, array $payload = [])

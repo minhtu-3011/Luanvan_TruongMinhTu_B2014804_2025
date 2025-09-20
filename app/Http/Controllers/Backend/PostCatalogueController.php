@@ -42,7 +42,7 @@ class PostCatalogueController extends Controller
         // $postCatalogue:paginate(10);
 
         $config = $this->config();
-        $config["seo"] = config('apps.postcatalogue');
+        $config["seo"] = __('messages.postCatalogue');
         $template = 'backend.post.catalogue.index';
         return view('backend.dashboard.layout', compact('template', 'config', 'postCatalogues'));
     }
@@ -65,7 +65,7 @@ class PostCatalogueController extends Controller
     {
 
         $config = $this->configData();
-        $config["seo"] = config('apps.postcatalogue');
+        $config["seo"] = __('messages.postCatalogue');
         $config["method"] = 'create';
         $dropdown = $this->nestedsetbie->Dropdown();
         $template = 'backend.post.catalogue.store';
@@ -90,7 +90,7 @@ class PostCatalogueController extends Controller
             echo $language->name . '<br>';
         }
         $config = $config = $this->configData();
-        $config["seo"] = config('apps.postcatalogue');
+        $config["seo"] = __('messages.postCatalogue');
         $config["method"] = 'edit';
         $template = 'backend.post.catalogue.store';
         $dropdown = $this->nestedsetbie->Dropdown();
@@ -110,7 +110,7 @@ class PostCatalogueController extends Controller
     public function delete($id)
     {
         $template = 'backend.post.catalogue.delete';
-        $config["seo"] = config('apps.postcatalogue');
+        $config["seo"] = __('messages.postCatalogue');
         $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($id, $this->language);
         // dd($postCatalogue);
         return view('backend.dashboard.layout', compact('template', 'postCatalogue', 'config'));

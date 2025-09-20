@@ -8,6 +8,7 @@ use App\Services\Interfaces\LanguageServiceInterface as LanguageService;
 use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;
 use App\Http\Requests\StoreLanguageRequest;
 use App\Http\Requests\UpdateLanguageRequest;
+use Illuminate\Support\Facades\App;
 
 class LanguageController extends Controller
 {
@@ -31,6 +32,8 @@ class LanguageController extends Controller
         $config = $this->config();
         $config["seo"] = config('apps.language');
         $template = 'backend.language.index';
+        $config['model'] = 'Language';
+
         return view('backend.dashboard.layout', compact('template', 'config', 'languages'));
     }
 
@@ -114,4 +117,26 @@ class LanguageController extends Controller
         }
         return redirect()->route('language.index')->with('error', 'Xoá ban ghi khong thanh cong');
     }
+
+    public function switchBackendLanguage($id)
+    {
+        $language = $this->languageRepository->findById($id);
+        if ($this->languageService->switch($id)) {
+            session(['app_locale' => $language->canonical]);
+            App::setLocale($language->canonical);
+        }
+        // dd($language->canonical);
+        return redirect()->back();
+    }
+    // public function switchBackendLanguage($id)
+    // {
+    //     $language = $this->languageRepository->findById($id);
+
+    //     if ($this->languageService->switch($id)) {
+    //         // Lưu vào session thôi, middleware sẽ lo phần còn lại
+    //         session(['app_locale' => strtolower($language->canonical)]);
+    //     }
+
+    //     return back();
+    // }
 }

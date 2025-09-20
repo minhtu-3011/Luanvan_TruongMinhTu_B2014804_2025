@@ -77,6 +77,8 @@ Route::group(['prefix' => 'language'], function () {
         ->middleware(AuthenticateMiddleware::class);
     Route::delete('{id}/destroy', [LanguageController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('language.destroy')
         ->middleware(AuthenticateMiddleware::class);
+    Route::get('{id}/switch', [LanguageController::class, 'switchBackendLanguage'])->where(['id' => '[0-9]+'])->name('language.switch')
+        ->middleware(AuthenticateMiddleware::class);
 });
 
 

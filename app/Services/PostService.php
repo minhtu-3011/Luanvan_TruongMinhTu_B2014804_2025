@@ -37,12 +37,12 @@ class PostService extends BaseService implements PostServiceInterface
 
         $condition['keyword'] = addslashes($request->input('keyword'));
         $condition['publish'] = $request->integer('publish', -1);
-        $condition['post_catalogue_id'] = $request->input('post_catalogue_id');
         $condition['where'] = [
             ['tb2.language_id', '=', $this->language],
         ];
         $perpage = $request->integer('perpage', 10);
-        $post = $this->postRepository->pagination(
+
+        $posts = $this->postRepository->pagination(
             $this->paginateSelect(),
             $condition,
             $perpage,
@@ -57,14 +57,12 @@ class PostService extends BaseService implements PostServiceInterface
 
             ],
             ['post_catalogues'],
-            $this->whereRaw($request),
+            $this->whereRaw($request)
 
         );
 
-        // dd(
-        //     $post
-        // );
-        return $post;
+        // dd($posts);
+        return $posts;
     }
 
     public function create($request)
@@ -179,8 +177,6 @@ class PostService extends BaseService implements PostServiceInterface
     }
 
 
-
-
     public function updateStatus($post = [])
     {
         DB::beginTransaction();
@@ -230,6 +226,7 @@ class PostService extends BaseService implements PostServiceInterface
         return array_values(array_filter(array_unique($ids)));
     }
 
+
     private function whereRaw($request)
     {
         $rawCondition = [];
@@ -243,12 +240,11 @@ class PostService extends BaseService implements PostServiceInterface
                         AND rgt <= (SELECT rgt FROM post_catalogues as pc WHERE pc.id = ?)
                     )',
                     [$request->integer('post_catalogue_id'), $request->integer('post_catalogue_id')]
-                ]
+                ],
             ];
         }
         return $rawCondition;
     }
-
 
 
     private function paginateSelect()
