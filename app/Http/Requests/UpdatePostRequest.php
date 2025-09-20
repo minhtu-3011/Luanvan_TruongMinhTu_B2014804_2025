@@ -26,8 +26,8 @@ class UpdatePostRequest extends FormRequest
             'name' => 'required',
             'canonical' => [
                 'required',
-                Rule::unique('post_language', 'canonical')
-                    ->ignore($this->id, 'post_id'),
+                Rule::unique('routers', 'canonical')
+                    ->ignore($this->id, 'module_id'),
             ],
             'post_catalogue_id' => 'gt:0',
 

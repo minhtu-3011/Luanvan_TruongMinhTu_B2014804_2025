@@ -26,8 +26,8 @@ class UpdatePostCatalogueRequest extends FormRequest
             'name' => 'required',
             'canonical' => [
                 'required',
-                Rule::unique('post_catalogue_language', 'canonical')
-                    ->ignore($this->id, 'post_catalogue_id'),
+                Rule::unique('routers', 'canonical')
+                    ->ignore($this->id, 'module_id'),
             ],
 
         ];

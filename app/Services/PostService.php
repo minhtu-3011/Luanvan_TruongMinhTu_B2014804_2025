@@ -6,6 +6,7 @@ use App\Services\Interfaces\PostServiceInterface;
 use App\Services\BaseService;
 // use App\Repositories\PostRepository;
 use App\Repositories\Interfaces\PostRepositoryInterface as PostRepository;
+use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use AWS\CRT\HTTP\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -23,10 +24,14 @@ class PostService extends BaseService implements PostServiceInterface
     protected $postRepository;
     protected $language;
 
+
     public function __construct(
-        PostRepository $postRepository
+        PostRepository $postRepository,
+        RouterRepository $routerRepository
     ) {
+        $this->routereRepository = $routerRepository;
         $this->postRepository = $postRepository;
+        $this->controllerName = 'PostController';
         $this->language = $this->currentLanguage();
     }
 
@@ -69,12 +74,14 @@ class PostService extends BaseService implements PostServiceInterface
     {
         DB::beginTransaction();
         try {
+            // dd($this->routereRepository);
             $post = $this->createPost($request);
 
 
             if ($post->id > 0) {
                 $this->updateLanguageForPost($post, $request);
                 $this->updateCatalogueForPost($post, $request);
+                $this->createRouter($post, $request, $this->controllerName);
             }
             DB::commit();
             return true;
@@ -97,6 +104,7 @@ class PostService extends BaseService implements PostServiceInterface
             if ($this->uploadPost($post, $request)) {
                 $this->updateLanguageForPost($post, $request);
                 $this->updateCatalogueForPost($post, $request);
+                $this->updateRouter($post, $request, $this->controllerName);
             }
 
 
@@ -169,12 +177,7 @@ class PostService extends BaseService implements PostServiceInterface
     }
 
 
-    private function formatAlbum($request)
-    {
-        return ($request->input('album') && !empty($request->input('album')))
-            ? json_encode($request->input('album'))
-            : '';
-    }
+
 
 
     public function updateStatus($post = [])
