@@ -12,4 +12,5 @@ interface UserCatalogueServiceInterface
     public function create($request);
     public function update($id, $request);
     public function destroy($id);
+    public function setPermission($request);
 }

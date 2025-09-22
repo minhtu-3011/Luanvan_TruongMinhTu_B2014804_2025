@@ -1,4 +1,4 @@
-<form method="get" action="{{route('user.catalogue.index')}}">
+<form method="get" action="{{route('permission.index')}}">
     <div class="filter-wrapper">
     <div class="uk-flex uk-flex-middle uk-flex-space-between">
         <div class="perpage">
@@ -48,16 +48,7 @@
                         </span>
                     </div>
                 </div>
-                
-
-                <div class="uk-search uk-flex uk-flex-middle ">
-                    <a href="{{route('user.catalogue.permission')}}" class="btn btn-primary mr10">
-                        <i class="fa fa-key">Phân quyền</i>
-                    </a>  
-                    <a href="{{route('user.catalogue.create')}}" class="btn btn-danger">
-                        <i class="fa fa-plus">Thêm mới Nhóm thành viên</i>
-                    </a>   
-                </div>
+                <a href="{{route('permission.create')}}" class="btn btn-danger"><i class="fa fa-plus">Thêm mới Quyền</i></a>
             </div>
 
         </div>

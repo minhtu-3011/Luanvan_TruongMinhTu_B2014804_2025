@@ -21,9 +21,9 @@ class BaseRepository implements BaseRepositoryInterface
         $this->model = $model;
     }
 
-    public function all()
+    public function all(array $relation = [])
     {
-        return $this->model->all();
+        return $this->model->with($relation)->get();
     }
 
     public function findById(
@@ -97,7 +97,7 @@ class BaseRepository implements BaseRepositoryInterface
 
     ) {
         $table = $this->model->getTable();
-        $query = $this->model->select($column)->distinct()->whereNull($table . '.deleted_at');
+        $query = $this->model->select($column)->distinct();
         return $query->keyword($condition['keyword'] ?? null)
             ->publish($condition['publish'] ?? null)
             ->relationCount($relations ?? null)

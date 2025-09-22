@@ -9,6 +9,7 @@ use App\Http\Controllers\Backend\UserCatalogueController;
 use App\Http\Controllers\Backend\PostCatalogueController;
 use App\Http\Controllers\Backend\PostController;
 use App\Http\Controllers\Backend\LanguageController;
+use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Ajax\LocationController;
 use App\Http\Middleware\AuthenticateMiddleware;
 use App\Http\Middleware\LoginMiddleware;
@@ -51,11 +52,15 @@ Route::group(['prefix' => 'user/catalogue'], function () {
         ->middleware(AuthenticateMiddleware::class);
     Route::get('{id}/edit', [UserCatalogueController::class, 'edit'])->where(['id' => '[0-9]+'])->name('user.catalogue.edit')
         ->middleware(AuthenticateMiddleware::class);
+    Route::get('permission', [UserCatalogueController::class, 'permission'])->name('user.catalogue.permission')
+        ->middleware(AuthenticateMiddleware::class);
     Route::post('{id}/update', [UserCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('user.catalogue.update')
         ->middleware(AuthenticateMiddleware::class);
     Route::get('{id}/delete', [UserCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('user.catalogue.delete')
         ->middleware(AuthenticateMiddleware::class);
     Route::delete('{id}/destroy', [UserCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('user.catalogue.destroy')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::post('updatePermission', [UserCatalogueController::class, 'updatePermission'])->name('user.catalogue.updatePermission')
         ->middleware(AuthenticateMiddleware::class);
 });
 
@@ -117,6 +122,24 @@ Route::group(['prefix' => 'post'], function () {
     Route::get('{id}/delete', [PostController::class, 'delete'])->where(['id' => '[0-9]+'])->name('post.delete')
         ->middleware(AuthenticateMiddleware::class);
     Route::delete('{id}/destroy', [PostController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('post.destroy')
+        ->middleware(AuthenticateMiddleware::class);
+});
+
+
+Route::group(['prefix' => 'permission'], function () {
+    Route::get('index', [PermissionController::class, 'index'])->name('permission.index')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::get('create', [PermissionController::class, 'create'])->name('permission.create')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::post('store', [PermissionController::class, 'store'])->name('permission.store')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::get('{id}/edit', [PermissionController::class, 'edit'])->where(['id' => '[0-9]+'])->name('permission.edit')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::post('{id}/update', [PermissionController::class, 'update'])->where(['id' => '[0-9]+'])->name('permission.update')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::get('{id}/delete', [PermissionController::class, 'delete'])->where(['id' => '[0-9]+'])->name('permission.delete')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::delete('{id}/destroy', [PermissionController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('permission.destroy')
         ->middleware(AuthenticateMiddleware::class);
 });
 

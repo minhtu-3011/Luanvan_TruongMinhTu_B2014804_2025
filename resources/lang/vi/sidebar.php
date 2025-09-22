@@ -21,7 +21,7 @@ return [
         [
             'title' => 'QL nhóm Thành viên',
             'icon' => 'fa fa-user',
-            'name' => ['user'],
+            'name' => ['user', 'permission'],
             'subModule' => [
                 [
                     'title' => 'QL nhóm thành viên',
@@ -30,6 +30,10 @@ return [
                 [
                     'title' => 'QL thành viên',
                     'route' => 'user/index'
+                ],
+                [
+                    'title' => 'QL quyền',
+                    'route' => 'permission/index'
                 ]
             ]
         ],
