@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'tableName'   => 'Tên',
+    'tableStatus' => 'Trạng thái',
+    'tableAction' => 'Thao tác',
+    'tableDesc'   => 'Mô tả',
+
 
     'postCatalogue' => [
         'index' => [

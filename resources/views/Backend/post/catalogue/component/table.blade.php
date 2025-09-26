@@ -4,14 +4,16 @@
             <th style="width: 100px">
                 <input type="checkbox" value="" id="checkAll" class="input-checkbox">
             </th>
-            <th >Tên Nhóm</th>
-            <th style="width: 100px">Tình trạng</th>
-
-            {{-- <th>Tình trạng</th> --}}
-            <th class="text-center" style="width: 100px">Thao tác</th>
+            
+            <th >{{__('messages.tableName')}}</th>
+            @include('backend.dashboard.component.languageTh')
+            
+            <th style="width: 100px">{{__('messages.tableStatus')}}</th>
+            <th class="text-center" style="width: 100px">{{__('messages.tableAction')}}</th>
         </tr>
     </thead>
     <tbody>
+       
         @if(isset($postCatalogues) && is_object($postCatalogues))
        
             @foreach($postCatalogues as $postCatalogue)
@@ -19,6 +21,7 @@
                     <td>
                         <input type="checkbox" value="{{$postCatalogue->id}}"  class="input-checkbox checkboxItem">
                     </td>
+                    
                     <td>
                         {{ str_repeat('|----', ($postCatalogue->level > 0 ? $postCatalogue->level - 1 : 0)) . $postCatalogue->name }}
 
@@ -26,6 +29,8 @@
 
 
                     </td>
+                    @include('backend.dashboard.component.languageTd', ['model' => $postCatalogue, 'modeling' => 'PostCatalogue'])
+
 
                     
                     

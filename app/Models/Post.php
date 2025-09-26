@@ -32,9 +32,9 @@ class Post extends Model
             ->withPivot(
                 'name',
                 'canonical',
-                'meta-title',
-                'meta-keyword',
-                'meta-description',
+                'meta_title',
+                'meta_keyword',
+                'meta_description',
                 'description',
                 'content'
             )

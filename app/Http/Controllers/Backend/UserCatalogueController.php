@@ -8,6 +8,7 @@ use App\Services\Interfaces\UserCatalogueServiceInterface as UserCatalogueServic
 use App\Repositories\Interfaces\UserCatalogueRepositoryInterface as UserCatalogueRepository;
 use App\Repositories\Interfaces\PermissionRepositoryInterface as PermissionRepository;
 use App\Http\Requests\StoreUserCatalogueRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UserCatalogueController extends Controller
 {
@@ -27,6 +28,8 @@ class UserCatalogueController extends Controller
 
     public function index(Request $request)
     {
+        $this->authorize('modules', 'user.catalogue.index');
+
 
         $userCatalogues = $this->userCatalogueService->paginate($request);
         // $users = User::paginate(10);
@@ -53,6 +56,7 @@ class UserCatalogueController extends Controller
 
     public function create()
     {
+        $this->authorize('modules', 'user.catalogue.create');
 
         $config = [
             'js' => [
@@ -77,6 +81,8 @@ class UserCatalogueController extends Controller
 
     public function edit($id)
     {
+        $this->authorize('modules', 'user.catalogue.update');
+
         $userCatalogue = $this->userCatalogueRepository->findById($id);
 
         $config = [
@@ -101,6 +107,8 @@ class UserCatalogueController extends Controller
 
     public function delete($id)
     {
+        $this->authorize('modules', 'user.catalogue.destroy');
+
         $template = 'backend.user.catalogue.delete';
         $config["seo"] = config('apps.usercatalogue');
         $userCatalogue = $this->userCatalogueRepository->findById($id);
@@ -118,6 +126,8 @@ class UserCatalogueController extends Controller
 
     public function permission()
     {
+        $this->authorize('modules', 'user.catalogue.permission');
+
         $userCatalogues = $this->userCatalogueRepository->all(['permissions']);
         $permissions = $this->permissionRepository->all();
 

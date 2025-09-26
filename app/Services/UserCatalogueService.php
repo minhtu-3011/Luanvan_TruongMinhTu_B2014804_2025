@@ -169,10 +169,14 @@ class UserCatalogueService implements UserCatalogueServiceInterface
         DB::beginTransaction();
         try {
             $permissions = $request->input('permission');
-            foreach ($permissions as $key => $val) {
-                $usersCatalogue = $this->userCatalogueRepository->findById($key);
-                $usersCatalogue->permissions()->sync($val);
-            };
+            if (count($permissions)) {
+                foreach ($permissions as $key => $val) {
+                    $userCatalogue = $this->userCatalogueRepository->findById($key);
+                    $userCatalogue->permissions()->detach();
+                    $userCatalogue->permissions()->sync($val);
+                }
+            }
+
             DB::commit();
             return true;
         } catch (\Exception $e) {

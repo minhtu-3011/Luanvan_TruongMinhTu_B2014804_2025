@@ -8,8 +8,10 @@ use App\Services\Interfaces\PostCatalogueServiceInterface as PostCatalogueServic
 use App\Repositories\Interfaces\PostCatalogueRepositoryInterface as PostCatalogueRepository;
 use App\Http\Requests\StorePostCatalogueRequest;
 use App\Http\Requests\UpdatePostCatalogueRequest;
+use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\DetelePostCatalogueRequest;
-
+use Illuminate\Support\Facades\Auth;
+use App\Models\Permission;
 
 use App\Classes\Nestedsetbie;
 use App\Http\Requests\DeletePostCatalogueRequest;
@@ -37,6 +39,9 @@ class PostCatalogueController extends Controller
 
     public function index(Request $request)
     {
+        // dd(session('app_locale'));
+        $this->authorize('modules', 'post.catalogue.index');
+
 
         $postCatalogues = $this->postCatalogueService->paginate($request);
         // $postCatalogue:paginate(10);
@@ -63,6 +68,7 @@ class PostCatalogueController extends Controller
 
     public function create()
     {
+        $this->authorize('modules', 'post.catalogue.create');
 
         $config = $this->configData();
         $config["seo"] = __('messages.postCatalogue');
@@ -83,6 +89,8 @@ class PostCatalogueController extends Controller
 
     public function edit($id)
     {
+        $this->authorize('modules', 'post.catalogue.update');
+
         $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($id, $this->language);
         // dd($postCatalogue);
 
@@ -109,6 +117,8 @@ class PostCatalogueController extends Controller
 
     public function delete($id)
     {
+        $this->authorize('modules', 'post.catalogue.destroy');
+
         $template = 'backend.post.catalogue.delete';
         $config["seo"] = __('messages.postCatalogue');
         $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($id, $this->language);

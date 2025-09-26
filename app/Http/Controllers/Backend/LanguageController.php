@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Interfaces\LanguageServiceInterface as LanguageService;
 use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;
+
 use App\Http\Requests\StoreLanguageRequest;
 use App\Http\Requests\UpdateLanguageRequest;
+use App\Http\Requests\TranslateRequest;
+
 use Illuminate\Support\Facades\App;
 
 class LanguageController extends Controller
@@ -25,6 +28,7 @@ class LanguageController extends Controller
 
     public function index(Request $request)
     {
+        $this->authorize('modules', 'language.index');
 
         $languages = $this->languageService->paginate($request);
         // $language:paginate(10);
@@ -52,6 +56,7 @@ class LanguageController extends Controller
 
     public function create()
     {
+        $this->authorize('modules', 'language.create');
 
         $config = [
             'js' => [
@@ -78,6 +83,8 @@ class LanguageController extends Controller
 
     public function edit($id)
     {
+        $this->authorize('modules', 'language.update');
+
         $language = $this->languageRepository->findById($id);
 
         $config = [
@@ -104,6 +111,8 @@ class LanguageController extends Controller
 
     public function delete($id)
     {
+        $this->authorize('modules', 'language.destroy');
+
         $template = 'backend.language.delete';
         $config["seo"] = config('apps.language');
         $language = $this->languageRepository->findById($id);
@@ -139,4 +148,75 @@ class LanguageController extends Controller
 
     //     return back();
     // }
+
+
+    public function translate($id = 0, $languageId = 0, $model = '')
+    {
+
+        $repositoryInstance = $this->repositoryInstance($model);
+        $languageInstance = $this->repositoryInstance('Language');
+        $currentLanguage = $languageInstance->findByCondition([
+            ['canonical', '=', session('app_locale')]
+        ]);
+
+        $method = 'get' . $model . 'ById';
+        $object = $repositoryInstance->{$method}($id, $currentLanguage->id);
+        $objectTranslate = $repositoryInstance->{$method}($id, $languageId);
+        // dd($objectTranslate);
+
+
+        $this->authorize('modules', 'language.translate');
+        $config = [
+            'js' => [
+                '/backend/plugin/ckeditor/ckeditor.js',
+                '/backend/plugin/ckfinder/ckfinder.js',
+                '/backend/library/finder.js', // nếu file này chỉ cấu hình thêm thì cho sau cùng
+                '/backend/js/plugins/switchery/switchery.js',
+                '/backend/library/seo.js',
+
+
+            ],
+            'css' => [
+                '/backend/css/plugins/switchery/switchery.css'
+            ],
+        ];
+        $option = [
+            'id' => $id,
+            'languageId' => $languageId,
+            'model' => $model
+        ];
+
+        // dd($languageId);
+
+        $config['seo'] = config('apps.language');
+        $template = 'backend.language.translate';
+        return view('backend.dashboard.layout', compact(
+            'template',
+            'config',
+            'object',
+            'objectTranslate',
+            'option'
+        ));
+    }
+
+    public function storeTranslate(TranslateRequest $request)
+    {
+        $option = $request->input('option');
+        // dd($option);
+        if ($this->languageService->saveTranslate($option, $request)) {
+            return redirect()->back()->with('success', 'cap nhat ban ghi thanh cong');
+        }
+        return redirect()->back()->with('error', 'cap nhat ban ghi khong thanh cong');
+    }
+
+    private function repositoryInstance($model)
+    {
+        $RepositoryNamespace = '\App\Repositories\\' . ucfirst($model) . 'Repository';
+
+        if (class_exists($RepositoryNamespace)) {
+            $RepositoryInstance = app($RepositoryNamespace);
+        }
+
+        return $RepositoryInstance;
+    }
 }

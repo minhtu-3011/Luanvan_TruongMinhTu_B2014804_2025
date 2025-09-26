@@ -40,6 +40,6 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         ])
             ->join('post_language as tb2', 'tb2.post_id', '=', 'posts.id')
             ->where('tb2.language_id', '=', $language_id)
-            ->findOrFail($id);
+            ->find($id);
     }
 }

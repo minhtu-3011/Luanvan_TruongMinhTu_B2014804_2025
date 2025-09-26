@@ -9,7 +9,11 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
-
+    protected $language;
+    public function __construct()
+    {
+        $this->language = session('app_locale') ?? config('app.locale');
+    }
     public function currentLanguage()
     {
         return 5;

@@ -2,7 +2,7 @@
     <div class="col-lg-12">
         <div class="form-row">
             <label for="" class="control-label text-left">Tieu de nhom bai viet</label>
-            <input type="text" name="name"  value="{{ old('name', $post->name ?? '') }}"  class="form-control" placeholder=""
+            <input type="text" {{(isset($disabled)) ? 'disabled' : ''}} name="name"  value="{{ old('name', $model->name ?? '') }}"  class="form-control" placeholder=""
                 autocomplete="off" id="">
         </div>
     </div>
@@ -11,8 +11,8 @@
     <div class="col-lg-12">
         <div class="form-row">
             <label for="" class="control-label text-left">Mo ta ngan</label>
-            <textarea type="text" name="description"  value=""  class="form-control ck-editor" placeholder=""
-                autocomplete="off" id="description" data-height="150px">{{ old('description', $post->description ?? '') }} </textarea>
+            <textarea type="text" {{(isset($disabled)) ? 'disabled' : ''}} name="description"  value=""  class="form-control ck-editor" placeholder=""
+                autocomplete="off" id="description" data-height="150px">{{ old('description', $model->description ?? '') }} </textarea>
             
         </div>
     </div>
@@ -24,9 +24,9 @@
                     <label for="" class="control-label text-left">Noi dung</label>
                     <a href="#" class="multipleUploadImageCkeditor" data-target="content">Upload nhiều hình ảnh</a>
                 </div>
-                <textarea type="text" name="content" class="form-control ck-editor" 
+                <textarea type="text" {{(isset($disabled)) ? 'disabled' : ''}} name="content" class="form-control ck-editor" 
                     placeholder="" autocomplete="off" id="content" data-height="500px">
-                    {{ old('content', $post->content ?? '') }}
+                    {{ old('content', $model->content ?? '') }}
                 </textarea>
             </div>
     </div>

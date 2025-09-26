@@ -6,6 +6,8 @@
             </th>
             <th >Tên Nhóm</th>
             <th style="width: 80px">Vi tri</th>
+            @include('backend.dashboard.component.languageTh')
+
             <th style="width: 100px">Tình trạng</th>
 
             {{-- <th>Tình trạng</th> --}}
@@ -35,6 +37,8 @@
                     <td>
                         <input value="{{$post->order}}" type="text" name="order" class="form-control sort-order" data-id="{{$post->id}}" data-model="{{$config['model']}}">
                     </td>
+                    @include('backend.dashboard.component.languageTd', ['model' => $post, 'modeling' => 'Post'])
+
 
                     
                     

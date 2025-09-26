@@ -11,10 +11,20 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Middleware nhóm web
         $middleware->web([
             \App\Http\Middleware\SetLocale::class,
+        ]);
+
+        // Đăng ký alias 'locale'
+        $middleware->alias([
+            'locale' => \App\Http\Middleware\SetLocale::class,
+            'admin'  => \App\Http\Middleware\AuthenticateMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    })
+    ->withProviders([
+        App\Providers\AuthServiceProvider::class, // 👈 thêm dòng này
+    ])->create();
