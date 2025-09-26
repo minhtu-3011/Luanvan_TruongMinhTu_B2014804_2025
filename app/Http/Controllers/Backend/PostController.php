@@ -8,6 +8,7 @@ use App\Services\Interfaces\PostServiceInterface as PostService;
 use App\Repositories\Interfaces\PostRepositoryInterface as PostRepository;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Models\Language;
 
 
 use App\Classes\Nestedsetbie;
@@ -27,21 +28,36 @@ class PostController extends Controller
         PostRepository $postRepository,
 
     ) {
+        $this->middleware(function ($request, $next) {
+            $locale = app()->getLocale(); // 
+            $language = Language::where('canonical', $locale)->first();
+            $this->language = $language->id;
+            $this->initialize();
+            return $next($request);
+        });
         $this->postService = $postService;
         $this->postRepository = $postRepository;
+        $this->initialize();
+
+        // $this->language = $this->currentLanguage();
+
+    }
+
+    private function initialize()
+    {
         $this->nestedsetbie = new Nestedsetbie([
             'table' => 'post_catalogues',
             'foreignkey' => 'post_catalogue_id',
-            'language_id' => 5,
+            'language_id' => $this->language,
         ]);
-        $this->language = $this->currentLanguage();
     }
+
 
     public function index(Request $request)
     {
         $this->authorize('modules', 'post.index');
 
-        $posts = $this->postService->paginate($request);
+        $posts = $this->postService->paginate($request, $this->language);
         // $post:paginate(10);
 
         $config = $this->config();
@@ -83,7 +99,7 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request)
     {
-        if ($this->postService->create($request)) {
+        if ($this->postService->create($request, $this->language)) {
             return redirect()->route('post.index')->with('success', 'Them moi ban ghi thanh cong');
         }
         return redirect()->route('post.index')->with('error', 'them moi ban ghi khong thanh cong');
@@ -108,7 +124,7 @@ class PostController extends Controller
 
     public function update($id, UpdatePostRequest $request)
     {
-        if ($this->postService->update($id, $request)) {
+        if ($this->postService->update($id, $request, $this->language)) {
             return redirect()->route('post.index')->with('success', 'Cap nhat ban ghi thanh cong');
         }
         return redirect()->route('post.index')->with('error', 'Cap nhat ban ghi khong thanh cong');

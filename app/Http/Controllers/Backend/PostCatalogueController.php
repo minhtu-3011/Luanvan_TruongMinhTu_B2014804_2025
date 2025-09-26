@@ -45,7 +45,6 @@ class PostCatalogueController extends Controller
 
         $postCatalogues = $this->postCatalogueService->paginate($request);
         // $postCatalogue:paginate(10);
-
         $config = $this->config();
         $config["seo"] = __('messages.postCatalogue');
         $template = 'backend.post.catalogue.index';
