@@ -34,7 +34,7 @@ class GenerateController extends Controller
         // $generate:paginate(10);
 
         $config = $this->config();
-        $config["seo"] = config('apps.generate');
+        $config["seo"] = __('messages.generate');
         $template = 'backend.generate.index';
         $config['model'] = 'Generate';
 
@@ -66,8 +66,9 @@ class GenerateController extends Controller
 
             ]
         ];
-        $config["seo"] = config('apps.generate');
+        $config["seo"] = __('messages.generate');
         $config["method"] = 'create';
+        $config['model'] = 'Generate';
         $template = 'backend.generate.store';
         return view('backend.dashboard.layout', compact('template', 'config',));
     }
@@ -95,8 +96,9 @@ class GenerateController extends Controller
 
             ]
         ];
-        $config["seo"] = config('apps.generate');
+        $config["seo"] = __('messages.generate');
         $config["method"] = 'edit';
+        $config['model'] = 'Generate';
         $template = 'backend.generate.store';
         return view('backend.dashboard.layout', compact('template', 'config', 'language'));
     }
@@ -114,7 +116,8 @@ class GenerateController extends Controller
         $this->authorize('modules', 'generate.destroy');
 
         $template = 'backend.generate.delete';
-        $config["seo"] = config('apps.generate');
+        $config["seo"] = __('messages.generate');
+        $config['model'] = 'Generate';
         $generate = $this->generateRepository->findById($id);
         return view('backend.dashboard.layout', compact('template', 'language', 'config'));
     }

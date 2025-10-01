@@ -25,13 +25,15 @@ class LanguageComposerServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('backend.dashboard.layout', function ($view) {
-            // Resolve repository từ container
-            $languageRepository = app(LanguageRepository::class);
+        // View::composer('backend.dashboard.layout', function ($view) {
+        //     // Resolve repository từ container
+        //     $languageRepository = app(LanguageRepository::class);
 
-            $languages = $languageRepository->all();
+        //     $languages = $languageRepository->all();
 
-            $view->with('languages', $languages);
-        });
+        //     $view->with('languages', $languages);
+        // });
+        // Chia sẻ biến cho tất cả view
+        View::share('languages', app(LanguageRepository::class)->all());
     }
 }

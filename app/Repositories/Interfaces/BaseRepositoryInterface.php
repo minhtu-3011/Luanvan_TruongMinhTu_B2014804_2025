@@ -18,7 +18,7 @@ interface BaseRepositoryInterface
     public function pagination(
         array $column = ['*'],
         array $condition = [],
-        int $perpage = 1,
+        int $perpage = 10,
         array $extends = [],
         array $orderBy = ['id', 'DESC'],
         array $join = [],

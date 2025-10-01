@@ -15,7 +15,9 @@
         </tr>
     </thead>
     <tbody>
+        
         @if(isset($languages) && is_object($languages))
+       
             @foreach($languages as $language)
                 <tr>
                     <td>
@@ -59,5 +61,5 @@
 </table>
 
 {{
-    $languages->Links('pagination::bootstrap-4')
+    $languages->links('pagination::bootstrap-4')
 }}

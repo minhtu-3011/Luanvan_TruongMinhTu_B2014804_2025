@@ -13,6 +13,6 @@ class PostCatalogueLanguage extends Model
 
     public function post_catalogues()
     {
-        return $this->belongsTo(PostCatalogue::class, 'post_catalogue_id', 'id');
+        return $this->belongsTo(PostCatalogue::class, 'post_catalogue_id', 'id')->where('language_id', '=', 5);
     }
 }

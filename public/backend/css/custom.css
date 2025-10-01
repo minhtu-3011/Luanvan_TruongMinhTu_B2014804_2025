@@ -251,3 +251,7 @@ figure.image-box figcaption {
     border: 2px solid rgb(49, 220, 95);
     border-radius: 5px;
 }
+
+.schema {
+    height: 250px !important;
+}

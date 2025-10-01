@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Interfaces\UserServiceInterface as UserService;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
+use App\Repositories\Interfaces\UserCatalogueRepositoryInterface as UserCatalogueRepository;
 use App\Repositories\Interfaces\UserRepositoryInterface as UserRepository;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -16,13 +17,17 @@ class UserController extends Controller
     protected $userService;
     protected $provinceRepository;
     protected $userRepository;
+    protected $userCatalogueRepository;
+
     public function __construct(
         UserService $userService,
         ProvinceRepository $provinceRepository,
+        UserCatalogueRepository $userCatalogueRepository,
         UserRepository $userRepository,
     ) {
         $this->userService = $userService;
         $this->provinceRepository = $provinceRepository;
+        $this->userCatalogueRepository = $userCatalogueRepository;
         $this->userRepository = $userRepository;
     }
 
@@ -45,7 +50,7 @@ class UserController extends Controller
         $this->authorize('modules', 'user.create');
 
         $provinces = $this->provinceRepository->all();
-
+        $userCatalogues = $this->userCatalogueRepository->all();
         $config = [
             'js' => [
                 '/backend/library/location.js',
@@ -57,7 +62,7 @@ class UserController extends Controller
         $config["seo"] = config('apps.user');
         $config["method"] = 'create';
         $template = 'backend.user.user.store';
-        return view('backend.dashboard.layout', compact('template', 'config', 'provinces'));
+        return view('backend.dashboard.layout', compact('template', 'config', 'provinces', 'userCatalogues'));
     }
 
     private function config()
@@ -84,7 +89,7 @@ class UserController extends Controller
     public function edit($id)
     {
         $this->authorize('modules', 'user.update');
-
+        $userCatalogues = $this->userCatalogueRepository->all();
         $user = $this->userRepository->findById($id);
         $provinces = $this->provinceRepository->all();
 
@@ -99,7 +104,7 @@ class UserController extends Controller
         $config["seo"] = config('apps.user');
         $config["method"] = 'edit';
         $template = 'backend.user.user.store';
-        return view('backend.dashboard.layout', compact('template', 'config', 'provinces', 'user'));
+        return view('backend.dashboard.layout', compact('template', 'config', 'provinces', 'user', 'userCatalogues'));
     }
 
     public function update($id, UpdateUserRequest $request)

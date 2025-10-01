@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Ajax\LocationController;
+use App\Http\Middleware\AuthenticateMiddleware;
+use App\Http\Middleware\LoginMiddleware;
+use Illuminate\Routing\RouteGroup;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashboardController;
@@ -10,10 +14,10 @@ use App\Http\Controllers\Backend\PostCatalogueController;
 use App\Http\Controllers\Backend\PostController;
 use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Backend\PermissionController;
-use App\Http\Controllers\Ajax\LocationController;
-use App\Http\Middleware\AuthenticateMiddleware;
-use App\Http\Middleware\LoginMiddleware;
-use Illuminate\Routing\RouteGroup;
+use App\Http\Controllers\Backend\GenerateController;
+use App\Http\Controllers\Backend\ProductCatalogueController;
+use App\Http\Controllers\Backend\ProductController;
+//@@useController@@
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -100,6 +104,23 @@ Route::group(['middleware' => ['admin', 'locale']], function () {
             ->middleware(AuthenticateMiddleware::class);
     });
 
+    Route::group(['prefix' => 'generate'], function () {
+        Route::get('index', [GenerateController::class, 'index'])->name('generate.index')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('create', [GenerateController::class, 'create'])->name('generate.create')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('store', [GenerateController::class, 'store'])->name('generate.store')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/edit', [GenerateController::class, 'edit'])->where(['id' => '[0-9]+'])->name('generate.edit')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('{id}/update', [GenerateController::class, 'update'])->where(['id' => '[0-9]+'])->name('generate.update')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/delete', [GenerateController::class, 'delete'])->where(['id' => '[0-9]+'])->name('generate.delete')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::delete('{id}/destroy', [GenerateController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('generate.destroy')
+            ->middleware(AuthenticateMiddleware::class);
+    });
+
 
 
 
@@ -138,6 +159,55 @@ Route::group(['middleware' => ['admin', 'locale']], function () {
         Route::delete('{id}/destroy', [PostController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('post.destroy')
             ->middleware(AuthenticateMiddleware::class);
     });
+
+
+    
+    Route::group(['prefix' => 'product/catalogue'], function () {
+        Route::get('index', [ProductCatalogueController::class, 'index'])->name('product.catalogue.index')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('create', [ProductCatalogueController::class, 'create'])->name('product.catalogue.create')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('store', [ProductCatalogueController::class, 'store'])->name('product.catalogue.store')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/edit', [ProductCatalogueController::class, 'edit'])->where(['id' => '[0-9]+'])->name('product.catalogue.edit')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('{id}/update', [ProductCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('product.catalogue.update')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/delete', [ProductCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('product.catalogue.delete')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::delete('{id}/destroy', [ProductCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('product.catalogue.destroy')
+            ->middleware(AuthenticateMiddleware::class);
+    });
+
+    
+    Route::group(['prefix' => 'product'], function () {
+        Route::get('index', [ProductController::class, 'index'])->name('product.index')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('create', [ProductController::class, 'create'])->name('product.create')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('store', [ProductController::class, 'store'])->name('product.store')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/edit', [ProductController::class, 'edit'])->where(['id' => '[0-9]+'])->name('product.edit')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('{id}/update', [ProductController::class, 'update'])->where(['id' => '[0-9]+'])->name('product.update')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/delete', [ProductController::class, 'delete'])->where(['id' => '[0-9]+'])->name('product.delete')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::delete('{id}/destroy', [ProductController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('product.destroy')
+            ->middleware(AuthenticateMiddleware::class);
+    });
+
+    //@@new-module@@
+
+
+
+
+
+
+
+
+
+
 
 
     Route::group(['prefix' => 'permission'], function () {

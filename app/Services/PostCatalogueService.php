@@ -22,7 +22,7 @@ use App\Classes\Nestedsetbie;
 class PostCatalogueService extends BaseService implements PostCatalogueServiceInterface
 {
     protected $postCatalogueRepository;
-    protected $routereRepository;
+    protected $routerRepository;
     protected $language;
     protected $nestedsetbie;
     protected $controllerName = 'PostCatalogueController';
@@ -31,8 +31,8 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         RouterRepository $routerRepository
     ) {
         $this->postCatalogueRepository = $postCatalogueRepository;
-        $this->routereRepository = $routerRepository;
-        $this->language = $this->currentLanguage();
+        $this->routerRepository = $routerRepository;
+        $this->language = session('app_locale');
         $this->nestedsetbie = new Nestedsetbie([
             'table' => 'post_catalogues',
             'foreignkey' => 'post_catalogue_id',
@@ -40,14 +40,17 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         ]);
     }
 
-    public function paginate($request)
+
+    public function paginate($request, $languageId)
     {
 
-
-
+        // dd($this->language);
         $condition['keyword'] = addslashes($request->input('keyword'));
         $condition['publish'] = $request->integer('publish', -1);
         $perpage = $request->integer('perpage', 10);
+        $condition['where'] = [
+            ['tb2.language_id', '=', $languageId],
+        ];
         $postCatalogue = $this->postCatalogueRepository->pagination(
             $this->paginateSelect(),
             $condition,
@@ -66,22 +69,26 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
                 ]
             ],
             [],
+            [
+                ['tb2.language_id', '=', $languageId]
+            ]
+
 
         );
 
-        // dd(
-        //     $postCatalogue
-        // );
+
         return $postCatalogue;
     }
 
-    public function create($request)
+    public function create($request, $languageId)
     {
         DB::beginTransaction();
         try {
+
             $postCatalogue = $this->createCatalogue($request);
             if ($postCatalogue->id > 0) {
-                $this->updateLanguageForCatalogue($postCatalogue, $request);
+                $this->updateLanguageForCatalogue($postCatalogue, $request, $languageId);
+                dd($request['canonical']);
                 $this->createRouter($postCatalogue, $request, $this->controllerName);
                 $this->nestedset();
             }
@@ -96,19 +103,26 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         }
     }
 
-    public function update($id, $request)
+    public function update($id, $request, $languageId)
     {
         DB::beginTransaction();
         try {
+
             $postCatalogue = $this->postCatalogueRepository->findById($id);
-            // dd($postCatalogue);
 
             $flag = $this->updateCatalogue($postCatalogue, $request);
-            // dd($flag);
+
             if ($flag == true) {
 
-                $this->updateLanguageForCatalogue($postCatalogue, $request);
+                $this->updateLanguageForCatalogue($postCatalogue, $request, $languageId);
+
                 $this->updateRouter($postCatalogue, $request, $this->controllerName);
+
+                $this->nestedsetbie = new Nestedsetbie([
+                    'table' => 'post_catalogues',
+                    'foreignkey' => 'post_catalogue_id',
+                    'language_id' => $languageId,
+                ]);
                 $this->nestedset();
             }
 
@@ -125,14 +139,17 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         }
     }
 
-    public function destroy($id)
+    public function destroy($id, $languageId)
     {
         DB::beginTransaction();
         try {
             $postCatalogue = $this->postCatalogueRepository->forceDelete($id);
-            $this->nestedsetbie->Get('level ASC, order ASC');
-            $this->nestedsetbie->Recursive(0, $this->nestedsetbie->Set());
-            $this->nestedsetbie->Action();
+            $this->nestedsetbie = new Nestedsetbie([
+                'table' => 'post_catalogues',
+                'foreignkey' => 'post_catalogue_id',
+                'language_id' => $languageId,
+            ]);
+            $this->nestedset();
 
             DB::commit();
             return true;
@@ -193,13 +210,12 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         return $postCatalogue;
     }
 
-    private function updateLanguageForCatalogue($postCatalogue, $request)
+    private function updateLanguageForCatalogue($postCatalogue, $request, $languageId)
     {
         $payload = $this->formatLanguagePayload($postCatalogue, $request);
-        // dd($payload);
-        $postCatalogue->languages()->detach([$this->language, $postCatalogue->id]);
-        // dd($this->language);
+        $postCatalogue->languages()->detach([$languageId, $postCatalogue->id]);
         $language = $this->postCatalogueRepository->createPivot($postCatalogue, $payload, 'languages');
+
 
         return $language;
     }
@@ -217,6 +233,7 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         $payload['canonical'] = Str::slug($payload['canonical']);
         $payload['language_id'] = $this->currentLanguage();
         $payload['post_catalogue_id'] = $postCatalogue->id;
+        // dd($payload);
 
         return $payload;
     }
@@ -253,7 +270,7 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             'follow',
             'publish',
             'image',
-            'album'
+            'album',
         ];
     }
 

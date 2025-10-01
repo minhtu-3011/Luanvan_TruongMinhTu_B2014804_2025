@@ -37,7 +37,6 @@ class PostController extends Controller
         });
         $this->postService = $postService;
         $this->postRepository = $postRepository;
-        $this->initialize();
 
         // $this->language = $this->currentLanguage();
 
@@ -145,7 +144,7 @@ class PostController extends Controller
     {
         // echo 123;
         // die();
-        if ($this->postService->destroy($id)) {
+        if ($this->postService->destroy($id, $this->language)) {
             return redirect()->route('post.index')->with('success', 'Xoá bản ghi thành công');
         }
         return redirect()->route('post.index')->with('error', 'Xoá ban ghi khong thanh cong');

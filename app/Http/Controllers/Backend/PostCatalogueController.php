@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\DetelePostCatalogueRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Permission;
+use App\Models\Language;
 
 use App\Classes\Nestedsetbie;
 use App\Http\Requests\DeletePostCatalogueRequest;
@@ -29,12 +30,21 @@ class PostCatalogueController extends Controller
     ) {
         $this->postCatalogueService = $postCatalogueService;
         $this->postCatalogueRepository = $postCatalogueRepository;
+        $this->middleware(function ($request, $next) {
+            $locale = app()->getLocale(); // 
+            $language = Language::where('canonical', $locale)->first();
+            $this->language = $language->id;
+            $this->initialize();
+            return $next($request);
+        });
+    }
+    private function initialize()
+    {
         $this->nestedsetbie = new Nestedsetbie([
             'table' => 'post_catalogues',
             'foreignkey' => 'post_catalogue_id',
-            'language_id' => 5,
+            'language_id' => $this->language,
         ]);
-        $this->language = $this->currentLanguage();
     }
 
     public function index(Request $request)
@@ -43,7 +53,7 @@ class PostCatalogueController extends Controller
         $this->authorize('modules', 'post.catalogue.index');
 
 
-        $postCatalogues = $this->postCatalogueService->paginate($request);
+        $postCatalogues = $this->postCatalogueService->paginate($request, $this->language);
         // $postCatalogue:paginate(10);
         $config = $this->config();
         $config["seo"] = __('messages.postCatalogue');
@@ -80,7 +90,7 @@ class PostCatalogueController extends Controller
 
     public function store(StorePostCatalogueRequest $request)
     {
-        if ($this->postCatalogueService->create($request)) {
+        if ($this->postCatalogueService->create($request, $this->language)) {
             return redirect()->route('post.catalogue.index')->with('success', 'Them moi ban ghi thanh cong');
         }
         return redirect()->route('post.catalogue.index')->with('error', 'them moi ban ghi khong thanh cong');
@@ -93,9 +103,7 @@ class PostCatalogueController extends Controller
         $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($id, $this->language);
         // dd($postCatalogue);
 
-        foreach ($postCatalogue->post_catalogue_language as $language) {
-            echo $language->name . '<br>';
-        }
+
         $config = $config = $this->configData();
         $config["seo"] = __('messages.postCatalogue');
         $config["method"] = 'edit';
@@ -108,7 +116,7 @@ class PostCatalogueController extends Controller
 
     public function update($id, UpdatePostCatalogueRequest $request)
     {
-        if ($this->postCatalogueService->update($id, $request)) {
+        if ($this->postCatalogueService->update($id, $request, $this->language)) {
             return redirect()->route('post.catalogue.index')->with('success', 'Cap nhat ban ghi thanh cong');
         }
         return redirect()->route('post.catalogue.index')->with('error', 'Cap nhat ban ghi khong thanh cong');
@@ -127,9 +135,8 @@ class PostCatalogueController extends Controller
 
     public function destroy($id, DeletePostCatalogueRequest $request)
     {
-        // echo 123;
-        // die();
-        if ($this->postCatalogueService->destroy($id)) {
+
+        if ($this->postCatalogueService->destroy($id, $this->language)) {
             return redirect()->route('post.catalogue.index')->with('success', 'Xoá bản ghi thành công');
         }
         return redirect()->route('post.catalogue.index')->with('error', 'Xoá ban ghi khong thanh cong');

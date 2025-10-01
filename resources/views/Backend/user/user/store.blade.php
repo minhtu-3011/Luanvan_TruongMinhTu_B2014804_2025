@@ -44,23 +44,18 @@
                                 </div>
                             </div>
                         </div>
-                        @php
-                            $userCatalogue = [
-                                '[Chọn nhóm thành viên]',
-                                '[Quan tri vien]',
-                                '[Cong tac vien]',
-                            ]
-                        @endphp
+                       
                         <div class="row mb10">
                             <div class="col-lg-6">
                                 <div class="form-row">
                                     <label for="" class="control-lable text-right">Nhóm thành viên</label>
                                     <span class="text-danger">(*)</span>
                                     <select name="user_catalogue_id" id="">
-                                        @foreach($userCatalogue as $key => $item)
-                                            <option value="{{ $key }}"
-                                                {{ old('user_catalogue_id', $user->user_catalogue_id ?? '') == $key ? 'selected' : '' }}>
-                                                {{ $item }}
+                                        <option value="">[Chọn nhóm thành viên]</option>
+                                        @foreach($userCatalogues as $catalogue)
+                                            <option value="{{ $catalogue->id }}"
+                                                {{ old('user_catalogue_id', $user->user_catalogue_id ?? '') == $catalogue->id ? 'selected' : '' }}>
+                                                {{ $catalogue->name }}
                                             </option>
                                         @endforeach
                                     </select>

@@ -29,22 +29,16 @@ class PostCatalogueRepository extends BaseRepository implements PostCatalogueRep
             'post_catalogues.album',
             'post_catalogues.publish',
             'post_catalogues.follow',
-            'tb2.name',          // nếu cần lấy name từ bảng language
-            'tb2.description',   // nếu có
-            'tb2.content',          // nếu cần lấy name từ bảng language
-            'tb2.meta_title',   // nếu có
-            'tb2.meta_keyword',          // nếu cần lấy name từ bảng language
+            'tb2.name',
+            'tb2.description',
+            'tb2.content',
+            'tb2.meta_title',
+            'tb2.meta_keyword',
             'tb2.meta_description',
-            'tb2.canonical',   // nếu có
-            // nếu có
+            'tb2.canonical',
         ])
             ->join('post_catalogue_language as tb2', 'tb2.post_catalogue_id', '=', 'post_catalogues.id')
             ->where('tb2.language_id', '=', $language_id)
             ->find($id);
     }
-
-    // public function createTranslatePivot($model, array $payload = [])
-    // {
-    //     return $model->translates()->attach($model->id, $payload);
-    // }
 }

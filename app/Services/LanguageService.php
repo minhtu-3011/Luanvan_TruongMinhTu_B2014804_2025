@@ -31,14 +31,18 @@ class LanguageService implements LanguageServiceInterface
 
         $condition['keyword'] = addslashes($request->input('keyword'));
         $condition['publish'] = $request->integer('publish', -1);
-        $perpage = $request->integer('perpage', 10);
+        $perpage = max(1, (int) $request->input('perpage', 10));
+
+
 
         $language = $this->languageRepository->pagination(
             $this->paginateSelect(),
             $condition,
             $perpage,
             ['path' => 'language/index'],
+
         );
+
         return $language;
     }
 

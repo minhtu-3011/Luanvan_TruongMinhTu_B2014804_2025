@@ -18,12 +18,12 @@ use App\Classes\Nestedsetbie;
 class BaseService implements BaseServiceInterface
 {
     protected $nestedsetbie;
-    protected $routereRepository;
+    protected $routerRepository;
     protected $controllerName;
 
 
     public function __construct(
-        RouterRepository $routereRepository
+        RouterRepository $routerRepository
 
     ) {
 
@@ -32,7 +32,7 @@ class BaseService implements BaseServiceInterface
             'foreignkey' => 'post_catalogue_id',
             'language_id' => $this->currentLanguage(),
         ]);
-        $this->routereRepository = $routereRepository;
+        $this->routerRepository = $routerRepository;
     }
 
     public function currentLanguage()
@@ -67,19 +67,24 @@ class BaseService implements BaseServiceInterface
 
     public function createRouter($model, $request, $controllerName)
     {
+        // dd($request);
         $router = $this->formatRouterPayload($model, $request, $controllerName);
-        $this->routereRepository->create($router);
+        $this->routerRepository->create($router);
     }
 
     public function updateRouter($model, $request, $controllerName)
     {
+
         $payload = $this->formatRouterPayload($model, $request, $controllerName);
         $condition = [
             ['module_id', '=', $model->id],
             ['controllers', '=', 'App\Http\Controllers\Frontend\\' . $controllerName . ''],
         ];
-        $router = $this->routereRepository->findByCondition($condition);
-        $res = $this->routereRepository->update($router->id, $payload);
+
+        // dd($condition);
+        $router = $this->routerRepository->findByCondition($condition);
+        $res = $this->routerRepository->update($router->id, $payload);
+
         return $res;
     }
 }

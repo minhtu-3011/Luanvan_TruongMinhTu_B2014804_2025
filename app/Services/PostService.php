@@ -7,11 +7,7 @@ use App\Services\BaseService;
 // use App\Repositories\PostRepository;
 use App\Repositories\Interfaces\PostRepositoryInterface as PostRepository;
 use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
-use AWS\CRT\HTTP\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -28,7 +24,7 @@ class PostService extends BaseService implements PostServiceInterface
         PostRepository $postRepository,
         RouterRepository $routerRepository
     ) {
-        $this->routereRepository = $routerRepository;
+        $this->routerRepository = $routerRepository;
         $this->postRepository = $postRepository;
         $this->controllerName = 'PostController';
     }
@@ -72,7 +68,7 @@ class PostService extends BaseService implements PostServiceInterface
     {
         DB::beginTransaction();
         try {
-            // dd($this->routereRepository);    
+            // dd($this->routerRepository);    
             $post = $this->createPost($request);
 
 
@@ -118,7 +114,7 @@ class PostService extends BaseService implements PostServiceInterface
         }
     }
 
-    public function destroy($id)
+    public function destroy($id, $languageId)
     {
         DB::beginTransaction();
         try {

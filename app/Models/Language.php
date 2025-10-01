@@ -19,7 +19,7 @@ class Language extends Model
         'current'
     ];
 
-    protected $table = 'Languages';
+    protected $table = 'languages';
 
     public function languages()
     {

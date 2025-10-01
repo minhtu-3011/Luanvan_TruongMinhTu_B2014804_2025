@@ -11,5 +11,5 @@ interface PostServiceInterface
     public function paginate($request,  $languageId);
     public function create($request, $languageId);
     public function update($id, $request, $languageId);
-    public function destroy($id);
+    public function destroy($id, $languageId);
 }

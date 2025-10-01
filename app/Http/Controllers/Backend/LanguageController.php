@@ -29,6 +29,7 @@ class LanguageController extends Controller
     public function index(Request $request)
     {
         $this->authorize('modules', 'language.index');
+        $perpage = max(1, (int) $request->input('perpage', 10));
 
         $languages = $this->languageService->paginate($request);
         // $language:paginate(10);
@@ -158,6 +159,7 @@ class LanguageController extends Controller
         $currentLanguage = $languageInstance->findByCondition([
             ['canonical', '=', session('app_locale')]
         ]);
+        // dd($currentLanguage);
 
         $method = 'get' . $model . 'ById';
         $object = $repositoryInstance->{$method}($id, $currentLanguage->id);

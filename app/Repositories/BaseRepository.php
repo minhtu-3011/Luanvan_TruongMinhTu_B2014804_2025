@@ -86,7 +86,7 @@ class BaseRepository implements BaseRepositoryInterface
     public function pagination(
         array $column = ['*'],
         array $condition = [],
-        int $perpage = 1,
+        int $perpage = 10,
         array $extends = [],
         array $orderBy = ['id', 'DESC'],
         array $join = [],
@@ -98,6 +98,9 @@ class BaseRepository implements BaseRepositoryInterface
     ) {
         $table = $this->model->getTable();
         $query = $this->model->select($column)->distinct();
+
+        // dd($perpage, get_class($languages));
+
         return $query->keyword($condition['keyword'] ?? null)
             ->publish($condition['publish'] ?? null)
             ->relationCount($relations ?? null)
@@ -118,6 +121,7 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function createPivot($model, array $payload = [], string $relation = '')
     {
+        // dd($payload);
         return $model->{$relation}()->attach($model->id, $payload);
     }
 }
