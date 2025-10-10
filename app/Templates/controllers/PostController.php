@@ -60,7 +60,8 @@ class {$class}Controller extends Controller
         // ${module}:paginate(10);
 
         $config = $this->config();
-        $config["seo"] = config('apps.{module}');
+        $config["seo"] = __('messages.{module}');
+
         $template = 'backend.{module}.{module}.index';
         $dropdown = $this->nestedsetbie->Dropdown();
         // $language = $this->languageRepository->all();
@@ -88,7 +89,8 @@ class {$class}Controller extends Controller
         $this->authorize('modules', '{module}.create');
 
         $config = $this->configData();
-        $config["seo"] = config('apps.{module}');
+        $config["seo"] = __('messages.{module}');
+
         $config["method"] = 'create';
         $dropdown = $this->nestedsetbie->Dropdown();
         $template = 'backend.{module}.{module}.store';
@@ -113,7 +115,8 @@ class {$class}Controller extends Controller
 
 
         $config = $config = $this->configData();
-        $config["seo"] = config('apps.{module}');
+        $config["seo"] = __('messages.{module}');
+
         $config["method"] = 'edit';
         $template = 'backend.{module}.{module}.store';
         $dropdown = $this->nestedsetbie->Dropdown();
@@ -134,7 +137,8 @@ class {$class}Controller extends Controller
         $this->authorize('modules', '{module}.destroy');
 
         $template = 'backend.{module}.{module}.delete';
-        $config["seo"] = config('apps.{module}');
+        $config["seo"] = __('messages.{module}');
+
         ${module} = $this->{module}Repository->get{$class}ById($id, $this->language);
         // dd(${module});
         return view('backend.dashboard.layout', compact('template', '{module}', 'config'));

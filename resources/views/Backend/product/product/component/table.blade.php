@@ -23,6 +23,10 @@
                         <input type="checkbox" value="{{$product->id}}"  class="input-checkbox checkboxItem">
                     </td>
                     <td>
+                        @if(!empty($product->image))
+                            <img src="{{ $product->image }}" alt="{{ $product->name }}" 
+                                style="width:60px; height:60px; object-fit:cover; margin-right:8px; border:1px solid #ddd; border-radius:4px;">
+                        @endif
                         {{ $product->name }}
 
                         <div class="catalogue">

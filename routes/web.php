@@ -8,7 +8,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Ajax\DashboardController as AjaxDashboardController;
+use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
+use App\Http\Controllers\Ajax\MenuController as AjaxMenuController;
+use App\Http\Controllers\Backend\SystemController;
 use App\Http\Controllers\Backend\UserController;
+use App\Http\Controllers\Backend\MenuController;
 use App\Http\Controllers\Backend\UserCatalogueController;
 use App\Http\Controllers\Backend\PostCatalogueController;
 use App\Http\Controllers\Backend\PostController;
@@ -17,23 +21,24 @@ use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\GenerateController;
 use App\Http\Controllers\Backend\ProductCatalogueController;
 use App\Http\Controllers\Backend\ProductController;
+use App\Http\Controllers\Backend\AttributeCatalogueController;
+use App\Http\Controllers\Backend\AttributeController;
 //@@useController@@
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
 
-Route::middleware(['locale'])->group(function () {
-    // Trang login
-    Route::get('/', [AuthController::class, 'index'])->name('auth.admin')
-        ->middleware(LoginMiddleware::class);
-    Route::get('admin', [AuthController::class, 'index'])->name('auth.admin')
-        ->middleware(LoginMiddleware::class);
-    Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
-    Route::post('login', [AuthController::class, 'login'])->name('auth.login');
-});
 
-Route::group(['middleware' => ['admin', 'locale']], function () {
+
+
+Route::get('/', [AuthController::class, 'index'])->name('auth.admin')
+    ->middleware(LoginMiddleware::class);
+Route::get('admin', [AuthController::class, 'index'])->name('auth.admin')
+    ->middleware(LoginMiddleware::class);
+Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
+Route::post('login', [AuthController::class, 'login'])->name('auth.login')
+    ->middleware(LoginMiddleware::class);;
+
+
+Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], function () {
     Route::get('dashboard/index', [DashboardController::class, 'index'])->name('dashboard.index')
         ->middleware(AuthenticateMiddleware::class);
 
@@ -121,8 +126,30 @@ Route::group(['middleware' => ['admin', 'locale']], function () {
             ->middleware(AuthenticateMiddleware::class);
     });
 
+    Route::group(['prefix' => 'system'], function () {
+        Route::get('index', [SystemController::class, 'index'])->name('system.index');
+        Route::post('store', [SystemController::class, 'store'])->name('system.store');
+        Route::get('{languageId}/translate', [SystemController::class, 'translate'])->where(['id' => '[0-9]+'])->name('system.translate');
+        Route::post('{languageId}/saveTranslate', [SystemController::class, 'saveTranslate'])->where(['id' => '[0-9]+'])->name('system.save.translate');
+    });
 
 
+    Route::group(['prefix' => 'menu'], function () {
+        Route::get('index', [MenuController::class, 'index'])->name('menu.index')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('create', [MenuController::class, 'create'])->name('menu.create')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('store', [MenuController::class, 'store'])->name('menu.store')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/edit', [MenuController::class, 'edit'])->where(['id' => '[0-9]+'])->name('menu.edit')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('{id}/update', [MenuController::class, 'update'])->where(['id' => '[0-9]+'])->name('menu.update')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/delete', [MenuController::class, 'delete'])->where(['id' => '[0-9]+'])->name('menu.delete')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::delete('{id}/destroy', [MenuController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('menu.destroy')
+            ->middleware(AuthenticateMiddleware::class);
+    });
 
     Route::group(['prefix' => 'post/catalogue'], function () {
         Route::get('index', [PostCatalogueController::class, 'index'])->name('post.catalogue.index')
@@ -161,7 +188,7 @@ Route::group(['middleware' => ['admin', 'locale']], function () {
     });
 
 
-    
+
     Route::group(['prefix' => 'product/catalogue'], function () {
         Route::get('index', [ProductCatalogueController::class, 'index'])->name('product.catalogue.index')
             ->middleware(AuthenticateMiddleware::class);
@@ -179,7 +206,7 @@ Route::group(['middleware' => ['admin', 'locale']], function () {
             ->middleware(AuthenticateMiddleware::class);
     });
 
-    
+
     Route::group(['prefix' => 'product'], function () {
         Route::get('index', [ProductController::class, 'index'])->name('product.index')
             ->middleware(AuthenticateMiddleware::class);
@@ -197,7 +224,45 @@ Route::group(['middleware' => ['admin', 'locale']], function () {
             ->middleware(AuthenticateMiddleware::class);
     });
 
+
+    Route::group(['prefix' => 'attribute/catalogue'], function () {
+        Route::get('index', [AttributeCatalogueController::class, 'index'])->name('attribute.catalogue.index')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('create', [AttributeCatalogueController::class, 'create'])->name('attribute.catalogue.create')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('store', [AttributeCatalogueController::class, 'store'])->name('attribute.catalogue.store')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/edit', [AttributeCatalogueController::class, 'edit'])->where(['id' => '[0-9]+'])->name('attribute.catalogue.edit')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('{id}/update', [AttributeCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('attribute.catalogue.update')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/delete', [AttributeCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('attribute.catalogue.delete')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::delete('{id}/destroy', [AttributeCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('attribute.catalogue.destroy')
+            ->middleware(AuthenticateMiddleware::class);
+    });
+
+
+    Route::group(['prefix' => 'attribute'], function () {
+        Route::get('index', [AttributeController::class, 'index'])->name('attribute.index')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('create', [AttributeController::class, 'create'])->name('attribute.create')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('store', [AttributeController::class, 'store'])->name('attribute.store')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/edit', [AttributeController::class, 'edit'])->where(['id' => '[0-9]+'])->name('attribute.edit')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('{id}/update', [AttributeController::class, 'update'])->where(['id' => '[0-9]+'])->name('attribute.update')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/delete', [AttributeController::class, 'delete'])->where(['id' => '[0-9]+'])->name('attribute.delete')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::delete('{id}/destroy', [AttributeController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('attribute.destroy')
+            ->middleware(AuthenticateMiddleware::class);
+    });
+
     //@@new-module@@
+
+
 
 
 
@@ -240,12 +305,12 @@ Route::group(['middleware' => ['admin', 'locale']], function () {
         ->middleware(AuthenticateMiddleware::class);
     Route::post('ajax/dashboard/changeStatusAll', [AjaxDashboardController::class, 'changeStatusAll'])->name('ajax.dashboard.changeStatusAll')
         ->middleware(AuthenticateMiddleware::class);
-
-
-    // Route::get('/', [AuthController::class, 'index'])->name('auth.admin')
-    //     ->middleware(LoginMiddleware::class);
-    // Route::get('admin', [AuthController::class, 'index'])->name('auth.admin')
-    //     ->middleware(LoginMiddleware::class);
-    // Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
-    // Route::post('login', [AuthController::class, 'login'])->name('auth.login'); 
+    Route::get('ajax/dashboard/getMenu', [AjaxDashboardController::class, 'getMenu'])->name('ajax.dashboard.getMenu')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::get('ajax/attribute/getAttribute', [AjaxAttributeController::class, 'getAttribute'])->name('ajax.attribute.getAttribute')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::get('ajax/attribute/loadAttribute', [AjaxAttributeController::class, 'loadAttribute'])->name('ajax.attribute.loadAttribute')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::post('ajax/menu/createCatalogue', [AjaxMenuController::class, 'createCatalogue'])->name('ajax.menu.createCatalogue')
+        ->middleware(AuthenticateMiddleware::class);
 });

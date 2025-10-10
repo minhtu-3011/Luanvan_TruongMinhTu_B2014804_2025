@@ -2,25 +2,11 @@
 
 return [
     'module' => [
-        [
-            'title' => 'QL Anh',
-            'icon' => 'fa fa-cube',
-            'name' => ['gallery'],
-            'subModule' => [
-                [
-                    'title' => 'QL nhóm hinh anh',
-                    'route' => 'gallery/catalogue/index'
-                ],
-                [
-                    'title' => 'QL hinh anh',
-                    'route' => 'gallery/index'
-                ],
-            ]
-        ],
+
         [
             'title' => 'QL San pham',
             'icon' => 'fa fa-cube',
-            'name' => ['product'],
+            'name' => ['product', 'attribute'],
             'subModule' => [
                 [
                     'title' => 'QL nhóm San pham',
@@ -29,6 +15,14 @@ return [
                 [
                     'title' => 'QL San pham',
                     'route' => 'product/index'
+                ],
+                [
+                    'title' => 'QL Loại thuộc tính',
+                    'route' => 'attribute/catalogue/index'
+                ],
+                [
+                    'title' => 'QL thuộc tính',
+                    'route' => 'attribute/index'
                 ],
             ]
         ],
@@ -68,11 +62,22 @@ return [
                 ]
             ]
         ],
+        [
+            'title' => 'QL Menu',
+            'icon' => 'fa fa-bar',
+            'name' => ['menu'],
+            'subModule' => [
+                [
+                    'title' => 'Cài đặt Menu',
+                    'route' => 'menu/index'
+                ],
 
+            ]
+        ],
         [
             'title' => 'Cấu hình chung',
             'icon' => 'fa fa-file',
-            'name' => ['language', 'generate'],
+            'name' => ['language', 'generate', 'system'],
             'subModule' => [
                 [
                     'title' => 'QL Ngôn ngữ',
@@ -81,8 +86,13 @@ return [
                 [
                     'title' => 'QL Module',
                     'route' => 'generate/index'
+                ],
+                [
+                    'title' => 'Cấu hình hệ thống',
+                    'route' => 'system/index'
                 ]
             ]
         ],
+
     ],
 ];

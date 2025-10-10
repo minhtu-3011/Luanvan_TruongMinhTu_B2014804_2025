@@ -6,11 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Interfaces\ProductServiceInterface as ProductService;
 use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
+use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface as AttributeCatalogueRepository;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Language;
-
-
 use App\Classes\Nestedsetbie;
 use App\Http\Requests\DeleteProductRequest;
 
@@ -20,12 +19,13 @@ class ProductController extends Controller
     protected $productService;
     protected $productRepository;
     protected $languageRepository;
-
+    protected $attributeCatalogue;
     protected $nestedsetbie;
     protected $language;
     public function __construct(
         ProductService $productService,
         ProductRepository $productRepository,
+        AttributeCatalogueRepository $attributeCatalogue,
 
     ) {
         $this->middleware(function ($request, $next) {
@@ -37,6 +37,7 @@ class ProductController extends Controller
         });
         $this->productService = $productService;
         $this->productRepository = $productRepository;
+        $this->attributeCatalogue = $attributeCatalogue;
 
         // $this->language = $this->currentLanguage();
 
@@ -86,13 +87,13 @@ class ProductController extends Controller
     public function create()
     {
         $this->authorize('modules', 'product.create');
-
+        $attributeCatalogue = $this->attributeCatalogue->getAll($this->language);
         $config = $this->configData();
         $config["seo"] = config('apps.product');
         $config["method"] = 'create';
         $dropdown = $this->nestedsetbie->Dropdown();
         $template = 'backend.product.product.store';
-        return view('backend.dashboard.layout', compact('template', 'dropdown', 'config',));
+        return view('backend.dashboard.layout', compact('template', 'dropdown', 'config', 'attributeCatalogue'));
     }
 
 
@@ -109,8 +110,8 @@ class ProductController extends Controller
         $this->authorize('modules', 'product.update');
 
         $product = $this->productRepository->getProductById($id, $this->language);
-
-
+        $attributeCatalogue = $this->attributeCatalogue->getAll($this->language);
+        // dd($product);
 
         $config = $config = $this->configData();
         $config["seo"] = config('apps.product');
@@ -118,7 +119,7 @@ class ProductController extends Controller
         $template = 'backend.product.product.store';
         $dropdown = $this->nestedsetbie->Dropdown();
         $album = json_decode($product->album);
-        return view('backend.dashboard.layout', compact('template', 'config', 'dropdown', 'product', 'album'));
+        return view('backend.dashboard.layout', compact('template', 'config', 'dropdown', 'product', 'album', 'attributeCatalogue'));
     }
 
     public function update($id, UpdateProductRequest $request)
@@ -159,6 +160,7 @@ class ProductController extends Controller
                 '/backend/library/finder.js', // nếu file này chỉ cấu hình thêm thì cho sau cùng
                 '/backend/js/plugins/switchery/switchery.js',
                 '/backend/library/seo.js',
+                '/backend/library/variant.js',
 
 
             ],

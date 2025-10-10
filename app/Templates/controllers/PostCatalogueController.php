@@ -90,7 +90,7 @@ class {$class}CatalogueController extends Controller
 
     public function store(Store{$class}CatalogueRequest $request)
     {
-        if ($this->{module}CatalogueService->create($request, $languageId)) {
+        if ($this->{module}CatalogueService->create($request, $this->language)) {
             return redirect()->route('{module}.catalogue.index')->with('success', 'Them moi ban ghi thanh cong');
         }
         return redirect()->route('{module}.catalogue.index')->with('error', 'them moi ban ghi khong thanh cong');
@@ -118,7 +118,7 @@ class {$class}CatalogueController extends Controller
 
     public function update($id, Update{$class}CatalogueRequest $request)
     {
-        if ($this->{module}CatalogueService->update($id, $request, $languageId)) {
+        if ($this->{module}CatalogueService->update($id, $request, $this->language)) {
             return redirect()->route('{module}.catalogue.index')->with('success', 'Cap nhat ban ghi thanh cong');
         }
         return redirect()->route('{module}.catalogue.index')->with('error', 'Cap nhat ban ghi khong thanh cong');
@@ -139,7 +139,7 @@ class {$class}CatalogueController extends Controller
     {
         // echo 123;
         // die();
-        if ($this->{module}CatalogueService->destroy($id, $languageId)) {
+        if ($this->{module}CatalogueService->destroy($id, $this->language)) {
             return redirect()->route('{module}.catalogue.index')->with('success', 'Xoá bản ghi thành công');
         }
         return redirect()->route('{module}.catalogue.index')->with('error', 'Xoá ban ghi khong thanh cong');

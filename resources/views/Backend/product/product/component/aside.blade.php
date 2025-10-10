@@ -6,15 +6,16 @@
                     <label for="" class="control-label text-left">Chọn danh mục cha</label>
                     <span class="text-danger">(*)</span>
                     <span class="text-danger noitce">Chọn root nếu ko có danh mục cha</span>
+                    
                     <select name="product_catalogue_id" class="form-control select2">
                         @foreach($dropdown as $key => $val)
                             {{-- <option value="{{ $key }}" 
                                 {{ $key == old('product_catalogue_id', $product->product_catalogue_id ?? '' ? 'selected') : '' }}>
                                 {{ $val }}
                             </option> --}}
-
+                            
                             <option value="{{ $key }}" 
-                                {{ $key == old('parent_id', isset($product->parent_id) ? $product->parent_id : '') ? 'selected' : '' }}>
+                                {{ $key == old('product_catalogue_id', isset($product->product_catalogue_id) ? $product->product_catalogue_id : '') ? 'selected' : '' }}>
                                 {{ $val }}
                             </option>
                         @endforeach
@@ -64,6 +65,42 @@
         </div>
     </div>
 </div>
+
+
+
+<div class="ibox">
+    <div class="ibox-title">Thông tin chung</div>
+    <div class="ibox-content">
+        <div class="row mb10">
+            <div class="col-lg-12">
+                <div class="form-row mb-3">
+                    <label for="code" class="control-label">Mã sản phẩm</label>
+                    <input type="text" name="code" id="code" 
+                           value="{{ old('code', $product->code ?? '') }}" 
+                           class="form-control " placeholder="Nhập mã sản phẩm">
+                </div>
+
+                <div class="form-row mb-3">
+                    <label for="origin" class="control-label">Xuất xứ</label>
+                    <input type="text" name="origin" id="origin" 
+                           value="{{ old('origin', $product->origin ?? '') }}" 
+                           class="form-control " placeholder="Nhập xuất xứ sản phẩm">
+                </div>
+
+                <div class="form-row mb-3">
+                    <label for="price" class="control-label">Giá bán</label>
+                    <input type="number" name="price" id="price" 
+                           value="{{ old('price', $product->price ?? '') }}" 
+                           class="form-control " placeholder="Nhập giá bán sản phẩm">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 <div class="ibox">
     <div class="ibox-title">Chon anh dai dien</div>
     <div class="ibox-content">

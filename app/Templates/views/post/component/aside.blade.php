@@ -14,7 +14,7 @@
                             </option> --}}
 
                             <option value="{{ $key }}" 
-                                {{ $key == old('parent_id', isset(${module}->parent_id) ? ${module}->parent_id : '') ? 'selected' : '' }}>
+                                {{ $key == old('{module}_catalogue_id', isset(${module}->{module}_catalogue_id) ? ${module}->{module}_catalogue_id : '') ? 'selected' : '' }}>
                                 {{ $val }}
                             </option>
                         @endforeach

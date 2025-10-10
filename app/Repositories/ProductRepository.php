@@ -29,16 +29,34 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'products.album',
             'products.publish',
             'products.follow',
-            'tb2.name',          // nếu cần lấy name từ bảng language
-            'tb2.description',   // nếu có
-            'tb2.content',          // nếu cần lấy name từ bảng language
-            'tb2.meta_title',   // nếu có
-            'tb2.meta_keyword',          // nếu cần lấy name từ bảng language
+            'products.price',
+            'products.code',
+            'products.made_in',
+            'products.attributeCatalogue',
+            'products.attribute',
+            'products.variant',
+            'tb2.name',
+            'tb2.description',
+            'tb2.content',
+            'tb2.meta_title',
+            'tb2.meta_keyword',
             'tb2.meta_description',
-            'tb2.canonical',   // nếu có
-            // nếu có
+            'tb2.canonical',
+
         ])
             ->join('product_language as tb2', 'tb2.product_id', '=', 'products.id')
+            ->with([
+                'product_catalogues',
+                'product_variants' => function ($query) use ($language_id) {
+                    $query->with(['attributes' => function ($query) use ($language_id) {
+                        $query->with(['attribute_language' => function ($query) use ($language_id) {
+                            $query->where('language_id', '=', $language_id);
+                        }]);
+                    }]);
+                }
+
+
+            ])
             ->where('tb2.language_id', '=', $language_id)
             ->find($id);
     }

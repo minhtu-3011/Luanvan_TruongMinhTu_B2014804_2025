@@ -142,6 +142,7 @@ return [
         ]
     ],
     'product' => [
+        'price' => 'Giá sản phẩm',
         'index' => [
             'title' => 'Quản lý Sản phẩm',
             'table' => 'Danh sach Sản phẩm'
@@ -157,8 +158,58 @@ return [
             'title' => 'Xoa  Sản phẩm',
         ]
     ],
+    'attributeCatalogue' => [
+        'index' => [
+            'title' => 'Quản lý loại thuộc tính',
+            'table' => 'Danh sach loại thuộc tính'
+        ],
 
+        'create' => [
+            'title' => 'Thêm mới loại thuộc tính',
+        ],
+        'edit' => [
+            'title' => 'Cap nhat loại thuộc tính',
+        ],
+        'delete' => [
+            'title' => 'Xóa  loại thuộc tính',
+        ]
+    ],
+    'attribute' => [
+        'index' => [
+            'title' => 'Quản lý thuộc tính',
+            'table' => 'Danh sach thuộc tính'
+        ],
 
+        'create' => [
+            'title' => 'Thêm mới thuộc tính',
+        ],
+        'edit' => [
+            'title' => 'Cap nhat thuộc tính',
+        ],
+        'delete' => [
+            'title' => 'Xóa  thuộc tính',
+        ]
+    ],
+
+    'system' => [
+        'index' => [
+            'title' => 'Cấu hình hệ thống',
+        ],
+
+        'create' => [
+            'title' => 'Cài đặt thông tin cấu hình hệ thống',
+        ]
+    ],
+    'menu' => [
+        'index' => [
+            'title' => 'Quản lý Menu',
+            'table' => 'Danh sach Menu'
+        ],
+
+        'create' => [
+            'title' => 'Thêm mới Menu',
+        ]
+    ],
 
 
 

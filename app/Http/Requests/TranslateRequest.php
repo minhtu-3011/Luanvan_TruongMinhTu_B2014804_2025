@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class TranslateRequest extends FormRequest
 {
@@ -23,12 +24,24 @@ class TranslateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'translate_name' => 'required|string|max:255',
+            'translate_name' => 'required',
             'translate_canonical' => [
                 'required',
-                Rule::unique('routers', 'canonical')
-                    ->ignore($this->id, 'module_id'),
-            ],
+                function ($attribute, $value, $fail) {
+                    $option = $this->input('option');
+                    $exist = DB::table('routers')
+                        ->where('canonical', $value)
+                        ->where('language_id', '<>', $option['languageId'])
+                        ->where('id', '<>', $option['id'])
+                        ->exists();
+
+                    // dd($exist);
+
+                    if ($exist) {
+                        $fail('Đường dẫn đã tồn tại. Hãy chọn đường dẫn khác');
+                    }
+                }
+            ]
         ];
     }
 

@@ -34,14 +34,14 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model->select($column)->with($relation)->findOrFail($modelId);
     }
 
-    public function findByCondition($condition = [])
+    public function findByCondition($condition = [], $flag = false)
     {
         $query  = $this->model->newQuery();
         foreach ($condition as $key => $val) {
             $query->where($val[0], $val[1], $val[2]);
         }
 
-        return $query->first();
+        return ($flag == false) ? $query->first() : $query->get();
     }
 
     public function create(array $payload = [])
@@ -50,6 +50,16 @@ class BaseRepository implements BaseRepositoryInterface
         return $model->fresh();
     }
 
+
+
+    public function createBatch(array $payLoad = [])
+    {
+        return $this->model->insert($payLoad);
+    }
+
+
+
+
     public function update(int $id = 0, array $payload = [])
     {
 
@@ -57,6 +67,14 @@ class BaseRepository implements BaseRepositoryInterface
 
         return $model->update($payload);
     }
+
+
+    public function updateOrInsert(array $payload = [], array $condition = [])
+    {
+        return $this->model->updateOrInsert($payload, $condition);
+    }
+
+
 
     public function updateByWhere($condition = [], array $payload = [])
     {
@@ -83,6 +101,19 @@ class BaseRepository implements BaseRepositoryInterface
     {
         return $this->findById($id)->forceDelete();
     }
+
+
+    public function forceDeleteByCondition(array $condition = [])
+    {
+        $query = $this->model->newQuery();
+        foreach ($condition as $key => $val) {
+            $query->where($val[0], $val[1], $val[2]);
+        }
+
+        return $query->forceDelete();
+    }
+
+
     public function pagination(
         array $column = ['*'],
         array $condition = [],
@@ -99,7 +130,7 @@ class BaseRepository implements BaseRepositoryInterface
         $table = $this->model->getTable();
         $query = $this->model->select($column)->distinct();
 
-        // dd($perpage, get_class($languages));
+
 
         return $query->keyword($condition['keyword'] ?? null)
             ->publish($condition['publish'] ?? null)

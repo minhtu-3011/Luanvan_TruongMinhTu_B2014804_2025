@@ -89,7 +89,7 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             if ($postCatalogue->id > 0) {
                 $this->updateLanguageForCatalogue($postCatalogue, $request, $languageId);
                 dd($request['canonical']);
-                $this->createRouter($postCatalogue, $request, $this->controllerName);
+                $this->createRouter($postCatalogue, $request, $this->controllerName, $languageId);
                 $this->nestedset();
             }
             DB::commit();
@@ -116,7 +116,7 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
 
                 $this->updateLanguageForCatalogue($postCatalogue, $request, $languageId);
 
-                $this->updateRouter($postCatalogue, $request, $this->controllerName);
+                $this->updateRouter($postCatalogue, $request, $this->controllerName, $languageId);
 
                 $this->nestedsetbie = new Nestedsetbie([
                     'table' => 'post_catalogues',
@@ -144,6 +144,11 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         DB::beginTransaction();
         try {
             $postCatalogue = $this->postCatalogueRepository->forceDelete($id);
+            $this->routerRepository->deletedByCondition([
+                ['module_id', '=', $id],
+                ['controllers', '=', 'App\Http\Controllers\Frontend\PostCatalogueController'],
+
+            ]);
             $this->nestedsetbie = new Nestedsetbie([
                 'table' => 'post_catalogues',
                 'foreignkey' => 'post_catalogue_id',
