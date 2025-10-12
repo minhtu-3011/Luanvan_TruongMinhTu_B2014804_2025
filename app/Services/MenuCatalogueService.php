@@ -30,7 +30,7 @@ class MenuCatalogueService extends BaseService implements MenuCatalogueServiceIn
     {
 
         $condition['keyword'] = addslashes($request->input('keyword'));
-        $condition['publish'] = $request->integer('publish');
+        $condition['publish'] = $request->integer('publish', -1);
         $perPage = $request->integer('perpage');
         $menuCatalogues = $this->menuCatalogueRepository->pagination(
             $this->paginateSelect(),

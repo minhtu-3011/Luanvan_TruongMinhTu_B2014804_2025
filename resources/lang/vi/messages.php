@@ -208,7 +208,15 @@ return [
 
         'create' => [
             'title' => 'Thêm mới Menu',
-        ]
+            'children' => 'Cập nhật menu con cho mục',
+        ],
+        'translate' => [
+            'title' => 'Tao ban dich cho menu',
+        ],
+        'show' => [
+            'title' => 'Danh sách menu',
+        ],
+
     ],
 
 

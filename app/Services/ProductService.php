@@ -305,12 +305,6 @@ class ProductService extends BaseService implements ProductServiceInterface
                 }
             }
         }
-
-
-
-
-
-
         // dd($variantAttribute);
         $variantLanguage = $this->productVariantLanguageRepository->createBatch($productVariantLanguage);
         $variantAttribute = $this->productVariantAttributeRepository->createBatch($variantAttribute);

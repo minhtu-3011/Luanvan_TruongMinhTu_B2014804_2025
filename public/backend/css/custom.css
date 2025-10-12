@@ -428,3 +428,60 @@ figure.image-box figcaption {
 .none {
     display: none;
 }
+
+.create-children-menu {
+    position: absolute;
+    top: 11px;
+    right: 11px;
+    z-index: 9999;
+}
+
+.dd-handle {
+    position: relative;
+    padding-right: 125px !important;
+}
+
+#nestable2 .dd-item > button {
+    z-index: 9999;
+}
+
+.menu-translate-item .form-row:not(:last-child) {
+    margin-bottom: 10px;
+}
+.setting-item {
+    margin-bottom: 15px;
+}
+.setting-item .setting-text {
+    min-width: 120px;
+}
+.setting-item .setting-value {
+    position: relative;
+    width: 100%;
+}
+.setting-item .setting-value .form-control {
+    padding-right: 25px;
+}
+.setting-item .setting-value .px {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translate(0, -50%);
+    font-size: 11px;
+    color: blue;
+}
+.setting-item .setting-value input[type="radio"] {
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+}
+.setting-item .setting-value input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+}
+.setting-item .setting-value label {
+    font-weight: normal;
+    margin-bottom: 0;
+    margin-left: 10px;
+    cursor: pointer;
+}

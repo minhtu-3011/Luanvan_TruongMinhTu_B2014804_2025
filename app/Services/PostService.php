@@ -178,24 +178,7 @@ class PostService extends BaseService implements PostServiceInterface
 
 
 
-    public function updateStatus($post = [])
-    {
-        DB::beginTransaction();
-        try {
-            $payload[$post['field']] = (($post['value'] == 1) ? 0 : 1);
 
-            $post = $this->postRepository->update($post['modelId'], $payload);
-            // $this->changeLangueStatus($post, $payload[$post['field']]);
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
 
     public function updateStatusAll($post)
     {

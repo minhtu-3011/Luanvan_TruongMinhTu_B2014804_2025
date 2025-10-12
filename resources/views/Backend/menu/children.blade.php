@@ -1,4 +1,4 @@
-@include('backend.dashboard.component.breadcrumb', ['title' => $config['seo']['create']['title']])
+@include('backend.dashboard.component.breadcrumb', ['title' => $config['seo']['create']['children'].' '. $menu->languages->first()->pivot->name])
 @if($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -8,20 +8,22 @@
         </ul>
     </div>
 @endif
+@php
+    $url = ($config['method'] == 'create') 
+    ? route('menu.store') 
+    : (($config['method'] == 'children') 
+        ? route('menu.save.children', [$menu->id]) 
+        : route('menu.update', $menu->id));
+
+@endphp
 
 
-
-<form action="{{route('menu.store')}}" method="post" class="box menuContainer">
+<form action="{{$url}}" method="post" class="box menuContainer">
     @csrf
     <div class="wrapper wrapper-content animated fadeInRight">
-        
-        @include('backend.menu.component.catalogue')
-        
-        <hr>
-        
+
         @include('backend.menu.component.list')
         
-        <input type="hidden" name="redirect" value="{{$id ?? 0}}">
         <div class="text-right">
             <button class="btn btn-primary" type="submit" name="send" value="send">Save</button>
         </div>

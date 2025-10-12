@@ -111,3 +111,71 @@ if (!function_exists('renderSystemSelect')) {
         return $html;
     }
 }
+
+if (!function_exists('recursive')) {
+    function recursive($data, $parentId = 0)
+    {
+        $temp = [];
+        if (!is_null($data) && count($data)) {
+            foreach ($data as $key => $val) {
+                if ($val->parent_id == $parentId) {
+                    $temp[] = [
+                        'item' => $val,
+                        'children' => recursive($data, $val->id)
+                    ];
+                }
+            }
+        }
+        return $temp;
+    }
+}
+
+if (!function_exists('recursive_menu')) {
+    function recursive_menu($data)
+    {
+        $html = '';
+        if (count($data)) {
+            foreach ($data as $key => $val) {
+                $itemId = $val['item']->id;
+                $itemName = $val['item']->languages->first()->pivot->name;
+                $itemUrl = route('menu.children', ['id' => $itemId]);
+
+                $html .= "<li class='dd-item' data-id='$itemId'>";
+                $html .= "<div class='dd-handle'>";
+                $html .= "<span class='label label-info'><i class='fa fa-arrows'></i></span> $itemName";
+                $html .= "</div>";
+                $html .= "<a class='create-children-menu' href='$itemUrl'> Quản lý menu con </a>";
+
+                if (count($val['children'])) {
+                    $html .= "<ol class='dd-list'>";
+                    $html .= recursive_menu($val['children']);
+                    $html .= "</ol>";
+                }
+
+                $html .= "</li>";
+            }
+        }
+        return $html;
+    }
+}
+
+
+if (!function_exists('buildMenu')) {
+    function buildMenu($menus = null, $parent_id = 0, $prefix = '')
+    {
+        $output = [];
+        $count = 1;
+
+        if (count($menus)) {
+            foreach ($menus as $key => $val) {
+                if ($val->parent_id == $parent_id) {
+                    $val->position = $prefix . $count;
+                    $output[] = $val;
+                    $output = array_merge($output, buildMenu($menus, $val->id, $val->position . '.'));
+                    $count++;
+                }
+            }
+        }
+        return $output;
+    }
+}

@@ -116,10 +116,16 @@
             height: "20px",
             cursor: "pointer",
         });
-        $a.append($image);
 
+        let $input = $("<input>")
+            .addClass("hidden")
+            .attr("name", "menu[id][]")
+            .attr("value", 0);
+
+        $a.append($image);
         $removeRow.append($a);
         $removeCol.append($removeRow);
+        $removeCol.append($input);
         $row.append($removeCol);
 
         return $row;
@@ -304,6 +310,53 @@
         });
     };
 
+    HT.setupNestable = () => {
+        if ($("#nestable2").length) {
+            $("#nestable2")
+                .nestable({
+                    group: 1,
+                })
+                .on("change", HT.updateNestableOutput);
+        }
+    };
+
+    HT.updateNestableOutput = (e) => {
+        let list = $(e.currentTarget);
+        let output = $(list.data("output"));
+
+        let json = window.JSON.stringify(list.nestable("serialize"));
+        console.log(json);
+        if (json.length) {
+            let option = {
+                json: json,
+                menu_catalogue_id: $("#dataCatalogue").attr("data-catalogueId"),
+                _token: _token,
+            };
+
+            $.ajax({
+                url: "ajax/menu/drag",
+                type: "POST",
+                data: option,
+                dataType: "json",
+                success: function (res) {
+                    console.log(res);
+                },
+            });
+        }
+    };
+
+    HT.expandAndCollapse = () => {
+        $("#nestable-menu").on("click", function (e) {
+            var target = $(e.target),
+                action = target.data("action");
+            if (action === "expand-all") {
+                $(".dd").nestable("expandAll");
+            }
+            if (action === "collapse-all") {
+                $(".dd").nestable("collapseAll");
+            }
+        });
+    };
     $(document).ready(function () {
         HT.createMenuCatalogue();
         HT.createMenuRow();
@@ -312,5 +365,7 @@
         HT.chooseMenu();
         HT.getPaginationMenu();
         HT.searchMenu();
+        HT.setupNestable();
+        HT.expandAndCollapse();
     });
 })(jQuery);

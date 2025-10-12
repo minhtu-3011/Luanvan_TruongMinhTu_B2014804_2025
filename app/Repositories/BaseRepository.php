@@ -34,12 +34,15 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model->select($column)->with($relation)->findOrFail($modelId);
     }
 
-    public function findByCondition($condition = [], $flag = false)
+    public function findByCondition($condition = [], $flag = false,  $relation = [], $orderBy = ['id', 'desc'])
     {
         $query  = $this->model->newQuery();
         foreach ($condition as $key => $val) {
             $query->where($val[0], $val[1], $val[2]);
         }
+
+        $query->with($relation);
+        $query->orderBy($orderBy[0], $orderBy[1]);
 
         return ($flag == false) ? $query->first() : $query->get();
     }
@@ -64,8 +67,9 @@ class BaseRepository implements BaseRepositoryInterface
     {
 
         $model = $this->findById($id);
-
-        return $model->update($payload);
+        $model->fill($payload);
+        $model->save();
+        return $model;
     }
 
 
@@ -154,5 +158,15 @@ class BaseRepository implements BaseRepositoryInterface
     {
         // dd($payload);
         return $model->{$relation}()->attach($model->id, $payload);
+    }
+
+
+    public function findByWhereHas(array $condition = [], string $relation = '', string $alias = '')
+    {
+        return $this->model->with('languages')->whereHas($relation, function ($query) use ($condition, $alias) {
+            foreach ($condition as $key => $val) {
+                $query->where($alias . '.' . $key, $val);
+            }
+        })->first();
     }
 }

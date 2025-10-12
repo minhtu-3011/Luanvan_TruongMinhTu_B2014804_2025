@@ -27,6 +27,9 @@
                     </td>
 
                     <td class="js-switch-{{$menuCatalogue->id}}">
+                        {{-- @php
+                            dd($menuCatalogues);
+                        @endphp --}}
                         <input type="checkbox" value="{{$menuCatalogue->publish}}" class="js-switch status" data-field = "publish" data-model = "{{$config['model']}}" 
                         {{($menuCatalogue->publish == 1)?'checked':'' }} data-modelid = "{{$menuCatalogue->id}}"/>
                     </td>

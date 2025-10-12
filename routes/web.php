@@ -143,12 +143,22 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
             ->middleware(AuthenticateMiddleware::class);
         Route::get('{id}/edit', [MenuController::class, 'edit'])->where(['id' => '[0-9]+'])->name('menu.edit')
             ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/editMenu', [MenuController::class, 'editMenu'])->where(['id' => '[0-9]+'])->name('menu.editMenu')
+            ->middleware(AuthenticateMiddleware::class);
         Route::post('{id}/update', [MenuController::class, 'update'])->where(['id' => '[0-9]+'])->name('menu.update')
             ->middleware(AuthenticateMiddleware::class);
         Route::get('{id}/delete', [MenuController::class, 'delete'])->where(['id' => '[0-9]+'])->name('menu.delete')
             ->middleware(AuthenticateMiddleware::class);
         Route::delete('{id}/destroy', [MenuController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('menu.destroy')
             ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/children', [MenuController::class, 'children'])->where(['id' => '[0-9]+'])->name('menu.children')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('{id}/saveChildren', [MenuController::class, 'saveChildren'])->where(['id' => '[0-9]+'])->name('menu.save.children')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{languageId}/{id}/translate', [MenuController::class, 'translate'])->where(['languageId' => '[0-9]+', 'id' => '[0-9]+'])->name('menu.translate')
+            ->middleware(AuthenticateMiddleware::class);;
+        Route::post('{languageId}/saveTranslate', [MenuController::class, 'saveTranslate'])->where(['languageId' => '[0-9]+'])->name('menu.translate.save')
+            ->middleware(AuthenticateMiddleware::class);;
     });
 
     Route::group(['prefix' => 'post/catalogue'], function () {
@@ -312,5 +322,7 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
     Route::get('ajax/attribute/loadAttribute', [AjaxAttributeController::class, 'loadAttribute'])->name('ajax.attribute.loadAttribute')
         ->middleware(AuthenticateMiddleware::class);
     Route::post('ajax/menu/createCatalogue', [AjaxMenuController::class, 'createCatalogue'])->name('ajax.menu.createCatalogue')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::post('ajax/menu/drag', [AjaxMenuController::class, 'drag'])->name('ajax.menu.drag')
         ->middleware(AuthenticateMiddleware::class);
 });

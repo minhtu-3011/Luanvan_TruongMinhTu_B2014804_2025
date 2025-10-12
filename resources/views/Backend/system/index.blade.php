@@ -6,7 +6,7 @@
     @csrf
     <div class="wrapper wrapper-content animated fadeInRight">
             
-            <div class="text-center uk-flex uk-flex-middle" style="height: 50px">
+            <div class="uk-flex uk-flex-middle" style="height: 50px">
             @foreach($languages as $language)
                 <a 
                     class="image img-scaledown"

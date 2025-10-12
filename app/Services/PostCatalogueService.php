@@ -186,24 +186,7 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         }
     }
 
-    public function updateStatusAll($post)
-    {
-        DB::beginTransaction();
-        try {
-            $payload[$post['field']] = $post['value'];
 
-            $flag = $this->postCatalogueRepository->updateByWhereIn('id', $post['id'], $payload);
-            // $this->changeLangueStatus($post, $post['value']);
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
 
 
     private function createCatalogue($request)

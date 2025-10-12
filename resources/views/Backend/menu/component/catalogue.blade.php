@@ -19,19 +19,19 @@
                                 class="createMenuCatalogue btn btn-danger">Tạo vị trí hiển thị</button>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-12">
 
                         @if (count($menuCatalogues))
                             <select class="select2" name="menu_catalogue_id" id="">
                                 <option value="0">[Chọn vị trí hiển thị]</option>
                                 @foreach ($menuCatalogues as $key => $val)
-                                    <option value="{{ $val->id }}">{{ $val->name }}</option>
+                                    <option {{(isset($menuCatalogue) && $menuCatalogue->id == $val->id) ? 'selected' : ''}} value="{{ $val->id }}">{{ $val->name }}</option>
                                 @endforeach
                             </select>
                         @endif
 
                     </div>
-                    <div class="col-lg-6">
+                    {{-- <div class="col-lg-6">
 
                         @if (count($menuCatalogues))
                             <select class="select2" name="type" id="">
@@ -42,7 +42,7 @@
                             </select>
                         @endif
 
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

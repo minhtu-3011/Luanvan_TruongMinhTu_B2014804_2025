@@ -96,4 +96,45 @@ class BaseService implements BaseServiceInterface
 
         return $res;
     }
+
+
+    public function updateStatus($post = [])
+    {
+        DB::beginTransaction();
+        try {
+            $model = lcfirst($post['model']) . 'Repository';
+            $payload[$post['field']] = (($post['value'] == 0) ? 1 : 0);
+            $post = $this->{$model}->update($post['modelId'], $payload);
+
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Log::error($e->getMessage());
+            echo $e->getMessage();
+            die();
+            return false;
+        }
+    }
+
+
+    public function updateStatusAll($post)
+    {
+        DB::beginTransaction();
+        try {
+            $model = lcfirst($post['model']) . 'Repository';
+            $payload[$post['field']] = $post['value'];
+            $flag = $this->{$model}->updateByWhereIn('id', $post['id'], $payload);
+            // $this->changeUserStatus($post, $post['value']);
+
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Log::error($e->getMessage());
+            echo $e->getMessage();
+            die();
+            return false;
+        }
+    }
 }
