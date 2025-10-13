@@ -156,7 +156,7 @@
                                 <div class="form-row">
                                     <label for="" class="control-lable text-right">Phường xã</label>
                                     <span class="text-danger"></span>
-                                    <select name="ward_id" id="" class="setupSelect2 wards">
+                                    <select name="ward_id" id="" class="select2 wards">
                                         <option value="0">[Chọn phường xã]</option>
                                         
                                     </select>

@@ -62,4 +62,10 @@ class MenuController extends Controller
 
         $flag = $this->menuService->dragUpdate($json, $menuCatalogueId);
     }
+
+    public function deleteMenu(Request $request)
+    {
+        $id = $request->input('menu_id');
+        $this->menuService->destroyMenu($id, $this->language);
+    }
 }

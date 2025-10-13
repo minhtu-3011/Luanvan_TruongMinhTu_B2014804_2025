@@ -159,6 +159,18 @@ if (!function_exists('recursive_menu')) {
     }
 }
 
+if (!function_exists('image')) {
+    function image($image)
+    {
+
+
+        if (is_null($image)) return 'backend/img/not-found.jpg';
+
+        $image = str_replace('//public/', '/', $image);
+
+        return $image;
+    }
+}
 
 if (!function_exists('buildMenu')) {
     function buildMenu($menus = null, $parent_id = 0, $prefix = '')

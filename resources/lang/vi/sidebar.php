@@ -26,6 +26,17 @@ return [
                 ],
             ]
         ],
+        [
+            'title' => 'QL Banner & Slide',
+            'icon' => 'fa fa-picture-o',
+            'name' => ['slide'],
+            'subModule' => [
+                [
+                    'title' => 'Cài đặt Slide',
+                    'route' => 'slide/index'
+                ],
+            ]
+        ],
 
         [
             'title' => 'QL Bài viết',

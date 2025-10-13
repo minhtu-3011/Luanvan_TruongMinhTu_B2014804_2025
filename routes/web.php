@@ -7,6 +7,8 @@ use Illuminate\Routing\RouteGroup;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashboardController;
+use App\Http\Controllers\Backend\SlideController;
+use App\Http\Controllers\Ajax\SlideController as AjaxSlideController;
 use App\Http\Controllers\Ajax\DashboardController as AjaxDashboardController;
 use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
 use App\Http\Controllers\Ajax\MenuController as AjaxMenuController;
@@ -179,6 +181,24 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
     });
 
 
+    Route::group(['prefix' => 'slide'], function () {
+        Route::get('index', [SlideController::class, 'index'])->name('slide.index')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('create', [SlideController::class, 'create'])->name('slide.create')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('store', [SlideController::class, 'store'])->name('slide.store')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/edit', [SlideController::class, 'edit'])->where(['id' => '[0-9]+'])->name('slide.edit')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('{id}/update', [SlideController::class, 'update'])->where(['id' => '[0-9]+'])->name('slide.update')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/delete', [SlideController::class, 'delete'])->where(['id' => '[0-9]+'])->name('slide.delete')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::delete('{id}/destroy', [SlideController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('slide.destroy')
+            ->middleware(AuthenticateMiddleware::class);
+    });
+
+
 
     Route::group(['prefix' => 'post'], function () {
         Route::get('index', [PostController::class, 'index'])->name('post.index')
@@ -325,4 +345,8 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
         ->middleware(AuthenticateMiddleware::class);
     Route::post('ajax/menu/drag', [AjaxMenuController::class, 'drag'])->name('ajax.menu.drag')
         ->middleware(AuthenticateMiddleware::class);
+    Route::post('ajax/menu/deleteMenu', [AjaxMenuController::class, 'deleteMenu'])->name('ajax.menu.deleteMenu')
+        ->middleware(AuthenticateMiddleware::class);;
+    Route::post('ajax/slide/order', [AjaxSlideController::class, 'order'])->name('ajax.slide.order')
+        ->middleware(AuthenticateMiddleware::class);;
 });

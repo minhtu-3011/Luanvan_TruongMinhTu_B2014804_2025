@@ -134,6 +134,21 @@
     HT.deleteMenuRow = () => {
         $(document).on("click", ".delete-menu", function () {
             let _this = $(this);
+            let menu_id = _this.attr("data-menu-id");
+            if (typeof menu_id != "undefined" && menu_id != 0) {
+                $.ajax({
+                    url: "ajax/menu/deleteMenu",
+                    type: "POST",
+                    data: {
+                        menu_id: menu_id,
+                        _token: _token,
+                    },
+                    dataType: "json",
+                    success: function (res) {
+                        console.log(res);
+                    },
+                });
+            }
             _this.parents(".menu-item").remove();
             HT.checkMenuItemLength();
         });
