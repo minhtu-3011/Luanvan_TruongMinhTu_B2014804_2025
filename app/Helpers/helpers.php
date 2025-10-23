@@ -1,9 +1,10 @@
 <?php
 
 if (!function_exists('convert_price')) {
-    function convert_price(string $price = '')
+    function convert_price(mixed $price = '', $flag = false)
     {
-        return str_replace('.', '', $price);
+        if ($price === null) return 0;
+        return ($flag === false) ? str_replace('.', '', $price) : number_format($price, 0, ',', '.');
     }
 }
 
@@ -189,5 +190,76 @@ if (!function_exists('buildMenu')) {
             }
         }
         return $output;
+    }
+}
+
+if (!function_exists('loadClass')) {
+    function loadClass(string $model = '', $folder = 'Repositories', $interface = 'Repository')
+    {
+        $serviceInterfaceNamespace = '\App\\' . $folder . '\\' . ucfirst($model) . $interface;
+        if (class_exists($serviceInterfaceNamespace)) {
+            $serviceInstance = app($serviceInterfaceNamespace);
+        }
+        return $serviceInstance;
+    }
+}
+
+if (!function_exists('convertArrayByKey')) {
+    function convertArrayByKey($object = null, $fields = [])
+    {
+        $temp = [];
+        foreach ($object as $key => $val) {
+            foreach ($fields as $field) {
+                if (is_array($object)) {
+                    $temp[$field][] = $val[$field];
+                } else {
+                    $extract = explode('.', $field);
+                    if (count($extract) == 2) {
+                        if ($extract[1] == 'languages') {
+                            $temp[$extract[0]][] = $val->{$extract[1]}->first()->pivot->{$extract[0]};
+                        } else {
+                            $temp[$extract[0]][] = $val->pivot->{$extract[0]};
+                        }
+                    } else {
+                        $temp[$field][] = $val->{$field};
+                    }
+                }
+            }
+        }
+        return $temp;
+    }
+}
+
+
+function convertDateTime(?string $date = null, string $format = 'd/m/Y H:i', string $inputDateFormat = 'Y-m-d H:i:s')
+{
+    if (empty($date)) return '';
+    try {
+        return \Carbon\Carbon::createFromFormat($inputDateFormat, $date)->format($format);
+    } catch (\Exception $e) {
+        return '';
+    }
+}
+
+
+if (!function_exists('renderDiscountInformation')) {
+    function renderDiscountInformation($promotion = [])
+    {
+        if ($promotion->method === 'product_and_quantity') {
+            $discountValue = $promotion->discountInformation['info']['discountValue'];
+            $discountType = ($promotion->discountInformation['info']['discountType'] == 'percent') ? '%' : 'đ';
+            return '<span class="label label-success">' . $discountValue . $discountType . ' </span>';
+        }
+        return  '<div><a href="' . route('promotion.edit', $promotion->id) . '">Xem chi tiết</a></div>';
+    }
+}
+if (!function_exists('sortString')) {
+    function sortString($string = '')
+    {
+        $extract = explode(',', $string);
+        $extract = array_map('trim', $extract);
+        sort($extract, SORT_NUMERIC);
+        $newArray = implode(',', $extract);
+        return $newArray;
     }
 }

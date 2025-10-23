@@ -8,9 +8,12 @@ use App\Services\BaseService;
 use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
 use App\Repositories\Interfaces\ProductVariantLanguageRepositoryInterface as ProductVariantLanguageRepository;
 use App\Repositories\Interfaces\ProductVariantAttributeRepositoryInterface as ProductVariantAttributeRepository;
+use App\Services\Interfaces\ProductCatalogueServiceInterface as ProductCatalogueService;
+use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
 use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
 
 /**
@@ -22,6 +25,8 @@ class ProductService extends BaseService implements ProductServiceInterface
     protected $productRepository;
     protected $routerRepository;
     protected $productVariantLanguageRepository;
+    protected $productCatalogueService;
+    protected $promotionRepository;
     protected $productVariantAttributeRepository;
 
 
@@ -29,12 +34,16 @@ class ProductService extends BaseService implements ProductServiceInterface
         ProductRepository $productRepository,
         RouterRepository $routerRepository,
         ProductVariantLanguageRepository $productVariantLanguageRepository,
+        ProductCatalogueService $productCatalogueService,
+        PromotionRepository $promotionRepository,
         ProductVariantAttributeRepository $productVariantAttributeRepository,
     ) {
         $this->routerRepository = $routerRepository;
+        $this->promotionRepository = $promotionRepository;
         $this->productRepository = $productRepository;
         $this->productVariantLanguageRepository = $productVariantLanguageRepository;
         $this->productVariantAttributeRepository = $productVariantAttributeRepository;
+        $this->productCatalogueService = $productCatalogueService;
         $this->controllerName = 'ProductController';
     }
 
@@ -108,23 +117,29 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         DB::beginTransaction();
         try {
-            $product = $this->productRepository->findById($id);
-
-            $payload['user_id'] = Auth::id();
-            if ($this->uploadProduct($product, $request)) {
+            $product = $this->uploadProduct($id, $request);
+            if ($product) {
                 $this->updateLanguageForProduct($product, $request, $languageId);
                 $this->updateCatalogueForProduct($product, $request);
-                $this->updateRouter($product, $request, $this->controllerName, $languageId);
+                $this->updateRouter(
+                    $product,
+                    $request,
+                    $this->controllerName,
+                    $languageId
+                );
+
+
                 $product->product_variants()->each(function ($variant) {
                     $variant->languages()->detach();
                     $variant->attributes()->detach();
                     $variant->delete();
                 });
-                $this->createVariant($product, $request, $languageId);
+                if ($request->input('attribute')) {
+                    $this->createVariant($product, $request, $languageId);
+                }
+
+                $this->productCatalogueService->setAttribute($product);
             }
-
-
-
             DB::commit();
             return true;
         } catch (\Exception $e) {
@@ -166,7 +181,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $payload = $request->only($this->payload());
         $payload['user_id'] = Auth::id();
         $payload['album'] = $this->formatAlbum($request);
-        $payload['price'] = convert_price($payload['price']);
+        $payload['price'] = convert_price(($payload['price']) ?? 0);
         $payload['attributeCatalogue'] = $this->formatJson($request, 'attributeCatalogue');
         $payload['attribute'] = $this->formatJson($request, 'attribute');
         $payload['variant'] = $this->formatJson($request, 'variant');
@@ -174,12 +189,15 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $product;
     }
 
-    private function uploadProduct($product, $request)
+    private function uploadProduct($id, $request)
     {
         $payload = $request->only($this->payload());
-        $payload['price'] = convert_price($payload['price']);
         $payload['album'] = $this->formatAlbum($request);
-        return  $this->productRepository->update($product->id, $payload);
+        $payload['price'] = convert_price($payload['price']);
+        if (!isset($payload['attribute'])) {
+            $payload['attribute'] = null;
+        }
+        return $this->productRepository->update($id, $payload);
     }
 
     private function updateLanguageForProduct($product, $request, $languageId)
@@ -280,7 +298,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function createVariant($product, $request, $languageId)
     {
         $payload = $request->only(['variant', 'productVariant', 'attribute']);
-        $variant = $this->createVariantArray($payload);
+        $variant = $this->createVariantArray($payload, $product);
         $variants = $product->product_variants()->createMany($variant);
         $variantsId = $variants->pluck('id');
         $productVariantLanguage = [];
@@ -327,13 +345,18 @@ class ProductService extends BaseService implements ProductServiceInterface
 
 
 
-    private function createVariantArray(array $payload = []): array
+    private function createVariantArray($payload, $product): array
     {
         $variant = [];
         if (isset($payload['variant']['sku']) && count($payload['variant']['sku'])) {
             foreach ($payload['variant']['sku'] as $key => $val) {
+
+                $vId = ($payload['productVariant']['id'][$key]) ?? '';
+                $productVariantId = sortString($vId);
+                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $payload['productVariant']['id'][$key]);
                 $variant[] = [
-                    'code' => ($payload['productVariant']['id'][$key]) ?? '',
+                    'uuid' => $uuid,
+                    'code' => $productVariantId,
                     'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
                     'sku' => $val,
                     'price' => ($payload['variant']['price'][$key]) ? convert_price($payload['variant']['price'][$key]) : '',
@@ -341,14 +364,272 @@ class ProductService extends BaseService implements ProductServiceInterface
                     'file_name' => ($payload['variant']['file_name'][$key]) ?? '',
                     'file_url' => ($payload['variant']['file_url'][$key]) ?? '',
                     'album' => ($payload['variant']['album'][$key]) ?? '',
-                    'user_id' => Auth::id()
+                    'user_id' => Auth::id(),
                 ];
             }
         }
-
         return $variant;
     }
 
+    public function combineProductAndPromotion($productId, $products, $flag = false)
+    {
+
+        $promotions = $this->promotionRepository->findByProduct($productId);
+
+        if ($promotions) {
+
+            if ($flag == true) {
+                $products->promotions = ($promotions[0]) ?? [];
+                return $products;
+            }
+
+            foreach ($products as $index => $product) {
+                foreach ($promotions as $key => $promotion) {
+                    if ($promotion->product_id == $product->id) {
+                        $products[$index]->promotions = $promotion;
+                    }
+                }
+            }
+        }
+        return $products;
+    }
+
+
+    public function getAttribute($product, $language)
+    {
+        $product->attributeCatalogue = [];
+        if (isset($product->attribute) && !is_null($product->attribute)) {
+            $attributeCatalogueId = array_keys($product->attribute);
+            $attrCatalogues = $this->attributeCatalogueRepository->getAttributeCatalogueWhereIn($attributeCatalogueId, 'attribute_catalogues.id', $language);
+            /* ---- */
+            $attributeId = array_merge(...$product->attribute);
+            $attrs = $this->attributeRepository->findAttributeByIdArray($attributeId, $language);
+            if (!is_null($attrCatalogues)) {
+                foreach ($attrCatalogues as $key => $val) {
+                    $tempAttributes = [];
+                    foreach ($attrs as $attr) {
+                        if ($val->id == $attr->attribute_catalogue_id) {
+                            $tempAttributes[] = $attr;
+                        }
+                    }
+                    $val->attributes = $tempAttributes;
+                }
+            }
+            $product->attributeCatalogue = $attrCatalogues;
+        }
+        return $product;
+    }
+
+    public function filter($request)
+    {
+
+        $perpage = $request->input('perpage');
+        $param['priceQuery'] = $this->priceQuery($request);
+        $param['attributeQuery'] = $this->attributeQuery($request);
+        $param['rateQuery'] = $this->rateQuery($request);
+        $param['productCatalogueQuery'] = $this->productCatalogueQuery($request);
+
+
+        $query = $this->combineFilterQuery($param);
+        $orderBy = $this->orderByQuery($query['join'], $request);
+
+        $products = $this->productRepository->filter($query, $perpage, $orderBy);
+        $productId = $products->pluck('id')->toArray();
+        if (count($productId) && !is_null($productId)) {
+            $products = $this->combineProductAndPromotion($productId, $products);
+        }
+
+        return $products;
+    }
+
+    private function orderByQuery($joins, $request)
+    {
+        $flag = false;
+        $attributes = $request->input('attributes');
+        if (is_array($joins) && count($joins)) {
+
+            foreach ($joins as $key => $val) {
+                if (is_null($val)) continue;
+                if (count($val) && in_array('product_variants as pv', $val)) {
+                    $flag = true;
+                }
+            }
+        }
+        // return ($flag == true && count($attributes) > 1) ? 'variant_id' : 'products.id';
+        return 'products.id';
+    }
+
+    private function combineFilterQuery($param)
+    {
+        $query = [];
+
+        foreach ($param as $array) {
+            foreach ($array as $key => $value) {
+                if (!isset($query[$key])) {
+                    $query[$key] = [];
+                }
+
+                if (is_array($value)) {
+                    $query[$key] = array_merge($query[$key], $value);
+                } else {
+                    $query[$key][] = $value;
+                }
+            }
+        }
+        return $query;
+    }
+
+    private function productCatalogueQuery($request)
+    {
+
+        $productCatalogueId = $request->input('productCatalogueId');
+        $query['join'] = null;
+        $query['whereRaw'] = null;
+        if ($productCatalogueId > 0) {
+            $query['join'] = [
+                ['product_catalogue_product as pcp', 'pcp.product_id', '=', 'products.id']
+            ];
+            $query['whereRaw'] = [
+                [
+                    'pcp.product_catalogue_id IN (
+                        SELECT id
+                        FROM product_catalogues
+                        WHERE lft >= (SELECT lft FROM product_catalogues as pc WHERE pc.id = ?)
+                        AND rgt <= (SELECT rgt FROM product_catalogues as pc WHERE pc.id = ?)
+                    )',
+                    [$productCatalogueId, $productCatalogueId]
+                ]
+            ];
+        }
+        return $query;
+    }
+
+
+    private function rateQuery($request)
+    {
+        $rates = $request->input('rate');
+        $query['join'] = null;
+        $query['having'] = null;
+
+        if (!is_null($rates) && count($rates)) {
+            $query['join'] = [
+                ['reviews', 'reviews.reviewable_id', '=', 'products.id']
+            ];
+            $rateCondition = [];
+            $bindings = [];
+
+            foreach ($rates as $rate) {
+                if ($rate != 5) {
+                    $minRate = $rate;
+                    $maxRate = $rate . '.9';
+                    $rateCondition[] = '(AVG(reviews.score) >= ? AND AVG(reviews.score) <= ?)';
+                    $bindings[] = $minRate;
+                    $bindings[] = $maxRate;
+                } else {
+                    $rateCondition[] = 'AVG(reviews.score) = ?';
+                    $bindings[] = 5;
+                }
+            }
+
+            $query['where'] = function ($query) {
+                $query->where('reviews.reviewable_type', '=', 'App\\Models\\Product');
+            };
+            $query['having'] = function ($query) use ($rateCondition, $bindings) {
+                $query->havingRaw(implode(' OR ', $rateCondition), $bindings);
+            };
+        }
+        return $query;
+    }
+
+    private function attributeQuery($request)
+    {
+        $attributes = $request->input('attributes');
+        $query['select'] = null;
+        $query['join'] = null;
+        $query['where'] = null;
+
+        if (!is_null($attributes) && count($attributes)) {
+
+
+            $concatExpression = 'CONCAT(';
+            $first = true;
+
+            $query['join'] = [
+                ['product_variants as pv', 'pv.product_id', '=', 'products.id'],
+            ];
+            foreach ($attributes as $key => $attribute) {
+                $joinKey = 'tb' . $key;
+                $query['join'][] = [
+                    "product_variant_attribute as {$joinKey}",
+                    "$joinKey.product_variant_id",
+                    '=',
+                    'pv.id'
+                ];
+                $query['where'][] = function ($query) use ($joinKey, $attribute) {
+                    foreach ($attribute as $attr) {
+                        $query->orWhere("$joinKey.attribute_id", '=', $attr);
+                    }
+                };
+
+                if (!$first) {
+                    $concatExpression .= ', ';
+                } else {
+                    $first = false;
+                }
+
+                $concatExpression .= "GROUP_CONCAT(DISTINCT $joinKey.attribute_id, ',')";
+            }
+
+            $concatExpression .= ' ) as attribute_concat';
+
+
+            $query['select'] = "pv.price as variant_price, pv.sku as variant_sku, pv.id as variant_id, $concatExpression";
+        }
+
+        return $query;
+    }
+
+
+    private function priceQuery($request)
+    {
+        $price = $request->input('price');
+        $priceMin = str_replace('đ', '', convert_price($price['price_min']));
+        $priceMax = str_replace('đ', '', convert_price($price['price_max']));
+        $query['select'] = null;
+        $query['join'] = null;
+        $query['having'] = null;
+
+        if ($priceMax > $priceMin) {
+            $query['join'] = [
+                ['promotion_product_variant as ppv', 'ppv.product_id', '=', 'products.id'],
+                ['promotions', 'ppv.promotion_id', '=', 'promotions.id']
+            ];
+            $query['select'] = "
+                (products.price - MAX(
+                    IF(promotions.maxDiscountValue != 0,
+                        LEAST(
+                            CASE 
+                                WHEN discountType = 'cash' THEN discountValue
+                                WHEN discountType = 'percent' THEN products.price * discountValue / 100
+                            ELSE 0
+                            END,
+                            promotions.maxDiscountValue 
+                        ),
+                        CASE 
+                                WHEN discountType = 'cash' THEN discountValue
+                                WHEN discountType = 'percent' THEN products.price * discountValue / 100
+                        ELSE 0
+                        END
+                    )
+                )) as discounted_price
+            ";
+
+            $query['having'] = function ($query) use ($priceMin, $priceMax) {
+                $query->havingRaw('discounted_price >= ? AND discounted_price <= ?', [$priceMin, $priceMax]);
+            };
+        }
+        return $query;
+    }
 
 
 

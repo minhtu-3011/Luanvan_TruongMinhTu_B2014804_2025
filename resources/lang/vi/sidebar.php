@@ -74,6 +74,36 @@ return [
             ]
         ],
         [
+            'title' => 'QL Marketing',
+            'icon' => 'fa fa-money',
+            'name' => ['promotion', 'source'],
+            'subModule' => [
+                [
+                    'title' => 'QL Khuyến mại',
+                    'route' => 'promotion/index'
+                ],
+                [
+                    'title' => 'QL nguồn khách',
+                    'route' => 'source/index'
+                ],
+            ]
+        ],
+        [
+            'title' => 'QL Nhóm Khách hàng',
+            'icon' => 'fa fa-user',
+            'name' => ['customer'],
+            'subModule' => [
+                [
+                    'title' => 'QL Nhóm Khách hàng',
+                    'route' => asset('customer/catalogue/index')
+                ],
+                [
+                    'title' => 'QL Khách hàng',
+                    'route' => 'customer/index'
+                ],
+            ]
+        ],
+        [
             'title' => 'QL Menu',
             'icon' => 'fa fa-bar',
             'name' => ['menu'],
@@ -101,7 +131,11 @@ return [
                 [
                     'title' => 'Cấu hình hệ thống',
                     'route' => 'system/index'
-                ]
+                ],
+                [
+                    'title' => 'Quản lý Widget',
+                    'route' => 'widget/index'
+                ],
             ]
         ],
 

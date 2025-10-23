@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UpdateProductRequest extends FormRequest
 {
@@ -18,28 +17,26 @@ class UpdateProductRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
     public function rules(): array
     {
+
+
         return [
             'name' => 'required',
-            'canonical' => [
-                'required',
-                Rule::unique('routers', 'canonical')
-                    ->ignore($this->id, 'module_id'),
-            ],
-
+            'canonical' => 'required|unique:routers,canonical, ' . $this->id . ',module_id',
+            'product_catalogue_id' => 'gt:0',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'Bạn chưa nhập vào ô tiêu đề',
-            'canonical.required' => 'Bạn chưa nhập vào ô duong dan',
-            'canonical.unique' => 'Đường dẫn đã tồn tại hãy chọn đường dẫn khác',
-
+            'name.required' => 'Bạn chưa nhập vào ô tiêu đề.',
+            'canonical.required' => 'Bạn chưa nhập vào ô đường dẫn',
+            'canonical.unique' => 'Đường dẫn đã tồn tại, Hãy chọn đường dẫn khác',
+            'product_catalogue_id.gt' => 'Bạn phải nhập vào danh mục cha',
         ];
     }
 }

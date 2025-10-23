@@ -232,7 +232,7 @@ class MenuService extends BaseService implements MenuServiceInterface
     }
 
 
-    public function dragUpdate(array $json = [], int $menuCatalogueId = 0, int $languageId = 1, $parentId = 0)
+    public function dragUpdate(array $json = [], int $menuCatalogueId = 0, int $languageId = 5, $parentId = 0)
     {
         if (count($json)) {
             foreach ($json as $key => $val) {
@@ -257,7 +257,7 @@ class MenuService extends BaseService implements MenuServiceInterface
     }
 
 
-    public function findMenuItemTranslate($menus, int $currentLanguage = 1, int $languageId = 1)
+    public function findMenuItemTranslate($menus, int $currentLanguage = 5, int $languageId = 5)
     {
         $output = [];
         if (count($menus)) {
@@ -309,7 +309,7 @@ class MenuService extends BaseService implements MenuServiceInterface
         return $output;
     }
 
-    public function saveTranslateMenu($request, int $languageId = 1)
+    public function saveTranslateMenu($request, int $languageId = 5)
     {
         DB::beginTransaction();
         try {

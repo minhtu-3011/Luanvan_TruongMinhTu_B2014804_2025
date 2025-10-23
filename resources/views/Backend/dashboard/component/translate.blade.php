@@ -1,3 +1,5 @@
+@if(!isset($offTitle))
+
 <div class="row mb10">
     <div class="col-lg-12">
         <div class="form-row">
@@ -7,6 +9,8 @@
         </div>
     </div>
 </div>
+@endif
+@if(!isset($offDescription))
 <div class="row mb50">
     <div class="col-lg-12">
         <div class="form-row">
@@ -17,6 +21,8 @@
         </div>
     </div>
 </div>
+@endif
+@if(!isset($offContent))
 <div class="row mb10">
     <div class="col-lg-12">
         <div class="form-row">
@@ -31,3 +37,4 @@
             </div>
     </div>
 </div>
+@endif

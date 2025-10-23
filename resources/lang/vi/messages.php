@@ -234,6 +234,70 @@ return [
             'title' => 'Danh sách Slide'
         ],
     ],
+    'album' => [
+        'heading' => 'Album Ảnh',
+        'image' => 'Chọn Hình',
+        'notice' => 'Sử dụng nút chọn hình hoặc click vào đây để thêm hình ảnh'
+    ],
+    'widget' => [
+        'index' => [
+            'title' => 'Quản lý Widget',
+            'table' => 'Danh sách Widget',
+        ],
+        'create' => [
+            'title' => 'Thêm mới Widget',
+            'translate' => 'Tạo bản dịch {language} cho Widget',
+        ],
+    ],
+    'source' => [
+        'index' => [
+            'title' => 'Quản lý nguồn khách',
+            'table' => 'Danh sách nguồn khách',
+        ],
+        'create' => [
+            'title' => 'Thêm mới nguồn khách',
+        ],
+    ],
+    'customerCatalogue' => [
+        'index' => [
+            'title' => 'Quản lý nhóm khách hàng',
+            'table' => 'Danh sách nhóm khách hàng'
+        ],
+        'create' => [
+            'title' => 'Thêm mới nhóm khách hàng'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật nhóm khách hàng'
+        ],
+        'delete' => [
+            'title' => 'Xóa nhóm khách hàng'
+        ],
+    ],
+    'customer' => [
+        'index' => [
+            'title' => 'Quản lý nhóm khách hàng',
+            'table' => 'Danh sách nhóm khách hàng'
+        ],
+        'create' => [
+            'title' => 'Thêm mới nhóm khách hàng'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật nhóm khách hàng'
+        ],
+        'delete' => [
+            'title' => 'Xóa nhóm khách hàng'
+        ],
+    ],
+    'promotion' => [
+        'index' => [
+            'title' => 'Quản lý Khuyến mại',
+            'table' => 'Danh sách Khuyến mại',
+        ],
+        'create' => [
+            'title' => 'Thêm mới Khuyến mại',
+            'translate' => 'Tạo bản dịch {language} cho Khuyến mại',
+        ],
+    ],
 
 
 

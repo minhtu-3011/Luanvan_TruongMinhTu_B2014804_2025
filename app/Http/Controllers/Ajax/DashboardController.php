@@ -103,4 +103,79 @@ class DashboardController extends Controller
             'relations' => [],
         ];
     }
+
+    public function findModelObject(Request $request)
+    {
+        $get = $request->input();
+        $alias = Str::snake($get['model']) . '_language';
+        $class = loadClass($get['model']);
+        $object = $class->findWidgetItem([
+            ['name', 'LIKE', '%' . $get['keyword'] . '%'],
+        ], $this->language, $alias);
+        return response()->json($object);
+    }
+    public function getPromotionConditionValue(Request $request)
+    {
+        try {
+            $get = $request->input();
+            switch ($get['value']) {
+                case 'staff_take_care_customer':
+                    $class = loadClass('User');
+                    $object = $class->all()->toArray();
+                    break;
+                case 'customer_group':
+                    $class = loadClass('CustomerCatalogue');
+                    $object = $class->all()->toArray();
+                    break;
+                case 'customer_gender':
+                    $object = __('module.gender');
+                    break;
+                case 'customer_birthday':
+                    $object = __('module.day');
+                    break;
+            }
+            $temp = [];
+            if (!is_null($object) && count($object)) {
+                foreach ($object as $key => $val) {
+                    $temp[] = [
+                        'id' => $val['id'],
+                        'text' => $val['name'],
+                    ];
+                }
+            }
+            return response()->json([
+                'data' => $temp,
+                'error' => false,
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'error' => true,
+                'messages' =>  $e->getMessage(),
+            ]);
+        }
+    }
+    public function findPromotionObject(Request $request)
+    {
+        $get = $request->input();
+        $model = $get['option']['model'];
+        $keyword = $get['search'];
+        $alias = Str::snake($model) . '_language';
+        $class = loadClass($model);
+        $object = $class->findWidgetItem([
+            ['name', 'LIKE', '%' . $keyword . '%'],
+        ], $this->language, $alias);
+
+        $temp = [];
+        if (count($object)) {
+            foreach ($object as $key => $val) {
+                $temp[] = [
+                    'id' => $val->id,
+                    'text' => $val->languages->first()->pivot->name,
+                ];
+            }
+        }
+
+        return response()->json(array('items' => $temp));
+    }
 }

@@ -66,7 +66,7 @@
                         <div class="uk-flex uk-flex-middle">
                             <span class="setting-text">Hiệu ứng</span>
                             <div class="setting-value">
-                                <select name="setting[animation]" id="" class="form-control setupSelect2">
+                                <select name="setting[animation]" id="" class="form-control select2">
                                     @foreach(__('module.effect') as $key => $val)
                                     <option {{ 
                                         $key == old('setting.animation', ($slide->setting['animation']) ?? null) ? 'selected' : '' 

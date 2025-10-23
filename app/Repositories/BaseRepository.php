@@ -34,16 +34,26 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model->select($column)->with($relation)->findOrFail($modelId);
     }
 
-    public function findByCondition($condition = [], $flag = false,  $relation = [], $orderBy = ['id', 'desc'])
-    {
-        $query  = $this->model->newQuery();
+    public function findByCondition(
+        $condition = [],
+        $flag = false,
+        $relation = [],
+        array $orderBy = ['id', 'desc'],
+        array $param = [],
+        array $withCount = [],
+    ) {
+
+        $query = $this->model->newQuery();
         foreach ($condition as $key => $val) {
             $query->where($val[0], $val[1], $val[2]);
         }
+        if (isset($param['whereIn'])) {
+            $query->whereIn($param['whereInField'], $param['whereIn']);
+        }
 
         $query->with($relation);
+        $query->withCount($withCount);
         $query->orderBy($orderBy[0], $orderBy[1]);
-
         return ($flag == false) ? $query->first() : $query->get();
     }
 
@@ -168,5 +178,19 @@ class BaseRepository implements BaseRepositoryInterface
                 $query->where($alias . '.' . $key, $val);
             }
         })->first();
+    }
+
+    public function findWidgetItem(array $condition = [], int $language_id = 5, string $alias = '')
+    {
+        return $this->model->with([
+            'languages' => function ($query) use ($language_id) {
+                $query->where('language_id', $language_id);
+            }
+        ])
+            ->whereHas('languages', function ($query) use ($condition, $alias) {
+                foreach ($condition as $key => $val) {
+                    $query->where($alias . '.' . $val[0], $val[1], $val[2]);
+                }
+            })->get();
     }
 }

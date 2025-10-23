@@ -43,9 +43,18 @@ class Product extends Model
                 'meta_keyword',
                 'meta_description',
                 'description',
-                'content'
+                'content',
             )
             ->withTimestamps();
+    }
+
+    public function promotions()
+    {
+        return $this->belongsToMany(Promotion::class, 'promotion_product_variant', 'product_id', 'promotion_id')
+            ->withPivot(
+                'variant_uuid',
+                'model',
+            )->withTimestamps();
     }
 
     public function product_catalogues()

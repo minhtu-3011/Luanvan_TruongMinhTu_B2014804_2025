@@ -7,11 +7,18 @@ use Illuminate\Routing\RouteGroup;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashboardController;
+use App\Http\Controllers\Backend\Customer\SourceController;
+use App\Http\Controllers\Backend\Customer\CustomerController;
+use App\Http\Controllers\Backend\Customer\CustomerCatalogueController;
 use App\Http\Controllers\Backend\SlideController;
 use App\Http\Controllers\Ajax\SlideController as AjaxSlideController;
+use App\Http\Controllers\Ajax\ProductController as AjaxProductController;
 use App\Http\Controllers\Ajax\DashboardController as AjaxDashboardController;
+use App\Http\Controllers\Ajax\SourceController as AjaxSourceController;
 use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
 use App\Http\Controllers\Ajax\MenuController as AjaxMenuController;
+use App\Http\Controllers\Backend\WidgetController;
+use App\Http\Controllers\Backend\Promotion\PromotionController;
 use App\Http\Controllers\Backend\SystemController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\MenuController;
@@ -199,6 +206,28 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
     });
 
 
+    Route::group(['prefix' => 'widget'], function () {
+        Route::get('index', [WidgetController::class, 'index'])->name('widget.index')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('create', [WidgetController::class, 'create'])->name('widget.create')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('store', [WidgetController::class, 'store'])->name('widget.store')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/edit', [WidgetController::class, 'edit'])->where(['id' => '[0-9]+'])->name('widget.edit')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('{id}/update', [WidgetController::class, 'update'])->where(['id' => '[0-9]+'])->name('widget.update')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/delete', [WidgetController::class, 'delete'])->where(['id' => '[0-9]+'])->name('widget.delete')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::delete('{id}/destroy', [WidgetController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('widget.destroy')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{languageId}/{id}/translate', [WidgetController::class, 'translate'])->where(['id' => '[0-9]+', 'languageId' => '[0-9]+'])->name('widget.translate')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('saveTranslate', [WidgetController::class, 'saveTranslate'])->name('widget.saveTranslate')
+            ->middleware(AuthenticateMiddleware::class);
+    });
+
+
 
     Route::group(['prefix' => 'post'], function () {
         Route::get('index', [PostController::class, 'index'])->name('post.index')
@@ -323,6 +352,101 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
     });
 
 
+    Route::group(['prefix' => 'source'], function () {
+        Route::get('index', [SourceController::class, 'index'])->name('source.index')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('create', [SourceController::class, 'create'])->name('source.create')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('store', [SourceController::class, 'store'])->name('source.store')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/edit', [SourceController::class, 'edit'])->where(['id' => '[0-9]+'])->name('source.edit')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('{id}/update', [SourceController::class, 'update'])->where(['id' => '[0-9]+'])->name('source.update')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/delete', [SourceController::class, 'delete'])->where(['id' => '[0-9]+'])->name('source.delete')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::delete('{id}/destroy', [SourceController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('source.destroy')
+            ->middleware(AuthenticateMiddleware::class);
+    });
+
+    Route::group(['prefix' => 'promotion'], function () {
+        Route::get('index', [PromotionController::class, 'index'])->name('promotion.index')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('create', [PromotionController::class, 'create'])->name('promotion.create')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('store', [PromotionController::class, 'store'])->name('promotion.store')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/edit', [PromotionController::class, 'edit'])->where(['id' => '[0-9]+'])->name('promotion.edit')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('{id}/update', [PromotionController::class, 'update'])->where(['id' => '[0-9]+'])->name('promotion.update')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/delete', [PromotionController::class, 'delete'])->where(['id' => '[0-9]+'])->name('promotion.delete')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::delete('{id}/destroy', [PromotionController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('promotion.destroy')
+            ->middleware(AuthenticateMiddleware::class);
+    });
+
+    Route::group(['prefix' => 'customer/catalogue'], function () {
+        Route::get('index', [CustomerCatalogueController::class, 'index'])->name('customer.catalogue.index')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('create', [CustomerCatalogueController::class, 'create'])->name('customer.catalogue.create')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('store', [CustomerCatalogueController::class, 'store'])->name('customer.catalogue.store')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/edit', [CustomerCatalogueController::class, 'edit'])->where(['id' => '[0-9]+'])->name('customer.catalogue.edit')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('{id}/update', [CustomerCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('customer.catalogue.update')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/delete', [CustomerCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('customer.catalogue.delete')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::delete('{id}/destroy', [CustomerCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('customer.catalogue.destroy')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('permission', [CustomerCatalogueController::class, 'permission'])->name('customer.catalogue.permission')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::post('updatePermission', [CustomerCatalogueController::class, 'updatePermission'])->name('customer.catalogue.updatePermission')
+            ->middleware(AuthenticateMiddleware::class);
+    });
+
+
+    //customer
+
+    Route::group(['prefix' => 'customer'], function () {
+        Route::get('index', [CustomerController::class, 'index'])->name('customer.index');
+        Route::get('create', [CustomerController::class, 'create'])->name('customer.create');
+        Route::post('store', [CustomerController::class, 'store'])->name('customer.store');
+        Route::get('{id}/edit', [CustomerController::class, 'edit'])->where(['id' => '[0-9]+'])->name('customer.edit');
+        Route::post('{id}/update', [CustomerController::class, 'update'])->where(['id' => '[0-9]+'])->name('customer.update');
+        Route::get('{id}/delete', [CustomerController::class, 'delete'])->where(['id' => '[0-9]+'])->name('customer.delete');
+        Route::delete('{id}/destroy', [CustomerController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('customer.destroy');
+    });
+
+
+    // Route::get('customer/login' . config('apps.general.suffix'), [FeAuthController::class, 'index'])->name('fe.auth.login');
+    // Route::get('customer/check/login' . config('apps.general.suffix'), [FeAuthController::class, 'login'])->name('fe.auth.dologin');
+
+    // Route::get('customer/password/forgot' . config('apps.general.suffix'), [FeAuthController::class, 'forgotCustomerPassword'])->name('forgot.customer.password');
+    // Route::get('customer/password/email' . config('apps.general.suffix'), [FeAuthController::class, 'verifyCustomerEmail'])->name('customer.password.email');
+    // Route::get('customer/register' . config('apps.general.suffix'), [FeAuthController::class, 'register'])->name('customer.register');
+    // Route::post('customer/reg' . config('apps.general.suffix'), [FeAuthController::class, 'registerAccount'])->name('customer.reg');
+
+
+    // Route::get('customer/password/update' . config('apps.general.suffix'), [FeAuthController::class, 'updatePassword'])->name('customer.update.password');
+    // Route::post('customer/password/change' . config('apps.general.suffix'), [FeAuthController::class, 'changePassword'])->name('customer.password.reset');
+
+
+    // Route::group(['middleware' => ['customer']], function () {
+    //     Route::get('customer/profile' . config('apps.general.suffix'), [FeCustomerController::class, 'profile'])->name('customer.profile');
+    //     Route::post('customer/profile/update' . config('apps.general.suffix'), [FeCustomerController::class, 'updateProfile'])->name('customer.profile.update');
+    //     Route::get('customer/password/reset' . config('apps.general.suffix'), [FeCustomerController::class, 'passwordForgot'])->name('customer.password.change');
+    //     Route::post('customer/password/recovery' . config('apps.general.suffix'), [FeCustomerController::class, 'recovery'])->name('customer.password.recovery');
+    //     Route::get('customer/logout' . config('apps.general.suffix'), [FeCustomerController::class, 'logout'])->name('customer.logout');
+    //     Route::get('customer/construction' . config('apps.general.suffix'), [FeCustomerController::class, 'construction'])->name('customer.construction');
+    //     Route::get('customer/construction/{id}/product' . config('apps.general.suffix'), [FeCustomerController::class, 'constructionProduct'])->name('customer.construction.product')->where(['id' => '[0-9]+']);
+    //     Route::get('customer/warranty/check' . config('apps.general.suffix'), [FeCustomerController::class, 'warranty'])->name('customer.check.warranty');
+    //     Route::post('customer/warranty/active', [FeCustomerController::class, 'active'])->name('customer.active.warranty');
+    // });
+
+
     // Route::get('user/update', [UserController::class,'update'])->name('user.index')
     // ->middleware(AuthenticateMiddleware::class);
     // Route::get('user/del', [UserController::class,'del'])->name('user.index')
@@ -346,7 +470,17 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
     Route::post('ajax/menu/drag', [AjaxMenuController::class, 'drag'])->name('ajax.menu.drag')
         ->middleware(AuthenticateMiddleware::class);
     Route::post('ajax/menu/deleteMenu', [AjaxMenuController::class, 'deleteMenu'])->name('ajax.menu.deleteMenu')
-        ->middleware(AuthenticateMiddleware::class);;
+        ->middleware(AuthenticateMiddleware::class);
     Route::post('ajax/slide/order', [AjaxSlideController::class, 'order'])->name('ajax.slide.order')
-        ->middleware(AuthenticateMiddleware::class);;
+        ->middleware(AuthenticateMiddleware::class);
+    Route::get('ajax/dashboard/findModelObject', [AjaxDashboardController::class, 'findModelObject'])->name('ajax.dashboard.findModelObject')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::get('ajax/product/loadProductPromotion', [AjaxProductController::class, 'loadProductPromotion'])->name('ajax.loadProductPromotion')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::get('ajax/source/getAllSource', [AjaxSourceController::class, 'getAllSource'])->name('ajax.getAllSource')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::get('ajax/dashboard/findPromotionObject', [AjaxDashboardController::class, 'findPromotionObject'])->name('ajax.dashboard.findPromotionObject')
+        ->middleware(AuthenticateMiddleware::class);
+    Route::get('ajax/dashboard/getPromotionConditionValue', [AjaxDashboardController::class, 'getPromotionConditionValue'])->name('ajax.dashboard.getPromotionConditionValue')
+        ->middleware(AuthenticateMiddleware::class);
 });
