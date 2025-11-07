@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Services\Interfaces\WidgetServiceInterface;
+use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
 use App\Repositories\Interfaces\WidgetRepositoryInterface as WidgetRepository;
 use App\Repositories\Interfaces\ProductCatalogueRepositoryInterface as ProductCatalogueRepository;
 use App\Services\Interfaces\ProductServiceInterface as ProductService;
@@ -24,11 +25,13 @@ class WidgetService extends BaseService implements WidgetServiceInterface
 
 
     public function __construct(
+        PromotionRepository $promotionRepository,
         WidgetRepository $widgetRepository,
         ProductCatalogueRepository $productCatalogueRepository,
         ProductService $productService,
     ) {
         $this->widgetRepository = $widgetRepository;
+        $this->promotionRepository = $promotionRepository;
         $this->productCatalogueRepository = $productCatalogueRepository;
         $this->productService = $productService;
     }
@@ -101,7 +104,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
     {
         DB::beginTransaction();
         try {
-            $widget = $this->widgetRepository->delete($id);
+            $widget = $this->widgetRepository->forceDelete($id);
 
             DB::commit();
             return true;
@@ -192,6 +195,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
                         }
 
                         $objectValue->{$replace} = $classRepo->findObjectByCategoryIds($ids, $model, $language);
+                        // dd($objectValue->{$replace});
 
                         if (
                             isset($params[$key]['promotion'])
@@ -217,6 +221,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
                 $temp[$widget->keyword] = $widgets[$key];
             }
         }
+
         return $temp;
     }
 
@@ -238,6 +243,8 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             ]
         ];
     }
+
+
 
     private function widgetAgrument($widget, $language, $param)
     {

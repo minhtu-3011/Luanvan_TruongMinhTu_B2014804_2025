@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Base;
 use Illuminate\Support\Arr;
 use PhpParser\Node\Expr\Cast\Array_;
+use Illuminate\Support\Facades\DB;
 
 use function PHPUnit\Framework\isArray;
 
@@ -21,9 +22,15 @@ class BaseRepository implements BaseRepositoryInterface
         $this->model = $model;
     }
 
-    public function all(array $relation = [])
+    public function all(array $relation = [], string $selectRaw = '')
     {
-        return $this->model->with($relation)->get();
+        $query = $this->model->newQuery();
+        $query->select('*');
+        if (!empty($selectRaw)) {
+            $query->selectRaw($selectRaw);
+        }
+        $query->with($relation);
+        return $query->get();
     }
 
     public function findById(
@@ -131,34 +138,30 @@ class BaseRepository implements BaseRepositoryInterface
     public function pagination(
         array $column = ['*'],
         array $condition = [],
-        int $perpage = 10,
-        array $extends = [],
+        int $perPage = 1,
+        array $extend = [],
         array $orderBy = ['id', 'DESC'],
         array $join = [],
         array $relations = [],
         array $rawQuery = [],
-
-
+        // int $currentPage = 1,
 
     ) {
-        $table = $this->model->getTable();
-        $query = $this->model->select($column)->distinct();
-
-
-
-        return $query->keyword($condition['keyword'] ?? null)
+        $query = $this->model->select($column);
+        return $query
+            ->keyword($condition['keyword'] ?? null)
             ->publish($condition['publish'] ?? null)
             ->relationCount($relations ?? null)
-            ->customWhere($condition['where'] ?? null)        // ✅ đúng
-            ->customeWhereRaw($rawQuery ?? null)              // ✅ đúng
-            ->customeJoin($join ?? null)                      // ✅ đúng
-            ->customeGroupBy($extends ?? null)                // ✅ đúng
-            ->customeOrderBy($orderBy ?? null)                // ✅ đúng
-            ->paginate($perpage)
+            ->CustomWhere($condition['where'] ?? null)
+            ->customWhereRaw($rawQuery['whereRaw'] ?? null)
+            ->customJoin($join ?? null)
+            ->customGroupBy($extend['groupBy'] ?? null)
+            ->customOrderBy($orderBy ?? null)
+            // ->toSql();
+            ->paginate($perPage)
             ->withQueryString()
             ->withPath(url('/' . ($extends['path'] ?? '')));
     }
-
     public function createLanguagePivot($model, array $payload = [])
     {
         return $model->languages()->attach($model->id, $payload);
@@ -192,5 +195,69 @@ class BaseRepository implements BaseRepositoryInterface
                     $query->where($alias . '.' . $val[0], $val[1], $val[2]);
                 }
             })->get();
+    }
+
+    public function recursiveCategory(string $parameter = '', $table = '')
+    {
+        $table = $table . '_catalogues';
+        $query = "
+            WITH RECURSIVE category_tree AS (
+                SELECT id, parent_id, deleted_at
+                FROM $table
+                WHERE id IN (?)
+                UNION ALL 
+                SELECT c.id, c.parent_id, c.deleted_at
+                FROM $table as c
+                JOIN category_tree as ct ON ct.id = c.parent_id
+            )
+            SELECT id FROM category_tree WHERE deleted_at IS NULL
+        ";
+        // Use parameter binding to prevent SQL injection
+        $results = DB::select($query, [$parameter]);
+        return $results;
+    }
+    public function findObjectByCategoryIds($catIds, $model, $language)
+    {
+        $query = $this->model->newQuery();
+        $this->model->select(
+            $model . 's.*',
+        )
+            ->where(
+                [config('apps.general.defaultPublish')]
+            )
+            ->with('languages', function ($query) use ($language) {
+                $query->where('language_id', $language);
+            })
+            ->with($model . '_catalogues', function ($query) use ($language) {
+                $query->with('languages', function ($query) use ($language) {
+                    $query->where('language_id', $language);
+                });
+            });
+
+        if ($model === 'product') {
+            $query->with('product_variants');
+        }
+
+        $query->join($model . '_catalogue_' . $model . ' as tb2', 'tb2.' . $model . '_id', '=', $model . 's.id')
+            ->whereIn('tb2.' . $model . '_catalogue_id', $catIds)
+            ->orderBy($model . 's.' . $model . '_catalogue_id', 'desc')
+            ->limit(10)
+            ->get();
+
+        return $query->get();
+    }
+
+
+    public function breadcrumb($model, $language)
+    {
+        return $this->findByCondition([
+            ['lft', '<=', $model->lft],
+            ['rgt', '>=', $model->rgt],
+            config('apps.general.defaultPublish')
+        ], true, [
+            'languages' => function ($query) use ($language) {
+                $query->where('language_id', $language);
+            }
+        ], ['lft', 'asc']);
     }
 }

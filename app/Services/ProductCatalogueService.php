@@ -66,6 +66,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             ],
             ['languages']
         );
+        // dd($productCatalogues);
 
         return $productCatalogues;
     }

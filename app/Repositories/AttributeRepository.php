@@ -56,11 +56,29 @@ class AttributeRepository extends BaseRepository implements AttributeRepositoryI
     {
         return $this->model->select([
             'attributes.id',
+            'attributes.attribute_catalogue_id',
+            'attributes.image',
             'tb2.name'
         ])
             ->join('attribute_language as tb2', 'tb2.attribute_id', '=', 'attributes.id')
             ->where('tb2.language_id', '=', $languageId)
+            ->where([config('apps.general.defaultPublish')])
             ->whereIn('attributes.id', $attributeArray)
             ->get();
+    }
+
+    public function findAttributeProductVariant($attributeId = [], $productCatalogueId = 0)
+    {
+
+        return $this->model->select([
+            'attributes.id'
+        ])
+            ->join('product_variant_attribute as tb2', 'tb2.attribute_id', '=', 'attributes.id')
+            ->join('product_variants as tb3', 'tb3.id', '=', 'tb2.product_variant_id')
+            ->join('product_catalogue_product as tb4', 'tb4.product_id', '=', 'tb3.product_id')
+            ->where('tb4.product_catalogue_id', '=',  $productCatalogueId)
+            ->whereIn('attributes.id', $attributeId)
+            ->distinct()
+            ->pluck('attributes.id');
     }
 }

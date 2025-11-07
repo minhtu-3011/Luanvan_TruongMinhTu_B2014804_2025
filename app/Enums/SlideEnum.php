@@ -1,17 +1,19 @@
-<?php 
+<?php
+
 namespace App\Enums;
 
 
-enum SlideEnum: string {
-    
-    const BANNER = 'banner';
-    const MAIN = 'main-slide';
+enum SlideEnum: string
+{
 
-    public static function toArray(){
+    case BANNER = 'banner';
+    case MAIN = 'main-slide';
+
+    public static function toArray()
+    {
         return [
             self::BANNER => 'banner',
             self::MAIN => 'main-slide'
         ];
     }
-
 }

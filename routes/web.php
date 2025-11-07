@@ -17,6 +17,9 @@ use App\Http\Controllers\Ajax\DashboardController as AjaxDashboardController;
 use App\Http\Controllers\Ajax\SourceController as AjaxSourceController;
 use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
 use App\Http\Controllers\Ajax\MenuController as AjaxMenuController;
+use App\Http\Controllers\Ajax\CartController as AjaxCartController;
+use App\Http\Controllers\Ajax\OrderController as AjaxOrderController;
+use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Backend\WidgetController;
 use App\Http\Controllers\Backend\Promotion\PromotionController;
 use App\Http\Controllers\Backend\SystemController;
@@ -28,18 +31,66 @@ use App\Http\Controllers\Backend\PostController;
 use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\GenerateController;
-use App\Http\Controllers\Backend\ProductCatalogueController;
-use App\Http\Controllers\Backend\ProductController;
+use App\Http\Controllers\Backend\Product\ProductCatalogueController;
+use App\Http\Controllers\Backend\Product\ProductController;
 use App\Http\Controllers\Backend\AttributeCatalogueController;
 use App\Http\Controllers\Backend\AttributeController;
+use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\RouterController;
+use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Frontend\Payment\VnpayController;
+use App\Http\Controllers\Frontend\Payment\MomoController;
+use App\Http\Controllers\Frontend\Payment\PaypalController;
+use App\Http\Controllers\Backend\ReviewController;
+use App\Http\Controllers\Ajax\ReviewController as AjaxReviewController;
+
+
 //@@useController@@
 
 
 
 
+// frontend routers
+Route::get('/', [HomeController::class, 'index'])->name('home.index');
+Route::get('{canonical}' . config('apps.general.suffix'), [RouterController::class, 'index'])->name('router.index')->where('canonical', '[a-zA-Z0-9-]+');
+Route::get('{canonical}/trang-{page}' . config('apps.general.suffix'), [RouterController::class, 'page'])->name('router.page')->where('canonical', '[a-zA-Z0-9-]+')->where('page', '[0-9]+');
+Route::get('thanh-toan' . config('apps.general.suffix'), [CartController::class, 'checkout'])->name('cart.checkout');
+Route::post('cart/create', [CartController::class, 'store'])->name('cart.store');
+Route::get('cart/{code}/success' . config('apps.general.suffix'), [CartController::class, 'success'])->name('cart.success')->where(['code' => '[0-9]+']);
+Route::get('ajax/product/filter', [AjaxProductController::class, 'filter'])->name('ajax.filter');
 
-Route::get('/', [AuthController::class, 'index'])->name('auth.admin')
-    ->middleware(LoginMiddleware::class);
+
+// frontend ajax route
+Route::get('ajax/product/loadVariant', [AjaxProductController::class, 'loadVariant'])->name('ajax.loadVariant');
+Route::post('ajax/cart/create', [AjaxCartController::class, 'create'])->name('ajax.cart.create');
+Route::post('ajax/cart/update', [AjaxCartController::class, 'update'])->name('ajax.cart.update');
+Route::post('ajax/cart/delete', [AjaxCartController::class, 'delete'])->name('ajax.cart.delete');
+Route::get('ajax/location/getLocation', [LocationController::class, 'getLocation'])->name('ajax.location.index');
+Route::post('ajax/slide/order', [AjaxSlideController::class, 'order'])->name('ajax.slide.order');
+Route::post('ajax/order/update', [AjaxOrderController::class, 'update'])->name('ajax.order.update');
+Route::get('ajax/order/chart', [AjaxOrderController::class, 'chart'])->name('ajax.order.chart');
+Route::post('ajax/review/create', [AjaxReviewController::class, 'create'])->name('ajax.review.create');
+
+
+Route::group(['prefix' => 'review'], function () {
+    Route::get('index', [ReviewController::class, 'index'])->name('review.index');
+    Route::get('{id}/delete', [ReviewController::class, 'delete'])->where(['id' => '[0-9]+'])->name('review.delete');
+});
+
+/* VNPAY */
+Route::get('return/vnpay' . config('apps.general.suffix'), [VnpayController::class, 'vnpay_return'])->name('vnpay.momo_return');
+Route::get('return/vnpay_ipn' . config('apps.general.suffix'), [VnpayController::class, 'vnpay_ipn'])->name('vnpay.vnpay_ipn');
+
+Route::get('return/momo' . config('apps.general.suffix'), [MomoController::class, 'momo_return'])->name('momo.momo_return');
+Route::get('return/ipn' . config('apps.general.suffix'), [MomoController::class, 'vnpay_ipn'])->name('momo.momo_ipn');
+
+Route::get('paypal/success' . config('apps.general.suffix'), [PaypalController::class, 'success'])->name('paypal.success');
+Route::get('paypal/cancel' . config('apps.general.suffix'), [PaypalController::class, 'cancel'])->name('paypal.cancel');
+
+// Route::get('/', [AuthController::class, 'index'])->name('auth.admin')
+//     ->middleware(LoginMiddleware::class);
+
+
 Route::get('admin', [AuthController::class, 'index'])->name('auth.admin')
     ->middleware(LoginMiddleware::class);
 Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
@@ -319,6 +370,13 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
             ->middleware(AuthenticateMiddleware::class);
     });
 
+    Route::group(['prefix' => 'order'], function () {
+        Route::get('index', [OrderController::class, 'index'])->name('order.index')
+            ->middleware(AuthenticateMiddleware::class);
+        Route::get('{id}/detail', [OrderController::class, 'detail'])->where(['id' => '[0-9]+'])->name('order.detail')
+            ->middleware(AuthenticateMiddleware::class);
+    });
+
     //@@new-module@@
 
 
@@ -453,8 +511,7 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
     // ->middleware(AuthenticateMiddleware::class);
 
     //AJAX
-    Route::get('ajax/location/getLocation', [LocationController::class, 'getLocation'])->name('ajax.location.index')
-        ->middleware(AuthenticateMiddleware::class);
+
     Route::post('ajax/dashboard/changeStatus', [AjaxDashboardController::class, 'changeStatus'])->name('ajax.dashboard.changeStatus')
         ->middleware(AuthenticateMiddleware::class);
     Route::post('ajax/dashboard/changeStatusAll', [AjaxDashboardController::class, 'changeStatusAll'])->name('ajax.dashboard.changeStatusAll')

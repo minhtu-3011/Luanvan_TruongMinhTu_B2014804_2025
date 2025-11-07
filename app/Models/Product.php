@@ -29,6 +29,10 @@ class Product extends Model
         'variant'
 
     ];
+    protected $casts = [
+        'attribute' => 'json',
+
+    ];
 
     protected $table = 'products';
 
@@ -65,5 +69,23 @@ class Product extends Model
     public function product_variants()
     {
         return $this->hasMany(ProductVariant::class, 'product_id', 'id');
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'order_product', 'product_id', 'order_id')
+            ->withPivot(
+                'uuid',
+                'name',
+                'qty',
+                'price',
+                'priceOriginal',
+                'option',
+            );
+    }
+
+    public function reviews()
+    {
+        return $this->morphMany(Review::class, 'reviewable');
     }
 }

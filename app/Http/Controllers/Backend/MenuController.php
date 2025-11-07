@@ -206,17 +206,22 @@ class MenuController extends Controller
 
         $menuList = $this->menuService->getAndConvertMenu($menu, $this->language);
 
-        // dd($menuList);
         $config = $this->config();
         $config['seo'] = __('messages.menu');
         $config['method'] = 'children';
         $template = 'backend.menu.children';
+        // dd($menu);
+        // return view('backend.dashboard.layout', compact(
+        //     'template',
+        //     'config',
+        //     'menu',
+        //     'menuList'
+        // ));
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
-            'menu',
             'menuList'
-        ));
+        ))->with('currentMenu', $menu);
     }
 
     public function saveChildren(StoreMenuChildrenRequest $request, $id)

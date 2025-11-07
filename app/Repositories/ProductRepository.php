@@ -93,4 +93,53 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         $query->groupBy('products.id');
         return $query->paginate(20);
     }
+
+    public function filter($param, $perpage, $orderBy)
+    {
+        $query = $this->model->newQuery();
+
+        $query->select(
+            'products.id',
+            'products.price',
+            'products.image',
+        );
+
+        if (isset($param['select']) && count($param['select'])) {
+            foreach ($param['select'] as $key => $val) {
+                if (is_null($val)) continue;
+                $query->selectRaw($val);
+            }
+        }
+
+        if (isset($param['join']) && count($param['join'])) {
+            foreach ($param['join'] as $key => $val) {
+                if (is_null($val)) continue;
+                $query->leftJoin($val[0], $val[1], $val[2], $val[3]);
+            }
+        }
+
+        $query->where('products.publish', '=', 2);
+
+        if (isset($param['where']) && count($param['where'])) {
+            foreach ($param['where'] as $key => $val) {
+                $query->where($val);
+            }
+        }
+
+        if (isset($param['whereRaw']) && count($param['whereRaw'])) {
+            $query->whereRaw($param['whereRaw'][0][0], $param['whereRaw'][0][1]);
+        }
+
+        if (isset($param['having']) && count($param['having'])) {
+            foreach ($param['having'] as $key => $val) {
+                if (is_null($val)) continue;
+                $query->having($val);
+            }
+        }
+
+        $query->groupBy($orderBy);
+        $query->with(['reviews', 'languages', 'product_catalogues']);
+
+        return $query->paginate($perpage);
+    }
 }

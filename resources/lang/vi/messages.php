@@ -58,6 +58,15 @@ return [
             'title' => 'Xoa  Nhóm Bài viết',
         ]
     ],
+    'order' => [
+        'index' => [
+            'title' => 'Quản lý đơn hàng',
+            'table' => 'Danh sách đơn hàng',
+        ],
+        'detail' => [
+            'title' => 'Quản lý thông tin chi tiết đơn hàng',
+        ],
+    ],
     'userCatalogue' => [
         'index' => [
             'title' => 'Quản lý Nhóm thanhf vien',

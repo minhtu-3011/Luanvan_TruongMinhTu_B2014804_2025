@@ -32,7 +32,14 @@ interface BaseRepositoryInterface
     public function createLanguagePivot($model, array $payload = []);
     public function createPivot($model, array $payload = [], string $relation = '');
     public function updateByWhere($condition = [], array $payload = []);
-    public function findByCondition($condition = [], $flag = false,  $relation = []);
+    public function findByCondition(
+        $condition = [],
+        $flag = false,
+        $relation = [],
+        array $orderBy = ['id', 'desc'],
+        array $param = [],
+        array $withCount = [],
+    );
     public function createBatch(array $payLoad = []);
     public function updateOrInsert(array $payload = [], array $condition = []);
     public function findByWhereHas(array $condition = [], string $relation = '', string $alias = '');

@@ -60,6 +60,6 @@
     </tbody>
 </table>
 
-{{
-    $languages->links('pagination::bootstrap-4')
-}}
+@if($languages instanceof \Illuminate\Pagination\AbstractPaginator)
+    {{ $languages->links('pagination::bootstrap-4') }}
+@endif

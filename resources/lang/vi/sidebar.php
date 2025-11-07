@@ -2,6 +2,13 @@
 
 return [
     'module' => [
+        [
+            'title' => 'Dashboard',
+            'icon' => 'fa fa-database',
+            'name' => ['dashboard'],
+            'route' => 'dashboard/index',
+            'class' => 'special'
+        ],
 
         [
             'title' => 'QL San pham',
@@ -35,6 +42,18 @@ return [
                     'title' => 'Cài đặt Slide',
                     'route' => 'slide/index'
                 ],
+            ]
+        ],
+
+        [
+            'title' => 'QL Bình Luận',
+            'icon' => 'fa fa-comment',
+            'name' => ['reviews'],
+            'subModule' => [
+                [
+                    'title' => 'QL Bình Luận',
+                    'route' => 'review/index'
+                ]
             ]
         ],
 
@@ -85,6 +104,17 @@ return [
                 [
                     'title' => 'QL nguồn khách',
                     'route' => 'source/index'
+                ],
+            ]
+        ],
+        [
+            'title' => 'QL đơn hàng',
+            'icon' => 'fa fa-shopping-bag',
+            'name' => ['order'],
+            'subModule' => [
+                [
+                    'title' => 'QL Đơn Hàng',
+                    'route' => 'order/index'
                 ],
             ]
         ],

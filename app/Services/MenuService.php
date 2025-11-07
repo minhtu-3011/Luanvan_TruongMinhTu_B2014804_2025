@@ -199,19 +199,21 @@ class MenuService extends BaseService implements MenuServiceInterface
 
 
 
-    public function getAndConvertMenu($menu = null,  $language = 5): array
+    public function getAndConvertMenu($menu = null, $language = 5): array
     {
 
         $menuList = $this->menuRepository->findByCondition([
             ['parent_id', '=', $menu->id]
         ], TRUE, [
             'languages' => function ($query) use ($language) {
-                $query->where('language_id', $language);
+                $query->where('language_id',  $language);
             }
         ]);
+        // dd($menuList);
+
+
         return $this->convertMenu($menuList);
     }
-
 
     public function convertMenu($menuList = null)
     {
@@ -228,6 +230,8 @@ class MenuService extends BaseService implements MenuServiceInterface
                 }
             }
         }
+
+
         return $temp;
     }
 

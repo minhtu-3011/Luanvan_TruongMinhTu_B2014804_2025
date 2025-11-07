@@ -8,7 +8,14 @@ use Illuminate\Support\Facades\Validator;
 use DateTime;
 use Carbon\Carbon;
 use App\Models\Language;
-
+use App\Http\ViewComposers\SystemComposer;
+use App\Http\ViewComposers\MenuComposer;
+use App\Http\ViewComposers\LanguageComposer;
+use App\Http\ViewComposers\CategoryComposer;
+use App\Http\ViewComposers\CartComposer;
+use App\Http\ViewComposers\WishlistComposer;
+use App\Http\ViewComposers\CustomerComposer;
+use App\Http\ViewComposers\ProductCatalogueComposer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -43,6 +50,10 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\CustomerServiceInterface' => 'App\Services\CustomerService',
         'App\Services\Interfaces\PromotionServiceInterface' => 'App\Services\PromotionService',
         'App\Services\Interfaces\CustomerCatalogueServiceInterface' => 'App\Services\CustomerCatalogueService',
+        'App\Services\Interfaces\CartServiceInterface' => 'App\Services\CartService',
+        'App\Services\Interfaces\OrderServiceInterface' => 'App\Services\OrderService',
+        'App\Services\Interfaces\ReviewServiceInterface' => 'App\Services\ReviewService',
+
 
     ];
 
@@ -77,6 +88,27 @@ class AppServiceProvider extends ServiceProvider
 
             return $endDate->greaterThan($startDate) !== false;
         });
+
+        view()->composer('*', function ($view) use ($language) {
+            $composerClasses = [
+                // SystemComposer::class,
+                MenuComposer::class,
+                LanguageComposer::class,
+                // CategoryComposer::class,
+                // CartComposer::class,
+                // WishlistComposer::class,
+                // CustomerComposer::class,
+                // AgencyComposer::class,
+                // ProductCatalogueComposer::class,
+            ];
+
+            foreach ($composerClasses as $key => $val) {
+                $composer = app()->make($val, ['language' => $language->id]);
+                $composer->compose($view);
+            }
+        });
+
+
         Schema::defaultStringLength(191);
     }
 }

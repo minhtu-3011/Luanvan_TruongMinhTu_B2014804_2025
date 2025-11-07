@@ -1,19 +1,16 @@
-@include('backend.dashboard.component.breadcrumb', ['title' => $config['seo']['create']['children'].' '. $menu->languages->first()->pivot->name])
-@if($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach($errors->all() as $error)
-                <li>{{$error}}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+
+{{-- @include('backend.dashboard.component.breadcrumb', ['title' => $config['seo']['create']['children'].' '. $menu->languages->first()->pivot->name]) --}}
+@include('backend.dashboard.component.breadcrumb', [
+    'title' => $config['seo']['create']['children'].' '. $currentMenu->languages->first()->pivot->name
+])
+@include('backend.dashboard.component.formError')
+
 @php
     $url = ($config['method'] == 'create') 
     ? route('menu.store') 
     : (($config['method'] == 'children') 
-        ? route('menu.save.children', [$menu->id]) 
-        : route('menu.update', $menu->id));
+        ? route('menu.save.children', [$currentMenu->id]) 
+        : route('menu.update', $currentMenu->id));
 
 @endphp
 

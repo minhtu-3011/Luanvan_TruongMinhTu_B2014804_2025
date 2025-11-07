@@ -21,24 +21,51 @@ class ProductCatalogueRepository extends BaseRepository implements ProductCatalo
 
     public function getProductCatalogueById(int $id = 0, $language_id = 0)
     {
-        return $this->model->select([
-            'product_catalogues.id',
-            'product_catalogues.parent_id',
-            'product_catalogues.image',
-            'product_catalogues.icon',
-            'product_catalogues.album',
-            'product_catalogues.publish',
-            'product_catalogues.follow',
-            'tb2.name',
-            'tb2.description',
-            'tb2.content',
-            'tb2.meta_title',
-            'tb2.meta_keyword',
-            'tb2.meta_description',
-            'tb2.canonical',
-        ])
+        return $this->model->select(
+            [
+                'product_catalogues.id',
+                'product_catalogues.parent_id',
+                'product_catalogues.lft',
+                'product_catalogues.rgt',
+                'product_catalogues.image',
+                'product_catalogues.icon',
+                'product_catalogues.album',
+                'product_catalogues.publish',
+                'product_catalogues.follow',
+                'product_catalogues.attribute',
+                'tb2.name',
+                'tb2.description',
+                'tb2.content',
+                'tb2.meta_title',
+                'tb2.meta_keyword',
+                'tb2.meta_description',
+                'tb2.canonical',
+            ]
+        )
             ->join('product_catalogue_language as tb2', 'tb2.product_catalogue_id', '=', 'product_catalogues.id')
             ->where('tb2.language_id', '=', $language_id)
             ->find($id);
+    }
+
+    public function getChildren($productCatalogue)
+    {
+        return $this->model->select(
+            [
+                'product_catalogues.id',
+                'product_catalogues.parent_id',
+                'product_catalogues.lft',
+                'product_catalogues.rgt',
+                'product_catalogues.image',
+                'product_catalogues.icon',
+                'product_catalogues.album',
+                'product_catalogues.publish',
+                'product_catalogues.follow',
+                'product_catalogues.attribute',
+            ]
+        )
+            ->join('product_catalogue_language as tb2', 'tb2.product_catalogue_id', '=', 'product_catalogues.id')
+            ->where('lft', '>=', $productCatalogue->lft)
+            ->where('rgt', '<=', $productCatalogue->rgt)
+            ->get();
     }
 }

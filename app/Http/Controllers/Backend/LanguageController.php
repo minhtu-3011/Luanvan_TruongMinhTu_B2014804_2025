@@ -32,6 +32,7 @@ class LanguageController extends Controller
         $perpage = max(1, (int) $request->input('perpage', 10));
 
         $languages = $this->languageService->paginate($request);
+        // dd(get_class($languages));
         // $language:paginate(10);
 
         $config = $this->config();
