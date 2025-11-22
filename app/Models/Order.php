@@ -39,24 +39,26 @@ class Order extends Model
 
     protected $table = 'orders';
 
-    public function products(){
-        return $this->belongsToMany(Product::class, 'order_product' , 'order_id', 'product_id')
-        ->withPivot(
-            'uuid',
-            'name',
-            'qty',
-            'price',
-            'priceOriginal',
-            'option',
-        );
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'order_product', 'order_id', 'product_id')
+            ->withPivot(
+                'uuid',
+                'name',
+                'qty',
+                'price',
+                'priceOriginal',
+                'option',
+            );
     }
 
-    public function order_payments(){
+    public function order_payments()
+    {
         return $this->hasMany(OrderPayment::class, 'order_id', 'id');
     }
 
-    public function provinces(){
+    public function provinces()
+    {
         return $this->hasMany(Province::class, 'code', 'province_id');
     }
-
 }

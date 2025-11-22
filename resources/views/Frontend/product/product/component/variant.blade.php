@@ -1,11 +1,15 @@
 @php
     $attributeQueryString = explode(',', request()->get('attribute_id'));
+    // dd($attributeCatalogue);
+    // dd($product->variant);
+
 @endphp
 @if(!is_null($attributeCatalogue))
     @foreach($attributeCatalogue as $key => $val)
+
     <div class="attribute">
         <div class="attribute-item attribute-color">
-            <div class="label">{{ $val->name }}: <span></span></div>
+            <div class="label">{{ $val->name }}: <span>Chưa chọn</span></div>
             @if(!is_null($val->attributes))
             <div class="attribute-value">
                 @foreach($val->attributes as $keyAttr => $attr)
@@ -13,12 +17,12 @@
                     $isActive = (is_array($attributeQueryString) && in_array($attr->id, $attributeQueryString)) || ($keyAttr == 0 && empty($attributeQueryString[0]));
                 @endphp
                 <a 
-                    class="choose-attribute {{ ($val->name == 'Màu sắc') ? 'color-item' : '' }} {{ $isActive ? 'active' : '' }}" 
+                    class="choose-attribute  {{ $isActive ? 'active' : '' }}" 
                     data-attributeid="{{ $attr->id }}" 
                     title="{{ $attr->name }}"
                 >
                     @if($val->name == 'Màu sắc')
-                        <img src="{{ $attr->image }}" alt="{{ $attr->name }}">
+                        {{ $attr->name }}
                     @else
                         {{ $attr->name }}
                     @endif

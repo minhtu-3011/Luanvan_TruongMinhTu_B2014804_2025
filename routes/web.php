@@ -38,13 +38,22 @@ use App\Http\Controllers\Backend\AttributeController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\RouterController;
 use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Frontend\CustomerController as FeCustomerController;
 use App\Http\Controllers\Frontend\Payment\VnpayController;
 use App\Http\Controllers\Frontend\Payment\MomoController;
 use App\Http\Controllers\Frontend\Payment\PaypalController;
 use App\Http\Controllers\Backend\ReviewController;
 use App\Http\Controllers\Ajax\ReviewController as AjaxReviewController;
+use App\Http\Controllers\Frontend\ProductCatalogueController as FeProductCatalogueController;
+use App\Http\Controllers\Frontend\AuthController as FeAuthController;
 
 
+//chatbot
+use App\Http\Controllers\ChatbotController;
+
+Route::middleware(['throttle:20,1'])
+    ->post('/chatbot/message', [ChatbotController::class, 'message'])
+    ->name('chatbot.message');
 //@@useController@@
 
 
@@ -52,12 +61,18 @@ use App\Http\Controllers\Ajax\ReviewController as AjaxReviewController;
 
 // frontend routers
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
+Route::get('tim-kiem' . config('apps.general.suffix'), [FeProductCatalogueController::class, 'search']);
+Route::get('thanh-toan' . config('apps.general.suffix'), [CartController::class, 'checkout'])->name('cart.checkout');
+
 Route::get('{canonical}' . config('apps.general.suffix'), [RouterController::class, 'index'])->name('router.index')->where('canonical', '[a-zA-Z0-9-]+');
 Route::get('{canonical}/trang-{page}' . config('apps.general.suffix'), [RouterController::class, 'page'])->name('router.page')->where('canonical', '[a-zA-Z0-9-]+')->where('page', '[0-9]+');
-Route::get('thanh-toan' . config('apps.general.suffix'), [CartController::class, 'checkout'])->name('cart.checkout');
+
 Route::post('cart/create', [CartController::class, 'store'])->name('cart.store');
 Route::get('cart/{code}/success' . config('apps.general.suffix'), [CartController::class, 'success'])->name('cart.success')->where(['code' => '[0-9]+']);
 Route::get('ajax/product/filter', [AjaxProductController::class, 'filter'])->name('ajax.filter');
+
+// Route::get('tim-kiem' . config('apps.general.suffix'), [FeProductCatalogueController::class, 'search'])->name('product.catalogue.search');
+
 
 
 // frontend ajax route
@@ -76,6 +91,22 @@ Route::group(['prefix' => 'review'], function () {
     Route::get('index', [ReviewController::class, 'index'])->name('review.index');
     Route::get('{id}/delete', [ReviewController::class, 'delete'])->where(['id' => '[0-9]+'])->name('review.delete');
 });
+
+
+// Customer
+Route::get('/login', [FeAuthController::class, 'index'])->name('customer.loginview');
+Route::post('/do-login', [FeAuthController::class, 'login'])
+    ->name('customer.login.submit');
+
+// Route logout
+Route::post('/customer/logout', [FeAuthController::class, 'logout'])
+    ->name('customer.logout');
+Route::get('{id}/edit', [FeCustomerController::class, 'index'])->where(['id' => '[0-9]+'])->name('customer.editfe');
+Route::post('customer/update', [FeCustomerController::class, 'update'])->name('customer.feupdate');
+Route::get('{id}/customer/order', [FeCustomerController::class, 'indexOrder'])->where(['id' => '[0-9]+'])->name('customer.feorder');
+
+
+
 
 /* VNPAY */
 Route::get('return/vnpay' . config('apps.general.suffix'), [VnpayController::class, 'vnpay_return'])->name('vnpay.momo_return');
@@ -492,17 +523,7 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
     // Route::post('customer/password/change' . config('apps.general.suffix'), [FeAuthController::class, 'changePassword'])->name('customer.password.reset');
 
 
-    // Route::group(['middleware' => ['customer']], function () {
-    //     Route::get('customer/profile' . config('apps.general.suffix'), [FeCustomerController::class, 'profile'])->name('customer.profile');
-    //     Route::post('customer/profile/update' . config('apps.general.suffix'), [FeCustomerController::class, 'updateProfile'])->name('customer.profile.update');
-    //     Route::get('customer/password/reset' . config('apps.general.suffix'), [FeCustomerController::class, 'passwordForgot'])->name('customer.password.change');
-    //     Route::post('customer/password/recovery' . config('apps.general.suffix'), [FeCustomerController::class, 'recovery'])->name('customer.password.recovery');
-    //     Route::get('customer/logout' . config('apps.general.suffix'), [FeCustomerController::class, 'logout'])->name('customer.logout');
-    //     Route::get('customer/construction' . config('apps.general.suffix'), [FeCustomerController::class, 'construction'])->name('customer.construction');
-    //     Route::get('customer/construction/{id}/product' . config('apps.general.suffix'), [FeCustomerController::class, 'constructionProduct'])->name('customer.construction.product')->where(['id' => '[0-9]+']);
-    //     Route::get('customer/warranty/check' . config('apps.general.suffix'), [FeCustomerController::class, 'warranty'])->name('customer.check.warranty');
-    //     Route::post('customer/warranty/active', [FeCustomerController::class, 'active'])->name('customer.active.warranty');
-    // });
+
 
 
     // Route::get('user/update', [UserController::class,'update'])->name('user.index')

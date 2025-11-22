@@ -8,6 +8,7 @@
 <script src="/backend/js/plugins/pace/pace.min.js"></script>
 
 <!-- jQuery UI -->
+<script src="backend/js/plugins/toastr/toastr.min.js"></script>
 
 <!-- Flot -->
 @if(isset($config['js']) && is_array($config['js']))

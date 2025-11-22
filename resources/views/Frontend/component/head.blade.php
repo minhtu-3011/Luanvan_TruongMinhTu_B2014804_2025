@@ -29,16 +29,20 @@
 <meta name="twitter:image" content="{{ $seo['meta_image'] }}" />
 
 <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+{{-- <link href="/backend/css/custom.css" rel="stylesheet"> --}}
+
 <!-- <link href="backend/css/bootstrap.min.css" rel="stylesheet"> -->
 @php
     $coreCss = [
         'backend/css/plugins/toastr/toastr.min.css',
+        'backend/css/bootstrap.css',
         'frontend/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css',
         'frontend/resources/uikit/css/uikit.modify.css',
         'frontend/resources/library/css/library.css',
         'frontend/resources/plugins/wow/css/libs/animate.css',
         'frontend/core/plugins/jquery-nice-select-1.1.0/css/nice-select.css',
         'frontend/resources/style.css',
+        // 'backend/css/style.css',
     ];
     if(isset($config['css'])){
         foreach($config['css'] as $key => $val){

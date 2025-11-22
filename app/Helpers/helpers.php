@@ -174,9 +174,20 @@ if (!function_exists('write_url')) {
         $base = rtrim(($fullDomain ? config('app.url') : ''), '/'); // loại bỏ / dư ở cuối
         $suffixText = $suffix ? config('apps.general.suffix') : '';
 
+        // dd($base);
         return $base . '/' . $canonical . $suffixText;
     }
 }
+
+if (!function_exists('sortAttributeId')) {
+    function sortAttributeId(array $attributeId = [])
+    {
+        sort($attributeId, SORT_NUMERIC);
+        $attributeId = implode(',', $attributeId);
+        return $attributeId;
+    }
+}
+
 if (!function_exists('frontend_recursive_menu')) {
     function frontend_recursive_menu(array $data = [], int $parentId = 0, int $count = 1, $type = 'html')
     {
@@ -577,5 +588,50 @@ if (!function_exists('zaloConfig')) {
             'key1' => '9phuAOYhan4urywHTh0ndEXiV3pKHr5Q',
             'key2' => 'Iyz2habzyr7AG8SgvoBCbKwKi3UzlLi3',
         ];
+    }
+}
+
+if (!function_exists('cutnchar')) {
+    function cutnchar($str = NULL, $n = 320)
+    {
+        if (strlen($str) < $n) return $str;
+        $html = substr($str, 0, $n);
+        $html = substr($html, 0, strrpos($html, ' '));
+        return $html . '...';
+    }
+}
+
+if (!function_exists('cut_string_and_decode')) {
+    function cut_string_and_decode($str = NULL, $n = 200)
+    {
+        $str = html_entity_decode($str);
+        $str = strip_tags($str);
+        $str = cutnchar($str, $n);
+        return $str;
+    }
+}
+
+if (!function_exists('execPostRequest')) {
+    function execPostRequest($url, $data)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data)
+            )
+        );
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        //execute post
+        $result = curl_exec($ch);
+        //close connection
+        curl_close($ch);
+        return $result;
     }
 }

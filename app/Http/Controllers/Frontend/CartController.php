@@ -82,6 +82,9 @@ class CartController extends FrontendController
     {
         $system = $this->system;
         $order = $this->cartService->order($request, $system);
+        // dd($order);
+
+
         if ($order['flag']) {
             if ($order['order']->method !== 'cod') {
                 $response = $this->paymentMethod($order);
@@ -89,6 +92,7 @@ class CartController extends FrontendController
                     return redirect()->away($response['url']);
                 }
             }
+
             return redirect()->route('cart.success', ['code' => $order['order']->code])->with('success', 'Đặt hàng thành công');
         }
         return redirect()->route('cart.checkout')->with('error', 'Đặt hàng không thành công. Hãy thử lại');
@@ -96,6 +100,7 @@ class CartController extends FrontendController
 
     public function success($code)
     {
+
         $order = $this->orderRepository->findByCondition([
             ['code', '=', $code],
         ], false, ['products']);

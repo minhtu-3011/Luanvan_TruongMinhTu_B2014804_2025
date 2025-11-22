@@ -33,15 +33,15 @@
                 </div>
             </div>
         </div>
-        {{-- <div class="form-row mb20">
+        <div class="form-row mb20">
             <input 
                 type="text"
                 name="email"
-                value="{{ old('email') }}"
+                value="{{ old('email', ($customer->email) ?? '' ) }}"
                 placeholder="Nhập vào Email"
                 class="input-text"
             >
-        </div> --}}
+        </div>
         <div class="form-row mb20">
             <input 
                 type="text"

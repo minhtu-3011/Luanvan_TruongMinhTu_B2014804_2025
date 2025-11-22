@@ -24,6 +24,8 @@ class PostCatalogueRepository extends BaseRepository implements PostCatalogueRep
         return $this->model->select([
             'post_catalogues.id',
             'post_catalogues.parent_id',
+            'post_catalogues.lft',
+            'post_catalogues.rgt',
             'post_catalogues.image',
             'post_catalogues.icon',
             'post_catalogues.album',

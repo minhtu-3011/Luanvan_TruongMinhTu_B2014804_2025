@@ -99,6 +99,7 @@ class ProductController extends Controller
         $variantPromotion = $this->promotionRepository->findPromotionByVariantUuid($variant->uuid);
         $variantPrice = getVariantPrice($variant, $variantPromotion);
 
+        // dd($variant);
         return response()->json([
             'variant' => $variant,
             'variantPrice' => $variantPrice,

@@ -9,7 +9,7 @@
                         use App\Enums\SlideEnum;
                     @endphp
 
-                    <div class="uk-width-large-2-3">
+                    <div class="uk-width-1-1">
                         @include('frontend.component.slide')
                     </div>
 
@@ -90,27 +90,35 @@
             </div>
         </div>
 
+        <!-- chat.blade.php -->
+        
+
+       
+
+
         @if(isset($widgets['posts']->object))
-            @foreach($widgets['posts']->object as $key => $val)
-            @php
-                $catName = $val->languages->first()->pivot->name;
-                $catCanonical = write_url($val->languages->first()->pivot->canonical);
-            @endphp
+            
             <div class="panel-news">
                 <div class="uk-container uk-container-center">
                     <div class="panel-head">
-                        <h2 class="heading-2"><span><?php echo $catName ?></span></h2>
+                        <h2 class="heading-2"><span><?php echo $widgets['posts']->name ?></span></h2>
                     </div>
                     <div class="panel-body">
-                        @if(count($val->posts))
+                        
                         <div class="uk-grid uk-grid-medium">
-                            @foreach($val->posts  as $post)
+                            
+                            @foreach($widgets['posts']->object as $post)
                             @php
+
+
                                 $name = $post->languages->first()->pivot->name;
                                 $canonical = write_url($post->languages->first()->pivot->canonical);
                                 $createdAt = convertDateTime($post->created_at, 'd/m/Y');
                                 $description = cutnchar(strip_tags($post->languages->first()->pivot->description), 100);
                                 $image = $post->image;
+
+                                // dd($canonical);
+
                             @endphp
                             <div class="uk-width-1-2 uk-width-small-1-2 uk-width-medium-1-3 uk-width-large-1-5">
                                 <div class="news-item">
@@ -127,11 +135,11 @@
                             </div>
                             @endforeach
                         </div>
-                        @endif
+                        
                     </div>
                 </div>
             </div>
-            @endforeach
+            
         @endif
 
     </div>

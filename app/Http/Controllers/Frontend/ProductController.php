@@ -47,16 +47,15 @@ class ProductController extends FrontendController
     {
         $language = $this->language;
         $product = $this->productRepository->getProductById($id, $this->language, config('apps.general.defaultPublish'));
+
         if (is_null($product)) {
             abort(404);
         }
         $product = $this->productService->combineProductAndPromotion([$id], $product, true);
-
-
+        $product = $this->productService->getAttribute($product, $this->language);
         $productCatalogue = $this->productCatalogueRepository->getProductCatalogueById($product->product_catalogue_id, $this->language);
         $breadcrumb = $this->productCatalogueRepository->breadcrumb($productCatalogue, $this->language);
         /* ------------------- */
-        $product = $this->productService->getAttribute($product, $this->language);
         $category = recursive(
             $this->productCatalogueRepository->all([
                 'languages' => function ($query) use ($language) {

@@ -13,7 +13,7 @@
                 <div class="swiper-slide">
                     <div class="slide-item">
                         <span class="image img-cover">
-                            <img src="{{ $val['image'] }}" alt="{{ $val['name'] }}">
+                            <img class="img-cover" src="{{ $val['image'] }}" alt="{{ $val['name'] }}">
                         </span>
                     </div>
                 </div>

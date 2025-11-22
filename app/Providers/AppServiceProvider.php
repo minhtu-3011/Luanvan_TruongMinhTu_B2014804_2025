@@ -17,6 +17,9 @@ use App\Http\ViewComposers\WishlistComposer;
 use App\Http\ViewComposers\CustomerComposer;
 use App\Http\ViewComposers\ProductCatalogueComposer;
 
+use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Support\Facades\View;
+
 class AppServiceProvider extends ServiceProvider
 {
 
@@ -78,6 +81,7 @@ class AppServiceProvider extends ServiceProvider
         $locale = app()->getLocale(); // vn en cn
         $language = Language::where('canonical', $locale)->first();
 
+
         Validator::extend('custom_date_format', function ($attribute, $value, $parameters, $validator) {
             return Datetime::createFromFormat('d/m/Y H:i', $value) !== false;
         });
@@ -101,6 +105,10 @@ class AppServiceProvider extends ServiceProvider
                 // AgencyComposer::class,
                 // ProductCatalogueComposer::class,
             ];
+
+            $carts = Cart::instance('shopping')->content();
+            View::share('carts', $carts);
+
 
             foreach ($composerClasses as $key => $val) {
                 $composer = app()->make($val, ['language' => $language->id]);

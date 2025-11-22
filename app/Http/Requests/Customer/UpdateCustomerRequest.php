@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Customer;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateCustomerRequest extends FormRequest
 {
@@ -21,10 +23,21 @@ class UpdateCustomerRequest extends FormRequest
      */
     public function rules(): array
     {
+        // Lấy id theo thứ tự: route param 'id' (nếu có) -> auth customer id -> null
+        $routeId = $this->route('id');
+        $authId = Auth::guard('customer')->id();
+        $customerId = $routeId ?? $authId;
+
         return [
-            'email' => 'required|string|email|unique:customers,email, '.$this->id.'|max:191',
-            'name' => 'required|string',
-            'customer_catalogue_id' => 'gt:0',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:191',
+                Rule::unique('customers', 'email')->ignore($customerId),
+            ],
+            'name' => ['required', 'string'],
+            'customer_catalogue_id' => ['required', 'integer', 'gt:0'],
         ];
     }
 

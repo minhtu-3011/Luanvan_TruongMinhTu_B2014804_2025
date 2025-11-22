@@ -56,6 +56,7 @@ class AttributeController extends Controller
             $attributes = $this->attributeRepository->findAttributeByIdArray($attributeArray, $this->language);
         }
 
+        // dd($attributes); //này hình như là hàm load Attributre để thêm lúc add sp rồi, ohhh
 
 
         $temp = [];

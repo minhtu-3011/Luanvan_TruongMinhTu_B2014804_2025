@@ -6,8 +6,14 @@ return [
             'title' => 'Dashboard',
             'icon' => 'fa fa-database',
             'name' => ['dashboard'],
-            'route' => 'dashboard/index',
-            'class' => 'special'
+
+            'subModule' => [
+                [
+                    'title' => 'Dasboard',
+                    'route' => 'dashboard/index',
+
+                ],
+            ]
         ],
 
         [
@@ -16,11 +22,11 @@ return [
             'name' => ['product', 'attribute'],
             'subModule' => [
                 [
-                    'title' => 'QL nhóm San pham',
+                    'title' => 'QL nhóm Sản phẩm',
                     'route' => 'product/catalogue/index'
                 ],
                 [
-                    'title' => 'QL San pham',
+                    'title' => 'QL Sản phẩm',
                     'route' => 'product/index'
                 ],
                 [
@@ -135,7 +141,7 @@ return [
         ],
         [
             'title' => 'QL Menu',
-            'icon' => 'fa fa-bar',
+            'icon' => 'fa fa-bars',
             'name' => ['menu'],
             'subModule' => [
                 [

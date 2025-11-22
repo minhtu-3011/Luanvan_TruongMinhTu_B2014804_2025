@@ -11,30 +11,60 @@
                     <a href="/"><img src="{{ $system['homepage_logo'] }}" alt="Logo"></a>
                 </div>
                 <div class="header-search">
-                    <form action="{{ write_url('tim-kiem') }}" class="uk-form form">
+                    <form action="{{ write_url('tim-kiem') }}" method="GET" class="uk-form form">
                         <input type="text" name="keyword" value="" class="input-text">
                         <button type="submit" value="" name="">
                             Tìm kiếm <i class="fa fa-search"></i>
                         </button>
                     </form>
+
+                    {{-- <form action="{{ route('product.catalogue.search') }}" method="GET" class="uk-form form">
+                        <input type="text" name="keyword" class="input-text">
+                        <button type="submit">Tìm kiếm <i class="fa fa-search"></i></button>
+                    </form> --}}
+
                 </div>
+
+                
+
                 <div class="header-toolbox">
                     <div class="uk-flex uk-flex-middle">
                         <div class="header-cart">
                             <div class="uk-flex uk-flex-middle">
                                 <a href="{{ write_url('thanh-toan') }}" class="cart-text">Giỏ Hàng</a>
                                 <div class="cart-mini">
-                                    <span class="number">0</span>
+                                    {{-- <span class="number">0</span> --}}
+                                     <span class="number">{{ !empty($carts) ? count($carts) : 0 }}</span>
                                     <img src="frontend/resources/img/shopping-cart.png" alt="cart image">
                                 </div>
                             </div>
                         </div>
+
+                        <div class="login-customer">
+                            @if(Auth::guard('customer')->check())
+                                <a class="header-name-cus"  href="{{route('customer.editfe', Auth::guard('customer')->user()->id)}}">
+                                {{ Auth::guard('customer')->user()->name }}
+                                </a>
+                                <form action="{{ route('customer.logout') }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    <button class="btn-logout" type="submit" class="btn">Đăng xuất</button>
+                                </form>
+                            @else
+                                <a href="{{ route('customer.loginview') }}" class="btn">Đăng nhập</a>
+                            @endif
+                        </div>
+
+                        
+
+
                         <div class="header-hotline">
                             <div class="text">Hotline</div>
                             <div class="hotline-number">{{ $system['contact_hotline'] }}</div>
                         </div>
                     </div>
                 </div>
+
+                
             </div>
         </div>
     </div>

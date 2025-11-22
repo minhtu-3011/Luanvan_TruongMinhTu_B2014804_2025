@@ -59,6 +59,7 @@ class AttributeCatalogueRepository extends BaseRepository implements AttributeCa
             ->where('tb2.language_id', '=', $language_id)
             ->where([config('apps.general.defaultPublish')])
             ->whereIn($whereInField, $whereIn)
+            // ->toSql();
             ->get();
     }
 }

@@ -196,6 +196,32 @@ class MenuService extends BaseService implements MenuServiceInterface
         }
     }
 
+    public function destroyMenu($id, $languageId)
+    {
+        DB::beginTransaction();
+        try {
+            $menu = $this->menuRepository->findById($id);
+            $this->menuRepository->forceDeleteByCondition([
+                ['lft', '>=', $menu->lft],
+                ['lft', '<=', $menu->rgt],
+            ]);
+            $this->nestedsetbie = new Nestedsetbie([
+                'table' => 'menus',
+                'foreignkey' => 'menu_id',
+                'isMenu' => TRUE,
+                'language_id' => $languageId,
+            ]);
+            $this->nestedset();
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Log::error($e->getMessage());
+            echo $e->getMessage();
+            die();
+            return false;
+        }
+    }
 
 
 

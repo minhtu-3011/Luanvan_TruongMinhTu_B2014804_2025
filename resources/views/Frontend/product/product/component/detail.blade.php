@@ -10,6 +10,11 @@
     $description = $product->description;
     $attributeCatalogue = $product->attributeCatalogue;
     $gallery = json_decode($product->album);
+
+    // dd( write_url($product->canonical) );
+    // dd(url($product->canonical));
+
+
 @endphp
 <div class="panel-body">
     <div class="uk-grid uk-grid-medium">
@@ -127,7 +132,7 @@
                
                 <div class="aside-category aside-product mt20">
                     <div class="aside-heading">Sản phẩm nổi bật</div>
-                    {{-- <div class="aside-body">
+                    <div class="aside-body">
                         @foreach($widgets['products-hl']->object as $product)
                         @php
                             $name = $product->languages->first()->pivot->name;
@@ -143,7 +148,7 @@
                             </div>
                         </div>
                         @endforeach
-                    </div> --}}
+                    </div>
                 </div>
 
             </div>
@@ -200,7 +205,7 @@
                         <div class="uk-width-1-2 uk-width-small-1-2 uk-width-medium-1-3 uk-width-large-1-5 mb20">
                        
                             <div class="product-item product">
-                                 <a href="{{ $canonical }}" class="image img-scaledown img-zoomin"><img src="{{ $image }}" alt="{{ $name }}"></a>
+                                 <a href="{{ $canonical . '.html' }}" class="image img-scaledown img-zoomin"><img src="{{ $image }}" alt="{{ $name }}"></a>
                                 <div class="info">
                                     <h3 class="title"><a href="{{ $canonical }}" title="{{ $name }}">{{ $name }}</a></h3>
                                    <div class="price">

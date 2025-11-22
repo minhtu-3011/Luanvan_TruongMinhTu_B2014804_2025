@@ -42,7 +42,7 @@ class CartService  implements CartServiceInterface
 
 
 
-    public function create($request, $language = 1)
+    public function create($request, $language = 5)
     {
         try {
             $payload = $request->input();
@@ -59,6 +59,13 @@ class CartService  implements CartServiceInterface
             if (isset($payload['attribute_id']) && count($payload['attribute_id'])) {
                 $attributeId = sortAttributeId($payload['attribute_id']);
                 $variant = $this->productVariantRepository->findVariant($attributeId, $product->id, $language);
+
+
+                // CHECK STOCK
+                if (!$this->checkStockVariant($variant->uuid, $payload['quantity'])) {
+                    return false; // báo code = 11
+                }
+
                 $variantPromotion = $this->promotionRepository->findPromotionByVariantUuid($variant->uuid);
                 $variantPrice = getVariantPrice($variant, $variantPromotion);
 
@@ -84,22 +91,84 @@ class CartService  implements CartServiceInterface
         }
     }
 
+    // public function update($request)
+    // {
+    //     try {
+    //         $payload = $request->input();
+    //         Cart::instance('shopping')->update($payload['rowId'], $payload['qty']);
+    //         $cartCaculate = $this->cartAndPromotion();
+    //         $cartItem = Cart::instance('shopping')->get($payload['rowId']);
+
+
+    //         $extract = explode('_', $cartItem->id);
+
+    //         // Nếu có variant:
+    //         if (isset($extract[1])) {
+    //             $variantUuid = $extract[1];
+    //             if (!$this->checkStockVariant($variantUuid, $payload['qty'])) {
+    //                 return false;
+    //             }
+    //         }
+
+
+    //         $cartCaculate['cartItemSubTotal'] = $cartItem->qty * $cartItem->price;
+
+    //         return $cartCaculate;
+    //     } catch (\Exception $e) {
+    //         echo $e->getMessage() . $e->getCode();
+    //         die();
+    //         return false;
+    //     }
+    // }
+
     public function update($request)
     {
         try {
             $payload = $request->input();
+
+            // Lấy item trong giỏ
+            $cartItem = Cart::instance('shopping')->get($payload['rowId']);
+            $extract = explode('_', $cartItem->id);
+
+            // Nếu có biến thể → kiểm tra tồn kho
+            if (isset($extract[1])) {
+                $variantUuid = $extract[1];
+
+                $variant = $this->productVariantRepository->findByCondition([
+                    ['uuid', '=', $variantUuid]
+                ], false);
+
+                if (!$variant) {
+                    return [
+                        'error' => true,
+                        'message' => "Biến thể sản phẩm không tồn tại.",
+                    ];
+                }
+
+                if ($variant->quantity < $payload['qty']) {
+                    return [
+                        'error' => true,
+                        'message' => "Sản phẩm '{$cartItem->name}' chỉ còn {$variant->quantity} cái trong kho.",
+                    ];
+                }
+            }
+
+            // Cập nhật số lượng giỏ hàng
             Cart::instance('shopping')->update($payload['rowId'], $payload['qty']);
+
             $cartCaculate = $this->cartAndPromotion();
             $cartItem = Cart::instance('shopping')->get($payload['rowId']);
             $cartCaculate['cartItemSubTotal'] = $cartItem->qty * $cartItem->price;
 
             return $cartCaculate;
         } catch (\Exception $e) {
-            echo $e->getMessage() . $e->getCode();
-            die();
-            return false;
+            return [
+                'error' => true,
+                'message' => $e->getMessage()
+            ];
         }
     }
+
 
     public function delete($request)
     {
@@ -116,17 +185,119 @@ class CartService  implements CartServiceInterface
     }
 
 
+    // public function order($request, $system)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         $payload = $this->request($request);
+    //         $order = $this->orderRepository->create($payload, ['products']);
+    //         if ($order->id > 0) {
+    //             $this->createOrderProduct($payload, $order, $request);
+    //             // $this->mail($order, $system);
+    //             Cart::instance('shopping')->destroy();
+    //         }
+    //         DB::commit();
+    //         return [
+    //             'order' => $order,
+    //             'flag' => TRUE,
+    //         ];
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         // Log::error($e->getMessage());
+    //         echo $e->getMessage();
+    //         die();
+    //         return [
+    //             'order' => null,
+    //             'flag' => false,
+    //         ];
+    //     }
+    // }
+
     public function order($request, $system)
     {
         DB::beginTransaction();
+
         try {
+            // Lấy giỏ hàng hiện tại
+            $carts = Cart::instance('shopping')->content();
+
+            // =============================
+            // 1. KIỂM TRA TỒN KHO TỪNG SẢN PHẨM
+            // =============================
+            foreach ($carts as $item) {
+                $extract = explode('_', $item->id);
+
+                // Nếu có biến thể → kiểm tra variant quantity
+                if (isset($extract[1])) {
+                    $variantUuid = $extract[1];
+
+                    // Lấy variant
+                    $variant = $this->productVariantRepository->findByCondition([
+                        ['uuid', '=', $variantUuid]
+                    ], false);
+
+                    if (!$variant) {
+                        throw new \Exception("Biến thể sản phẩm không tồn tại.");
+                    }
+
+                    // Check tồn kho
+                    if ($variant->quantity < $item->qty) {
+                        throw new \Exception("Sản phẩm '{$item->name}' không đủ số lượng tồn kho.");
+                    }
+                } else {
+                    // Nếu không có biến thể → KHÔNG cho đặt (vì stock không xác định)
+                    throw new \Exception("Sản phẩm '{$item->name}' không có biến thể để kiểm tra tồn kho.");
+                }
+            }
+
+            // =============================
+            // 2. TIẾP TỤC TẠO ĐƠN HÀNG SAU KHI CHECK STOCK OK
+            // =============================
             $payload = $this->request($request);
             $order = $this->orderRepository->create($payload, ['products']);
+
             if ($order->id > 0) {
                 $this->createOrderProduct($payload, $order, $request);
-                // $this->mail($order, $system);
+
+                // Cập nhật tồn kho variant (trừ đi số đã mua)
+                foreach ($carts as $item) {
+                    $extract = explode('_', $item->id);
+                    if (isset($extract[1])) {
+                        $variantUuid = $extract[1];
+                        $variant = $this->productVariantRepository->findByCondition([
+                            ['uuid', '=', $variantUuid]
+                        ], false);
+
+                        if ($variant) {
+                            $variant->quantity -= $item->qty;
+                            $variant->save();
+
+                            // Đồng bộ JSON variant trong bảng products
+                            $product = $variant->products()->first();
+                            $variantJson = json_decode($product->variant, true);
+
+                            // Tìm vị trí của biến thể theo UUID
+                            $skuList = $variantJson['sku'] ?? [];
+                            $index = array_search($variant->sku, $skuList);
+
+                            // Nếu có vị trí → trừ tồn kho trong JSON
+                            if ($index !== false) {
+                                $oldQty = (int)$variantJson['quantity'][$index];
+                                $newQty = max($oldQty - $item->qty, 0);
+                                $variantJson['quantity'][$index] = (string)$newQty;
+
+                                // Lưu lại JSON vào bảng products
+                                $product->variant = json_encode($variantJson, JSON_UNESCAPED_UNICODE);
+                                $product->save();
+                            }
+                        }
+                    }
+                }
+
+                // Xoá giỏ hàng
                 Cart::instance('shopping')->destroy();
             }
+
             DB::commit();
             return [
                 'order' => $order,
@@ -134,15 +305,15 @@ class CartService  implements CartServiceInterface
             ];
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
+
+            // TRẢ VỀ LỖI ĐỂ BÊN CONTROLLER HIỂN THỊ
             return [
-                'order' => null,
+                'order' => $e->getMessage(),
                 'flag' => false,
             ];
         }
     }
+
 
     private function mail($order, $sytem)
     {
@@ -328,5 +499,18 @@ class CartService  implements CartServiceInterface
             'discount' => $maxDiscount,
             'selectedPromotion' => $selectedPromotion
         ];
+    }
+
+
+
+    private function checkStockVariant($variantUuid, $quantity)
+    {
+        $variant = $this->productVariantRepository->findByCondition([
+            ['uuid', '=', $variantUuid]
+        ], false);
+
+        if (!$variant) return false;
+
+        return $variant->quantity >= $quantity;
     }
 }

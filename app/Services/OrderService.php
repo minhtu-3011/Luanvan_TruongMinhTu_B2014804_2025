@@ -94,6 +94,8 @@ class OrderService extends BaseService implements OrderServiceInterface
 
     public function getOrderItemImage($order)
     {
+
+        // dd($order->products);
         foreach ($order->products as $key => $val) {
             $uuid = $val->pivot->uuid;
             if (!is_null($uuid)) {
@@ -107,6 +109,38 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         return $order;
     }
+
+    public function getOrderItemImage2($orders)
+    {
+        // Nếu là Collection nhiều order
+        if ($orders instanceof \Illuminate\Support\Collection || is_array($orders)) {
+            foreach ($orders as $order) {
+                $this->setOrderProductImages($order);
+            }
+        }
+        // Nếu là 1 model duy nhất
+        elseif ($orders instanceof \App\Models\Order) {
+            $this->setOrderProductImages($orders);
+        }
+
+        return $orders;
+    }
+
+    private function setOrderProductImages($order)
+    {
+        foreach ($order->products as $val) {
+            $uuid = $val->pivot->uuid;
+            if (!is_null($uuid)) {
+                $variant = $this->productVariantRepository->findByCondition([
+                    ['uuid', '=', $uuid]
+                ]);
+                $variantImage = explode(',', $variant->album)[0] ?? null;
+                $val->image = $variantImage;
+            }
+        }
+    }
+
+
 
     public function statistic()
     {

@@ -61,12 +61,14 @@ class PromotionRepository extends BaseRepository implements PromotionRepositoryI
             ->whereIn('ppv.product_id', $productId)
             ->whereDate('promotions.endDate', '>', now())
             ->whereDate('promotions.startDate', '<', now())
-            ->groupBy('ppv.product_id')
+            ->groupBy('ppv.product_id',)
             ->get();
     }
 
     public function findPromotionByVariantUuid($uuid = '')
     {
+        DB::statement("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+
         return $this->model->select(
             'promotions.id as promotion_id',
             'promotions.discountValue',

@@ -174,6 +174,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
                 $class = loadClass($widget->model);
                 $agrument = $this->widgetAgrument($widget, $language, $params[$key]);
                 $object = $class->findByCondition(...$agrument);
+                // dd($object);
                 $model = lcfirst(str_replace('Catalogue', '', $widget->model));
                 $replace = $model . 's';
                 $service = $model . 'Service';

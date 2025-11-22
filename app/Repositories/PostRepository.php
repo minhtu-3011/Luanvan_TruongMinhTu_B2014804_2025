@@ -21,25 +21,29 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
 
     public function getPostById(int $id = 0, $language_id = 0)
     {
-        return $this->model->select([
-            'posts.id',
-            'posts.post_catalogue_id',
-            'posts.image',
-            'posts.icon',
-            'posts.album',
-            'posts.publish',
-            'posts.follow',
-            'tb2.name',          // nếu cần lấy name từ bảng language
-            'tb2.description',   // nếu có
-            'tb2.content',          // nếu cần lấy name từ bảng language
-            'tb2.meta_title',   // nếu có
-            'tb2.meta_keyword',          // nếu cần lấy name từ bảng language
-            'tb2.meta_description',
-            'tb2.canonical',   // nếu có
-            // nếu có
-        ])
+
+        return $this->model->select(
+            [
+                'posts.id',
+                'posts.post_catalogue_id',
+                'posts.image',
+                'posts.icon',
+                'posts.album',
+                'posts.publish',
+                'posts.follow',
+                // 'posts.video',
+                'tb2.name',
+                'tb2.description',
+                'tb2.content',
+                'tb2.meta_title',
+                'tb2.meta_keyword',
+                'tb2.meta_description',
+                'tb2.canonical',
+            ]
+        )
             ->join('post_language as tb2', 'tb2.post_id', '=', 'posts.id')
+            ->with('post_catalogues')
             ->where('tb2.language_id', '=', $language_id)
-            ->find($id);
+            ->find($id); // Nó bị như nào//lỗi gì lạ vlin :))) tui hoi chatgpt ma sua nhuc dau wa
     }
 }

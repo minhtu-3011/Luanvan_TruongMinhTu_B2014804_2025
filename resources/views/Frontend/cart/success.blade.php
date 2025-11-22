@@ -81,7 +81,7 @@
             <h2 class="cart-heading"><span>Thông tin nhận hàng</span></h2>
             <div class="checkout-box">
                 <div>Tên người nhận: {{ $order->fullname }}<span></span></div>
-                <!-- <div>Email: {{ $order->email }}<span></span></div> -->
+                
                 <div>Địa chỉ: {{ $order->address }}<span></span></div>
                 @php
                     $province = $order->provinces->first()->name;

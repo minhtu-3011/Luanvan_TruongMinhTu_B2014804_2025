@@ -66,7 +66,7 @@
         </div>
     </div>
     <div class="copyright uk-text-center">
-        © Copyright 2024, All Rights Reserved - Design by:  {{ $system['homepage_brand'] }}
+        TRUONG MINH TU B2014804:  {{ $system['homepage_brand'] }}
     </div>
 </footer>
 <div class="bottom-support-online">
@@ -87,7 +87,27 @@
         <div class="animated infinite zoomIn kenit-alo-circle" style="border-color:#d92329"></div>
         <div class="animated infinite pulse kenit-alo-circle-fill" style="background-color:#d92329"></div>
     </a>
+    
 </div>
+
+
+<div class="chat-icon">
+    
+    <i style="background:#d92329" class="fa fa-comments"></i>
+    
+</div>
+
+<!-- chat.blade.php -->
+<div id="chatbox" class="chatbot" >
+    <div><h2>Chat Bot</h2></div>
+    <div id="messages" style="white-space:pre-wrap; border:1px solid #ddd; padding:10px; min-height:120px;"></div>
+
+    <div class="chat-send" style="margin-top:8px;">
+        <input id="msg"  type="text" placeholder="Hỏi: hiện có bao nhiêu sản phẩm?" style="width:75%;" />
+        <button id="send">Gửi</button>
+    </div>
+</div>
+
 <div class="fix-bottom uk-position-fixed uk-hidden-large">
     <div class="uk-grid uk-grid-collapse">
         <div class="uk-width-2-4">
@@ -121,3 +141,63 @@
 <div class="noti" id="noti" style="bottom:-80px;">
    
 </div>
+<script>
+    const CHATBOT_URL = "{{ route('chatbot.message') }}";
+    const CSRF_TOKEN = "{{ csrf_token() }}";
+
+    
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const chatIcon = document.querySelector(".chat-icon");
+    const chatBox = document.getElementById("chatbox");
+
+    chatIcon.addEventListener("click", function () {
+        chatBox.classList.toggle("show");
+    });
+
+    document.getElementById("send").addEventListener("click", sendMsg);
+
+    document.getElementById("msg").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") sendMsg();
+    });
+});
+
+function appendMessage(text, who = "Bot") {
+    const box = document.getElementById("messages");
+    box.innerText += who + ": " + text + "\n\n";
+    box.scrollTop = box.scrollHeight;
+}
+
+async function sendMsg() {
+    const msgInput = document.getElementById("msg");
+    const msg = msgInput.value.trim();
+    if (!msg) return;
+    appendMessage(msg, "Bạn");
+    msgInput.value = "";
+
+    try {
+        const res = await fetch(CHATBOT_URL, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": CSRF_TOKEN,
+            },
+            body: JSON.stringify({ message: msg }),
+        });
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({ error: res.statusText }));
+            appendMessage(err.error || "Lỗi: " + res.statusText);
+            return;
+        }
+
+        const data = await res.json();
+        appendMessage(data.reply || "Không có phản hồi.");
+    } catch (e) {
+        appendMessage("Lỗi mạng hoặc server: " + e.message);
+    }
+}
+
+    </script>

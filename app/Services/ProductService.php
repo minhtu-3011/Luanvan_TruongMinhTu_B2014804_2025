@@ -88,7 +88,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             });
         }
 
-        $perPage = (!is_null($productCatalogue))  ? 24 : 24;
+        $perPage = (!is_null($productCatalogue))  ? 20 : 20;
 
         $condition = [
             'keyword' => addslashes($request->input('keyword')),
@@ -419,13 +419,39 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     public function getAttribute($product, $language)
     {
-        $product->attributeCatalogue = [];
-        if (isset($product->attribute) && !is_null($product->attribute)) {
-            $attributeCatalogueId = array_keys($product->attribute);
+        // $product->attributeCatalogue = [];
+        // if (isset($product->attribute) && !is_null($product->attribute)) {
+        //     $attributeCatalogueId = array_keys($product->attribute);
+        //     $attrCatalogues = $this->attributeCatalogueRepository->getAttributeCatalogueWhereIn($attributeCatalogueId, 'attribute_catalogues.id', $language);
+        //     /* ---- */
+        //     $attributeId = array_merge(...$product->attribute);
+        //     $attrs = $this->attributeRepository->findAttributeByIdArray($attributeId, $language);
+        //     if (!is_null($attrCatalogues)) {
+        //         foreach ($attrCatalogues as $key => $val) {
+        //             $tempAttributes = [];
+        //             foreach ($attrs as $attr) {
+        //                 if ($val->id == $attr->attribute_catalogue_id) {
+        //                     $tempAttributes[] = $attr;
+        //                 }
+        //             }
+        //             $val->attributes = $tempAttributes;
+        //         }
+        //     }
+        //     $product->attributeCatalogue = $attrCatalogues;
+        // }
+        // return $product;
+
+        if ($product->attributeCatalogue != "") {
+            // (1) Lấy các id của Attribute Catalogue --> Lấy thông tin của nó
+            $attributeCatalogueId = array_keys($product->attribute); //1
             $attrCatalogues = $this->attributeCatalogueRepository->getAttributeCatalogueWhereIn($attributeCatalogueId, 'attribute_catalogues.id', $language);
-            /* ---- */
+            // dd($attrCatalogues);
+
+            // (2) Lấy id của các thuộc tính trong Attribute Catalogue --> Lấy thông tin của nó
             $attributeId = array_merge(...$product->attribute);
             $attrs = $this->attributeRepository->findAttributeByIdArray($attributeId, $language);
+
+            // Kết hợp (1) & (2)
             if (!is_null($attrCatalogues)) {
                 foreach ($attrCatalogues as $key => $val) {
                     $tempAttributes = [];
@@ -439,11 +465,13 @@ class ProductService extends BaseService implements ProductServiceInterface
             }
             $product->attributeCatalogue = $attrCatalogues;
         }
-        return $product;
+        return $product; // để thử với cái này xem
     }
 
     public function filter($request)
     {
+
+        // DB::statement("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
 
         $perpage = $request->input('perpage');
         $param['priceQuery'] = $this->priceQuery($request);
@@ -478,7 +506,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             }
         }
         // return ($flag == true && count($attributes) > 1) ? 'variant_id' : 'products.id';
-        return 'products.id';
+        return ['products.id', 'products.price', 'products.image'];
     }
 
     private function combineFilterQuery($param)
@@ -614,6 +642,7 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     private function priceQuery($request)
     {
+
         $price = $request->input('price');
         $priceMin = str_replace('đ', '', convert_price($price['price_min']));
         $priceMax = str_replace('đ', '', convert_price($price['price_max']));

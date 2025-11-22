@@ -1,0 +1,82 @@
+.login-form {
+    width: 100%;
+    max-width: 380px;
+    margin: 40px auto;
+    padding: 30px 25px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    font-family: "Inter", sans-serif;
+}
+
+.login-form .form-heading {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    text-align: center;
+    color: #333;
+}
+
+.form-row {
+    margin-bottom: 18px;
+    position: relative;
+}
+
+.input-text {
+    width: 100%;
+    height: 45px;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    font-size: 15px;
+    transition: all 0.2s ease;
+}
+
+.input-text:focus {
+    border-color: #da2229;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+}
+
+.error-message {
+    font-size: 13px;
+    color: #e53935;
+    margin-top: 5px;
+    display: inline-block;
+}
+
+.btn.btn-primary {
+    width: 100%;
+    height: 45px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    background-color: #da2229;
+    border: none;
+    transition: 0.2s ease;
+}
+
+.btn.btn-primary:hover {
+    background-color: #c33232;
+    cursor: pointer;
+}
+
+.login-form a {
+    display: block;
+    margin-top: 12px;
+    text-align: right;
+    font-size: 14px;
+    color: #da2229;
+    text-decoration: none;
+}
+
+.login-form a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .login-form {
+        margin: 20px;
+        padding: 25px 20px;
+    }
+}

@@ -159,8 +159,7 @@ class BaseRepository implements BaseRepositoryInterface
             ->customOrderBy($orderBy ?? null)
             // ->toSql();
             ->paginate($perPage)
-            ->withQueryString()
-            ->withPath(url('/' . ($extends['path'] ?? '')));
+            ->withQueryString()->withPath(env('APP_URL') . $extend['path']);
     }
     public function createLanguagePivot($model, array $payload = [])
     {
@@ -250,14 +249,19 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function breadcrumb($model, $language)
     {
-        return $this->findByCondition([
-            ['lft', '<=', $model->lft],
-            ['rgt', '>=', $model->rgt],
-            config('apps.general.defaultPublish')
-        ], true, [
-            'languages' => function ($query) use ($language) {
-                $query->where('language_id', $language);
-            }
-        ], ['lft', 'asc']);
+        return $this->findByCondition(
+            [
+                ['lft', '<=', $model->lft],
+                ['rgt', '>=', $model->rgt],
+                config('apps.general.defaultPublish')
+            ],
+            true,
+            [
+                'languages' => function ($query) use ($language) {
+                    $query->where('language_id', $language);
+                }
+            ],
+            ['lft', 'asc']
+        );
     }
 }

@@ -88,7 +88,7 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             $postCatalogue = $this->createCatalogue($request);
             if ($postCatalogue->id > 0) {
                 $this->updateLanguageForCatalogue($postCatalogue, $request, $languageId);
-                dd($request['canonical']);
+                // dd($request['canonical']);
                 $this->createRouter($postCatalogue, $request, $this->controllerName, $languageId);
                 $this->nestedset();
             }

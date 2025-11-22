@@ -1,6 +1,8 @@
 
 @include('backend.dashboard.component.breadcrumb', ['title' => $config['seo']['detail']['title']])
-
+{{-- @php
+    dd($order);
+@endphp --}}
 <div class="order-wrapper">
     <div class="row">
         <div class="col-lg-8">

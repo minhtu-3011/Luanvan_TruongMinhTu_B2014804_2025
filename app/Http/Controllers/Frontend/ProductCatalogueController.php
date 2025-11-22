@@ -41,6 +41,7 @@ class ProductCatalogueController extends FrontendController
 
     public function index($id, $request, $page = 1)
     {
+
         $productCatalogue = $this->productCatalogueRepository->getProductCatalogueById($id, $this->language);
 
         $filters = $this->filter($productCatalogue);
@@ -112,7 +113,9 @@ class ProductCatalogueController extends FrontendController
     public function search(Request $request)
     {
 
+
         $products = $this->productRepository->search($request->input('keyword'), $this->language);
+
 
         $productId = $products->pluck('id')->toArray();
         if (count($productId) && !is_null($productId)) {

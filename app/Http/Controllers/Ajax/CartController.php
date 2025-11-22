@@ -37,15 +37,34 @@ class CartController extends FrontendController
         ]);
     }
 
+    // public function update(Request $request)
+    // {
+    //     $response = $this->cartService->update($request);
+    //     return response()->json([
+    //         'response' => $response,
+    //         'messages' => 'Cập nhật số lượng thành công',
+    //         'code' => (!$response) ? 11 : 10,
+    //     ]);
+    // }
+
     public function update(Request $request)
     {
         $response = $this->cartService->update($request);
+
+        if (isset($response['error']) && $response['error'] === true) {
+            return response()->json([
+                'code' => 11,
+                'messages' => $response['message']
+            ]);
+        }
+
         return response()->json([
             'response' => $response,
             'messages' => 'Cập nhật số lượng thành công',
-            'code' => (!$response) ? 11 : 10,
+            'code' => 10,
         ]);
     }
+
 
     public function delete(Request $request)
     {

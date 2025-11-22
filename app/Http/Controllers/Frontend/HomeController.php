@@ -43,7 +43,6 @@ class HomeController extends FrontendController
     public function index()
     {
 
-
         $config = $this->config();
         $widgets = $this->widgetService->getWidget([
             // ['keyword' => 'category', 'countObject' => true],

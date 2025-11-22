@@ -5,7 +5,7 @@
                 <input type="checkbox" value="" id="checkAll" class="input-checkbox">
             </th>
             <th >Tên Nhóm</th>
-            <th style="width: 80px">Vi tri</th>
+            <th style="width: 80px">Vị trí</th>
             @include('backend.dashboard.component.languageTh')
 
             <th style="width: 100px">Tình trạng</th>

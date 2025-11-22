@@ -44,15 +44,7 @@ class DashboardController extends Controller
         ));
     }
 
-    // private function config()
-    // {
-    //     return [
-    //         'js' => [
-    //             'backend/js/plugins/chartJs/Chart.min.js',
-    //             'backend/library/dashboard.js',
-    //         ]
-    //     ];
-    // }
+
 
     private function config()
     {
@@ -75,6 +67,8 @@ class DashboardController extends Controller
                 '/backend/js/plugins/sparkline/jquery.sparkline.min.js',
                 '/backend/js/demo/sparkline-demo.js',
                 '/backend/js/plugins/jquery-ui/jquery-ui.min.js',
+                'backend/js/plugins/chartJs/Chart.min.js',
+                'backend/library/dashboard.js',
             ]
         ];
     }

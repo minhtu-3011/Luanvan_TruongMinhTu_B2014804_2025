@@ -60,6 +60,11 @@ class CustomerService extends BaseService implements CustomerServiceInterface
         }
     }
 
+    public function login($request)
+    {
+        $this->create($request);
+    }
+
 
     public function update($id, $request)
     {

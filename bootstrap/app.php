@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web([
             \App\Http\Middleware\SetLocale::class,
+            \App\Http\Middleware\InitSession::class,
             // \App\Http\Middleware\SetDefaultLocale::class,
         ]);
 
@@ -21,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'locale' => \App\Http\Middleware\SetLocale::class,
             'admin'  => \App\Http\Middleware\AuthenticateMiddleware::class,
             'backend_default_locale' => \App\Http\Middleware\SetDefaultLocale::class,
+            'init_session' => \App\Http\Middleware\InitSession::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {})

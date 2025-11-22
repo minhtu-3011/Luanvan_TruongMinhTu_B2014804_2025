@@ -4,6 +4,7 @@
             <i class="fi fi-rs-cross"></i>
         </div>
         <div class="filter-content-container">
+            
             {{-- @dd($filters) --}}
             @if(!is_null($filters))
                 @foreach($filters as $key => $val)

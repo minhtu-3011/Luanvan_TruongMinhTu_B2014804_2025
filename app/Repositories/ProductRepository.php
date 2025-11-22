@@ -21,6 +21,94 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         $this->model = $model;
     }
 
+    public function search($keyword, $language_id)
+    {
+        return $this->model->select(
+            [
+                'products.id',
+                'products.product_catalogue_id',
+                'products.image',
+                'products.icon',
+                'products.album',
+                'products.publish',
+                'products.follow',
+                'products.price',
+                'products.code',
+                'products.made_in',
+                'products.attributeCatalogue',
+                'products.attribute',
+                'products.variant',
+                'tb2.name',
+                'tb2.description',
+                'tb2.content',
+                'tb2.meta_title',
+                'tb2.meta_keyword',
+                'tb2.meta_description',
+                'tb2.canonical',
+            ]
+        )
+            ->join('product_language as tb2', 'tb2.product_id', '=', 'products.id')
+            ->with([
+                'product_catalogues',
+                'product_variants' => function ($query) use ($language_id) {
+                    $query->with(['attributes' => function ($query) use ($language_id) {
+                        $query->with(['attribute_language' => function ($query) use ($language_id) {
+                            $query->where('language_id', '=', $language_id);
+                        }]);
+                    }]);
+                },
+                'reviews'
+            ])
+            ->where('tb2.language_id', '=', $language_id)
+            ->where('products.publish', '=', 1)
+            ->where('tb2.name', 'LIKE', '%' . $keyword . '%')
+            ->get();
+    }
+
+    public function wishlist($ids, $language_id)
+    {
+        return $this->model->select(
+            [
+                'products.id',
+                'products.product_catalogue_id',
+                'products.image',
+                'products.icon',
+                'products.album',
+                'products.publish',
+                'products.follow',
+                'products.price',
+                'products.code',
+                'products.made_in',
+                'products.attributeCatalogue',
+                'products.attribute',
+                'products.variant',
+                'tb2.name',
+                'tb2.description',
+                'tb2.content',
+                'tb2.meta_title',
+                'tb2.meta_keyword',
+                'tb2.meta_description',
+                'tb2.canonical',
+            ]
+        )
+            ->join('product_language as tb2', 'tb2.product_id', '=', 'products.id')
+            ->with([
+                'product_catalogues',
+                'product_variants' => function ($query) use ($language_id) {
+                    $query->with(['attributes' => function ($query) use ($language_id) {
+                        $query->with(['attribute_language' => function ($query) use ($language_id) {
+                            $query->where('language_id', '=', $language_id);
+                        }]);
+                    }]);
+                },
+                'reviews'
+            ])
+            ->where('tb2.language_id', '=', $language_id)
+            ->where('products.publish', '=', 2)
+            ->whereIn('products.id', $ids)
+            ->get();
+    }
+
     public function getProductById(int $id = 0, $language_id = 0)
     {
         return $this->model->select([
@@ -71,7 +159,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         $query->select([
             'products.id',
             'products.image',
-            // 'products.warranty',
             'tb2.name',
             'tb3.uuid',
             'tb3.id as product_variant_id',
@@ -118,7 +205,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             }
         }
 
-        $query->where('products.publish', '=', 2);
+        $query->where('products.publish', '=', 1);
 
         if (isset($param['where']) && count($param['where'])) {
             foreach ($param['where'] as $key => $val) {
