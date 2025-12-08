@@ -65,7 +65,7 @@
     </div>
 </div>
 <div class="ibox">
-    <div class="ibox-title">Chon anh dai dien</div>
+    <div class="ibox-title">Chọn ảnh đại diện</div>
     <div class="ibox-content">
         <div class="row mb10">
             <div class="col-lg-12">

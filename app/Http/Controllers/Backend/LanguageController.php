@@ -78,7 +78,7 @@ class LanguageController extends Controller
     public function store(StoreLanguageRequest $request)
     {
         if ($this->languageService->create($request)) {
-            return redirect()->route('language.index')->with('success', 'Them moi ban ghi thanh cong');
+            return redirect()->route('language.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('language.index')->with('error', 'them moi ban ghi khong thanh cong');
     }

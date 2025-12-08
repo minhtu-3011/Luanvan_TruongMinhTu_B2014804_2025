@@ -94,15 +94,18 @@ Route::group(['prefix' => 'review'], function () {
 
 
 // Customer
-Route::get('/login', [FeAuthController::class, 'index'])->name('customer.loginview');
+Route::get('/login', [FeAuthController::class, 'loginview'])->name('customer.loginview');
+Route::get('/register', [FeAuthController::class, 'registerview'])->name('customer.registerview');
 Route::post('/do-login', [FeAuthController::class, 'login'])
     ->name('customer.login.submit');
-
+Route::post('/do-register', [FeAuthController::class, 'register'])
+    ->name('customer.register.submit');
 // Route logout
 Route::post('/customer/logout', [FeAuthController::class, 'logout'])
     ->name('customer.logout');
 Route::get('{id}/edit', [FeCustomerController::class, 'index'])->where(['id' => '[0-9]+'])->name('customer.editfe');
 Route::post('customer/update', [FeCustomerController::class, 'update'])->name('customer.feupdate');
+Route::get('{id}/customer/orderlist', [FeCustomerController::class, 'orderlist'])->where(['id' => '[0-9]+'])->name('customer.orderlist');
 Route::get('{id}/customer/order', [FeCustomerController::class, 'indexOrder'])->where(['id' => '[0-9]+'])->name('customer.feorder');
 
 

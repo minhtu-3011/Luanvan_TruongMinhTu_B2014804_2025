@@ -91,7 +91,7 @@ class AttributeCatalogueController extends Controller
     public function store(StoreAttributeCatalogueRequest $request)
     {
         if ($this->attributeCatalogueService->create($request, $this->language)) {
-            return redirect()->route('attribute.catalogue.index')->with('success', 'Them moi ban ghi thanh cong');
+            return redirect()->route('attribute.catalogue.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('attribute.catalogue.index')->with('error', 'them moi ban ghi khong thanh cong');
     }

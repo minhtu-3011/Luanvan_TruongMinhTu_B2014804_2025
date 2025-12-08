@@ -77,7 +77,7 @@ class GenerateController extends Controller
     public function store(StoreGenerateRequest $request)
     {
         if ($this->generateService->create($request)) {
-            return redirect()->route('generate.index')->with('success', 'Them moi ban ghi thanh cong');
+            return redirect()->route('generate.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('generate.index')->with('error', 'them moi ban ghi khong thanh cong');
     }

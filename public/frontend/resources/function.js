@@ -358,64 +358,40 @@
     HT.showFakeOrder = () => {
         let randomData = [
             {
-                img: "http://vphome24.com/frontend/resources/img/ao-thun-nam-trung-nien-pixi-10-500x500.jpg",
+                img: "/public/userfiles/images/languages/5x5.png",
                 name: "Phạm Thanh Tùng - Bình Dương",
                 hour: "35 phút trước",
                 message: "Shop ơi có miễn phí ship tới Cao Bằng không ạ?",
             },
             {
-                img: "http://vphome24.com/frontend/resources/img/ao-thun-nam-trung-nien-pixi-10-500x500.jpg",
+                img: "/public/userfiles/images/languages/5x5.png",
                 name: "Nguyễn Văn A - Hà Nội",
                 hour: "1 giờ trước",
                 message: "Có thể giao hàng tới Hải Phòng không?",
             },
             {
-                img: "http://vphome24.com/frontend/resources/img/ao-thun-nam-trung-nien-pixi-10-500x500.jpg",
+                img: "/public/userfiles/images/languages/5x5.png",
                 name: "Trần Thị B - TP.HCM",
                 hour: "2 giờ trước",
                 message: "Sản phẩm này có sẵn size L không?",
             },
             {
-                img: "http://vphome24.com/frontend/resources/img/ao-thun-nam-trung-nien-pixi-10-500x500.jpg",
+                img: "/public/userfiles/images/languages/5x5.png",
                 name: "Lê Văn C - Đà Nẵng",
                 hour: "3 giờ trước",
                 message: "Em muốn đặt mua sản phẩm này.",
             },
             {
-                img: "http://vphome24.com/frontend/resources/img/ao-thun-nam-trung-nien-pixi-10-500x500.jpg",
+                img: "/public/userfiles/images/languages/5x5.png",
                 name: "Phạm Thị D - Hà Tĩnh",
                 hour: "4 giờ trước",
                 message: "Có màu sắc khác không ạ?",
             },
             {
-                img: "http://vphome24.com/frontend/resources/img/ao-thun-nam-trung-nien-pixi-10-500x500.jpg",
+                img: "/public/userfiles/images/languages/5x5.png",
                 name: "Hoàng Văn E - Nghệ An",
                 hour: "5 giờ trước",
                 message: "Shop có chương trình giảm giá không ạ?",
-            },
-            {
-                img: "http://vphome24.com/frontend/resources/img/ao-thun-nam-trung-nien-pixi-10-500x500.jpg",
-                name: "Nguyễn Văn F - Quảng Ninh",
-                hour: "6 giờ trước",
-                message: "Có thể đổi size không ạ?",
-            },
-            {
-                img: "http://vphome24.com/frontend/resources/img/ao-thun-nam-trung-nien-pixi-10-500x500.jpg",
-                name: "Trần Thị G - Hải Phòng",
-                hour: "7 giờ trước",
-                message: "Shop có hỗ trợ thanh toán qua Zalo không ạ?",
-            },
-            {
-                img: "http://vphome24.com/frontend/resources/img/ao-thun-nam-trung-nien-pixi-10-500x500.jpg",
-                name: "Lê Văn H - Vũng Tàu",
-                hour: "8 giờ trước",
-                message: "Có thể hủy đơn hàng được không ạ?",
-            },
-            {
-                img: "http://vphome24.com/frontend/resources/img/ao-thun-nam-trung-nien-pixi-10-500x500.jpg",
-                name: "Nguyễn Thị I - Nha Trang",
-                hour: "9 giờ trước",
-                message: "Sản phẩm này còn hàng không ạ?",
             },
         ];
 

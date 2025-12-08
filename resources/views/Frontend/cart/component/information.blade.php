@@ -15,7 +15,7 @@
                     <input 
                         type="text"
                         name="fullname"
-                        value="{{ old('fullname') }}"
+                        value="{{ old('fullname', $customer->name ?? '') }}"
                         placeholder="Nhập vào Họ Tên"
                         class="input-text"
                     >
@@ -26,7 +26,7 @@
                     <input 
                         type="text"
                         name="phone"
-                        value="{{ old('phone') }}"
+                        value="{{ old('phone', $customer->phone ?? '') }}"
                         placeholder="Nhập vào Số điện thoại"
                         class="input-text"
                     >

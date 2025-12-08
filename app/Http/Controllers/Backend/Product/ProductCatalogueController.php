@@ -91,7 +91,7 @@ class ProductCatalogueController extends Controller
     public function store(StoreProductCatalogueRequest $request)
     {
         if ($this->productCatalogueService->create($request, $this->language)) {
-            return redirect()->route('product.catalogue.index')->with('success', 'Them moi ban ghi thanh cong');
+            return redirect()->route('product.catalogue.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('product.catalogue.index')->with('error', 'them moi ban ghi khong thanh cong');
     }

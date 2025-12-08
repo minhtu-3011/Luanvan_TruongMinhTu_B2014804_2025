@@ -52,6 +52,8 @@ class CartController extends FrontendController
 
     public function checkout()
     {
+        $customer = auth('customer')->user();
+        // dd($customer);
         $provinces = $this->provinceRepository->all();
         $carts = Cart::instance('shopping')->content();
         $carts = $this->cartService->remakeCart($carts);
@@ -75,6 +77,7 @@ class CartController extends FrontendController
             'carts',
             'cartPromotion',
             'cartCaculate',
+            'customer'
         ));
     }
 

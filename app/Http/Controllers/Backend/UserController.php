@@ -81,7 +81,7 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         if ($this->userService->create($request)) {
-            return redirect()->route('user.index')->with('success', 'Them moi ban ghi thanh cong');
+            return redirect()->route('user.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('user.index')->with('error', 'them moi ban ghi khong thanh cong');
     }

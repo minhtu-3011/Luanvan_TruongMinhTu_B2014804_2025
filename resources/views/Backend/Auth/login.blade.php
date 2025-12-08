@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>INSPINIA | Login 2</title>
+    <title>Đăng nhập hệ thống</title>
 
     <link href="/backend/css/bootstrap.min.css" rel="stylesheet">
     <link href="/backend/font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -23,75 +23,63 @@
         <div class="row">
 
             <div class="col-md-6">
-                <h2 class="font-bold">Welcome to IN+</h2>
+                <h2 class="font-bold">Chào mừng bạn đến với hệ thống quản trị</h2>
 
                 <p>
-                    Perfectly designed and precisely prepared admin theme with over 50 pages with extra new web app
-                    views.
+                    Hệ thống quản trị dành cho website thương mại điện tử.
                 </p>
-
                 <p>
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-                    industry's standard dummy text ever since the 1500s.
+                    Vui lòng đăng nhập để tiếp tục quản lý sản phẩm, đơn hàng và các chức năng khác.
                 </p>
-
-                <p>
-                    When an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                </p>
-
-                <p>
-                    <small>It has survived not only five centuries, but also the leap into electronic typesetting,
-                        remaining essentially unchanged.</small>
-                </p>
-
             </div>
+
             <div class="col-md-6">
                 <div class="ibox-content">
                     <form class="m-t" method="POST" role="form" action="{{ route('auth.login') }}">
-
-
                         @csrf
+
                         <div class="form-group">
-                            <input type="text" name="email" class="form-control" placeholder="Username" required=""
-                                value="{{old('email')}}">
+                            <input type="text" name="email" class="form-control" placeholder="Email hoặc tên đăng nhập"
+                                required value="{{ old('email') }}">
                             @if ($errors->has('email'))
                                 <span class="error-message"> *
                                     {{ $errors->first('email') }}
                                 </span>
                             @endif
-
                         </div>
+
                         <div class="form-group">
-                            <input type="password" name="password" class="form-control" placeholder="Password"
-                                required="">
+                            <input type="password" name="password" class="form-control" placeholder="Mật khẩu" required>
                             @if ($errors->has('password'))
                                 <span class="error-message"> *
                                     {{ $errors->first('password') }}
                                 </span>
                             @endif
                         </div>
+
                         <button type="submit" class="btn btn-primary block full-width m-b">Đăng nhập</button>
 
                         <a href="#">
-                            <small>Forgot password?</small>
+                            <small>Quên mật khẩu?</small>
                         </a>
 
-
-
                     </form>
+
                     <p class="m-t">
-                        <small>Inspinia we app framework base on Bootstrap 3 &copy; 2025</small>
+                        <small>Hệ thống quản trị &copy; {{ date('Y') }}</small>
                     </p>
+
                 </div>
             </div>
+
         </div>
-        <hr />public/backend/
+        <hr />
         <div class="row">
             <div class="col-md-6">
-                Copyright Example Company
+                © {{ date('Y') }} Truong Minh Tu B2014804
             </div>
             <div class="col-md-6 text-right">
-                <small>© 2014-2015</small>
+                <small>Phiên bản quản trị</small>
             </div>
         </div>
     </div>

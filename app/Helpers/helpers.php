@@ -1,4 +1,21 @@
 <?php
+
+if (!function_exists('generateStar')) {
+    function generateStar($rating)
+    {
+        $rating = max(1, min(5, $rating));
+        $output = '<div class="review-star">';
+        for ($i = 1; $i <= $rating; $i++) {
+            $output .= '<i class="fa fa-star"></i>';
+        }
+        for ($i = $rating + 1; $i <= 5; $i++) {
+            $output .= '<i class="fa fa-star-o"></i>';
+        }
+        $output .= '</div>';
+        return $output;
+    }
+}
+
 if (!function_exists('convertRevenueChartData')) {
     function convertRevenueChartData($chartData, $data = 'monthly_revenue', $label = 'month', $text = 'Tháng')
     {
@@ -85,7 +102,7 @@ if (!function_exists('getPrice')) {
                 $result['priceSale'] = getPromotionPrice($product->price, $product->promotions->discount);
             }
         }
-        $result['html'] .= '<div class="price uk-flex uk-flex-middle mt10">';
+        $result['html'] .= '<div class="price  mt10">';
         $result['html'] .= '<div class="price-sale">' . (($result['priceSale'] > 0) ? convert_price($result['priceSale'], true) : convert_price($result['price'], true)) . 'đ</div>';
         if ($result['priceSale'] > 0) {
             $result['html'] .= '<div class="price-old uk-flex uk-flex-middle">' . convert_price($result['price'], true) . 'đ <div class="percent"><div class="percent-value">-' . $result['percent'] . '%</div></div></div>';
@@ -202,6 +219,8 @@ if (!function_exists('frontend_recursive_menu')) {
                     $html .= '<a href="' . (($name == 'Trang chủ') ? '.' : $canonical) . '" title="' . $name . '">' . $name . '</a>';
                     if (count($val['children'])) {
                         $html .= '<div class="dropdown-menu">';
+                        $html .= '<div class="hidden-fix-hover">';
+                        $html .= '</div>';
                         $html .= '<ul class="uk-list uk-clearfix menu-style ' . $ulClass . '">';
                         $html .= frontend_recursive_menu($val['children'], $val['item']->parent_id,  $count + 1, $type);
                         $html .= '</ul>';

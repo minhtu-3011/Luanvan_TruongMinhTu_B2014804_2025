@@ -1267,3 +1267,30 @@ div.edit {
 .construction-product-box {
     margin-top: 0 !important;
 }
+
+.qty-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.low-qty {
+    display: block;
+    text-align: center;
+    color: #fff;
+    background: #e63946 !important; /* đỏ đậm */
+}
+
+.alert {
+    z-index: 20000;
+}
+
+.fl-wrapper {
+    z-index: 20000 !important;
+}
+
+.ajax-search-result {
+    z-index: 20000 !important;
+    max-height: 200px; /* chiều cao tối đa bạn muốn */
+    overflow-y: auto; /* xuất hiện thanh cuộn dọc khi vượt */
+}

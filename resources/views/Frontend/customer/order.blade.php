@@ -119,7 +119,6 @@
                 <div class="ibox-title">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <span>Ghi chú</span>
-                        <div class="edit span edit-order" data-target="description">Sửa</div>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -132,7 +131,6 @@
                 <div class="ibox-title">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <h5>Thông tin khách hàng</h5>
-                        <div class="edit span edit-order" data-target="customerInfo">Sửa</div>
                     </div>
                 </div>
                 <div class="ibox-content order-customer-information">

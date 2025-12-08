@@ -35,6 +35,8 @@
             </div>
         </div>
 
+
+
         @if(isset($widgets['flash-sale']))
             <div class="panel-flash-sale" id="#flash-sale">
                 <div class="uk-container uk-container-center">

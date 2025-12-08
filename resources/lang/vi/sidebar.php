@@ -3,13 +3,13 @@
 return [
     'module' => [
         [
-            'title' => 'Dashboard',
+            'title' => 'Trang tổng quan',
             'icon' => 'fa fa-database',
             'name' => ['dashboard'],
 
             'subModule' => [
                 [
-                    'title' => 'Dasboard',
+                    'title' => 'Trang tổng quan',
                     'route' => 'dashboard/index',
 
                 ],

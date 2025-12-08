@@ -148,6 +148,9 @@ class BaseRepository implements BaseRepositoryInterface
 
     ) {
         $query = $this->model->select($column);
+        if (!empty($condition['phone'])) {
+            $query->where('phone', $condition['phone']);
+        }
         return $query
             ->keyword($condition['keyword'] ?? null)
             ->publish($condition['publish'] ?? null)

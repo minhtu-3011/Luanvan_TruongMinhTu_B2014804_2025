@@ -16,12 +16,14 @@
     @csrf
     <div class="infor-customer wrapper wrapper-content animated fadeInRight">
         <div class="row" style="margin-top: 20px;">
+            <div style="display: flex; justify-content: flex-end;">
+                <a class="btn-orderlist" href="{{route('customer.orderlist', $customer->phone)}}">Xem đơn hàng</a>
+            </div>  
             <div class="col-lg-3">
                 <div class="panel-head">
+                    
                     <div class="panel-title">Thông tin chung</div>
-                    <div>
-                        <a href="{{route('customer.feorder', $customer->phone)}}">Xem đơn hàng</a>
-                    </div>
+                    
                 </div>
             </div>
             <div class="col-lg-9">

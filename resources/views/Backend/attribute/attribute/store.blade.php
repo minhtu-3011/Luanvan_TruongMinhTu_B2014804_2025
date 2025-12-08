@@ -20,7 +20,6 @@
 
                     </div>
                 </div>
-                @include('backend.dashboard.component.album')
                 @include('backend.dashboard.component.seo', ['model' => ($attribute) ?? null] )
 
             </div>

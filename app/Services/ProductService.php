@@ -357,6 +357,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             'products.image',
             'products.order',
             'products.price',
+            'products.variant',
             'tb2.name',
             'tb2.canonical',
         ];

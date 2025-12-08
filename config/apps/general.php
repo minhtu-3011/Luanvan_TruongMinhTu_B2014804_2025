@@ -3,8 +3,8 @@
 return [
     'publish' => [
         '0' => 'Chọn xuất bản',
-        '1' => 'Không xuất bản',
-        '2' => 'Xuất bản',
+        '2' => 'Không xuất bản',
+        '1' => 'Xuất bản',
     ],
     'follow' => [
         '0' => 'Chọn điều hướng',

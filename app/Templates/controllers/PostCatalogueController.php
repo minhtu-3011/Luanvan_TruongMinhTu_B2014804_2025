@@ -91,7 +91,7 @@ class {$class}CatalogueController extends Controller
     public function store(Store{$class}CatalogueRequest $request)
     {
         if ($this->{module}CatalogueService->create($request, $this->language)) {
-            return redirect()->route('{module}.catalogue.index')->with('success', 'Them moi ban ghi thanh cong');
+            return redirect()->route('{module}.catalogue.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('{module}.catalogue.index')->with('error', 'them moi ban ghi khong thanh cong');
     }

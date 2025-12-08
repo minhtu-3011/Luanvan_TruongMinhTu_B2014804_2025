@@ -51,7 +51,12 @@
                                 <button type="submit" class="btn btn-primary block full-width m-b">
                                     Đăng nhập
                                 </button>
-                                <a href="">Quên mật khẩu?</a>
+                                <div>
+                                     <a href="{{ route('customer.registerview') }}" class="btn btn-primary full-width m-b register-btn" >
+                                    Đăng ký
+                                    </a>
+                                    <a href="">Quên mật khẩu?</a>
+                                </div>
                             </div>
                         </form>
 

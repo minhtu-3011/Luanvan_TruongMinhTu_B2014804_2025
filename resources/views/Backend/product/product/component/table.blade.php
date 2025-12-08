@@ -5,7 +5,7 @@
                 <input type="checkbox" value="" id="checkAll" class="input-checkbox">
             </th>
             <th >Tên Nhóm</th>
-            <th style="width: 80px">Vi tri</th>
+            <th style="width: 80px">Số lượng</th>
             @include('backend.dashboard.component.languageTh')
 
             <th style="width: 100px">Tình trạng</th>
@@ -38,8 +38,19 @@
                             @endforeach
                         </div>
                     </td>
-                    <td>
-                        <input value="{{$product->order}}" type="text" name="order" class="form-control sort-order" data-id="{{$product->id}}" data-model="{{$config['model']}}">
+                    <td class="text-center">
+                        @php
+                            $variant = is_array($product->variant) ? $product->variant : json_decode($product->variant, true) ?? [];
+                            $totalQty = array_sum(array_map('intval', $variant['quantity'] ?? []));
+                        @endphp
+
+                        <span class="qty-badge {{ $totalQty < 5 ? 'low-qty' : '' }}">
+                            {{ $totalQty }}
+                        </span>
+
+                        @if($totalQty < 5)
+                            <small class="text-danger d-block">⚠ Sắp hết hàng</small>
+                        @endif
                     </td>
                     @include('backend.dashboard.component.languageTd', ['model' => $product, 'modeling' => 'Product'])
 

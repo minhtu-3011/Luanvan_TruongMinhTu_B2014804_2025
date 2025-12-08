@@ -330,4 +330,13 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             ->orderBy('id', 'DESC')
             ->paginate($perPage);
     }
+
+    public function findOrdersByPhone($phone, $relations = [])
+    {
+        return $this->model
+            ->with($relations)
+            ->where('phone', $phone)
+            ->orderBy('id', 'DESC')
+            ->get();
+    }
 }

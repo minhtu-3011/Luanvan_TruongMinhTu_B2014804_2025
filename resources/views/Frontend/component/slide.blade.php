@@ -6,8 +6,8 @@
 @if(!empty($slides[$slideKeyword]['item']))
 <div class="panel-slide page-setup" data-setting="{{ json_encode($slides[$slideKeyword]['setting'] ?? []) }}">
     <div class="swiper-container">
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
+        <div style="display: none" class="swiper-button-next"></div>
+        <div style="display: none" class="swiper-button-prev"></div>
         <div class="swiper-wrapper">
             @foreach($slides[$slideKeyword]['item'] ?? [] as $key => $val)
                 <div class="swiper-slide">

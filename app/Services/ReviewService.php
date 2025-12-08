@@ -45,15 +45,19 @@ class ReviewService extends BaseService implements ReviewServiceInterface
         DB::beginTransaction();
         try {
             $payload = $request->except('_token');
-            // dd($payload);
             $review = $this->reviewRepository->create($payload);
+            // dd($payload);
+
             $this->reviewNestedset = new ReviewNested([
                 'table' => 'reviews',
                 'reviewable_type' => $payload['reviewable_type']
             ]);
             $this->reviewNestedset->Get('level ASC, order ASC');
+
             $this->reviewNestedset->Recursive(0, $this->reviewNestedset->Set());
+
             $this->reviewNestedset->Action();
+
             DB::commit();
             return [
                 'code' => 10,

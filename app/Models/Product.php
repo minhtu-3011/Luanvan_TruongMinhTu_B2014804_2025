@@ -31,7 +31,6 @@ class Product extends Model
     ];
     protected $casts = [
         'attribute' => 'json',
-
     ];
 
     protected $table = 'products';

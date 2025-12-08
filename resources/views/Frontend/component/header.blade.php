@@ -42,6 +42,9 @@
 
                         <div class="login-customer">
                             @if(Auth::guard('customer')->check())
+                            @php
+                                // dd(Auth::guard('customer')->user()->id);
+                            @endphp
                                 <a class="header-name-cus"  href="{{route('customer.editfe', Auth::guard('customer')->user()->id)}}">
                                 {{ Auth::guard('customer')->user()->name }}
                                 </a>

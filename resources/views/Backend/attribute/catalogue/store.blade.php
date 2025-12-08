@@ -19,7 +19,6 @@
                         @include('backend.dashboard.component.content', ['model' => ($attributeCatalogue) ?? null])
                     </div>
                 </div>
-                @include('backend.dashboard.component.album', ['model' => ($attributeCatalogue) ?? null])
                 @include('backend.dashboard.component.seo', ['model' => ($attributeCatalogue) ?? null] )
 
 

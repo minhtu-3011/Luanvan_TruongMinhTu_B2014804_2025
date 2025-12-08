@@ -59,8 +59,6 @@ class ProductController extends Controller
 
         $products = $this->productService->paginate($request, $this->language);
         // dd($products);
-        // $product:paginate(10);
-
         $config = $this->config();
         $config["seo"] = config('apps.product');
         $template = 'backend.product.product.index';
@@ -101,7 +99,7 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         if ($this->productService->create($request, $this->language)) {
-            return redirect()->route('product.index')->with('success', 'Them moi ban ghi thanh cong');
+            return redirect()->route('product.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('product.index')->with('error', 'them moi ban ghi khong thanh cong');
     }

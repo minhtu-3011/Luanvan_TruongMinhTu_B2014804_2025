@@ -55,6 +55,20 @@ class OrderService extends BaseService implements OrderServiceInterface
         return $orders;
     }
 
+    public function paginateCustomer($request, $customer)
+    {
+        $condition['phone'] = $customer->phone;
+
+        return $this->orderRepository->pagination(
+            $this->paginateSelect(),
+            $condition,
+            $request->integer('perpage'),
+            ['path' => 'customer/orderlist'],
+            ['id', 'desc'],
+        );
+    }
+
+
     public function update($request)
     {
         DB::beginTransaction();

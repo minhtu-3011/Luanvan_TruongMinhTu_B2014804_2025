@@ -4,6 +4,7 @@
     $starPercent = ($totalReviews == 0) ? '0' : $totalRate/5*100;
 
     $fiveStar = $model->reviews()->where('score', 5)->count();
+    // dd($reviewable);
 @endphp
 <div class="review-container">
     <div class="panel-head">

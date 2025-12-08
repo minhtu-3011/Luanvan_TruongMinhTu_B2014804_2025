@@ -96,7 +96,7 @@ class CustomerController extends FrontendController
     }
 
 
-    public function indexOrder(string $phone)
+    public function indexOrder(int $id)
     {
 
         // Controller
@@ -106,7 +106,11 @@ class CustomerController extends FrontendController
                 'name' => $item->name,
             ];
         })->values()->toArray(); // Bắt buộc chuyển sang array
-        $order = $this->orderRepository->findOrderByPhone($phone, ['products']);
+        $order = $this->orderRepository->getOrderById($id);
+
+        if (!$order) {
+            abort(404);
+        }
 
         $order = $this->orderService->getOrderItemImage2($order);
         $config = [
@@ -135,6 +139,53 @@ class CustomerController extends FrontendController
             'system',
         ));
     }
+
+    public function orderlist(string $phone)
+    {
+        // Lấy tỉnh thành
+        $provinces = Province::all()->map(function ($item) {
+            return [
+                'id' => $item->code,
+                'name' => $item->name,
+            ];
+        })->values()->toArray();
+
+        // Lấy danh sách đơn theo phone + paginate
+        $orders = $this->orderRepository->findOrdersByPhone($phone, ['products']);
+
+        // Xử lý image variant trong từng order
+        $orders = $this->orderService->getOrderItemImage2($orders);
+        $system = $this->system;
+        $config = [
+            'css' => [
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
+                '/backend/css/custom.css'
+            ],
+            'js' => [
+                'backend/library/order.js',
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+            ],
+        ];
+
+        $seo = [
+            'meta_title'        => $this->system['seo_meta_title'],
+            'meta_keyword'      => $this->system['seo_meta_keyword'],
+            'meta_description'  => $this->system['seo_meta_description'],
+            'meta_image'        => $this->system['seo_meta_images'],
+            'canonical'         => config('app.url'),
+        ];
+
+        return view('frontend.customer.orderlist', compact(
+            'orders',
+            'provinces',
+            'config',
+            'seo',
+            'system'
+        ));
+    }
+
+
+
 
 
 

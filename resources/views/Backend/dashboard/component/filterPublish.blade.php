@@ -1,5 +1,5 @@
 @php
-    $publishArray = ['Không xuất bản', 'Xuất bản'];
+    $publishArray = ['Xuất bản', 'Không xuất bản'];
     // $publish = request('publish')?:old('publish');
     $publish = request('publish') ?? old('publish') ?? '-1';
 @endphp

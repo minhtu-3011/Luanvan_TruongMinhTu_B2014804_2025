@@ -101,7 +101,7 @@ class {$class}Controller extends Controller
     public function store(Store{$class}Request $request)
     {
         if ($this->{module}Service->create($request, $this->language)) {
-            return redirect()->route('{module}.index')->with('success', 'Them moi ban ghi thanh cong');
+            return redirect()->route('{module}.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('{module}.index')->with('error', 'them moi ban ghi khong thanh cong');
     }
