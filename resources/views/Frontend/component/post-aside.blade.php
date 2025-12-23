@@ -14,7 +14,7 @@
             <div class="aside-post-item uk-clearfix">
                 <a href="{{ $canonical }}" class="image img-cover"><img src="{{ $image }}" alt="{{ $name }}"></a>
                 <div class="info">
-                    <h3 class="title"><a href="{{ $canonical }}" title="{{ $name }}">{{ $name }}</a></h3>
+                    <h4 class="title"><a href="{{ $canonical }}" title="{{ $name }}">{{ $name }}</a></h4>
                 </div>
             </div>
             @endforeach

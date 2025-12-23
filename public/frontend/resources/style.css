@@ -1111,6 +1111,10 @@ body {
     padding: 0 20px;
 }
 
+.uk-container2 {
+    max-width: 1740px;
+}
+
 @media (max-width: 1024px) {
     .uk-container {
         padding: 0 10px;
@@ -4068,6 +4072,19 @@ bottom-support-online .animated.infinite {
 }
 
 /* Bong bóng chat */
+.chatbox-head {
+    display: flex;
+}
+.chatbot-icon {
+    margin-bottom: 8px;
+}
+
+.chatbot-name {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    margin-left: 8px;
+}
 .msg-bot,
 .msg-user {
     max-width: 75%;
@@ -4114,7 +4131,8 @@ bottom-support-online .animated.infinite {
     width: 52px;
     height: 42px;
     border-radius: 50%;
-    background: #4e9eff;
+    background: #da2229;
+    color: #ffffff;
     border: none;
     cursor: pointer;
     display: flex;
@@ -4125,7 +4143,7 @@ bottom-support-online .animated.infinite {
 }
 
 #send:hover {
-    background: #1f7dff;
+    background: #fa2a2a;
 }
 
 #send i {
@@ -4170,4 +4188,14 @@ bottom-support-online .animated.infinite {
 .btn-orderlist:hover {
     color: white;
     text-decoration: none;
+}
+
+#chatbox {
+    z-index: 3000;
+}
+
+.order-detail {
+    border: 4px solid #9e9292;
+    padding: 20px;
+    border-radius: 5px;
 }

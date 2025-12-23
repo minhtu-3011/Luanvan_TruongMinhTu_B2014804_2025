@@ -87,6 +87,7 @@ if (!function_exists('getPrice')) {
             'percent' => 0,
             'html' => ''
         ];
+        // dd($product);
 
         if ($product->price == 0) {
 
@@ -112,6 +113,54 @@ if (!function_exists('getPrice')) {
     }
 }
 
+// if (!function_exists('getVariantPrice')) {
+//     function getVariantPrice($variant, $variantPromotion)
+//     {
+//         $result = [
+//             'price' => $variant->price,
+//             'priceSale' => 0,
+//             'percent' => 0,
+//             'html' => ''
+//         ];
+
+//         if ($variant->price == 0) {
+
+//             $result['html'] .= '<div class="price mt10">';
+//             $result['html'] .= '<div class="price-sale">Liên Hệ</div>';
+//             $result['html'] .= '</div>';
+//             return $result;
+//         }
+
+//         if (!is_null($variantPromotion)) {
+//             $result['percent'] = getPercent($variant, $variantPromotion->discount);
+//             $result['priceSale'] = getPromotionPrice($variant->price, $variantPromotion->discount);
+//         }
+
+
+//         $result['html'] .= '<div class="price-sale">' . (($result['priceSale'] > 0) ? convert_price($result['priceSale'], true) : convert_price($result['price'], true)) . 'đ</div>';
+//         if ($result['priceSale'] < $result['price']) {
+//             // giá đang sale
+//             $result['html'] .= '
+//         <div class="price-sale">'
+//                 . convert_price($result['priceSale'], true) . 'đ
+//         </div>';
+
+//             // giá cũ gạch ngang
+//             $result['html'] .= '
+//         <div class="price-old">'
+//                 . convert_price($result['price'], true) . 'đ
+//         </div>';
+//             $result['html'] .= '<div class="price-save">
+//         Tiết kiệm <strong>'
+//                 . convert_price($result['price'] - $result['priceSale'], true)
+//                 . '</strong>
+//         (<span style="color:red">-' . $result['percent'] . '%</span>)
+//     </div>';
+//         }
+//         return $result;
+//     }
+// }
+
 if (!function_exists('getVariantPrice')) {
     function getVariantPrice($variant, $variantPromotion)
     {
@@ -123,10 +172,8 @@ if (!function_exists('getVariantPrice')) {
         ];
 
         if ($variant->price == 0) {
-
-            $result['html'] .= '<div class="price mt10">';
-            $result['html'] .= '<div class="price-sale">Liên Hệ</div>';
-            $result['html'] .= '</div>';
+            $result['html'] .= '
+                <div class="price-sale">Liên hệ</div>';
             return $result;
         }
 
@@ -135,11 +182,29 @@ if (!function_exists('getVariantPrice')) {
             $result['priceSale'] = getPromotionPrice($variant->price, $variantPromotion->discount);
         }
 
+        if ($result['priceSale'] > 0 && $result['priceSale'] < $result['price']) {
 
-        $result['html'] .= '<div class="price-sale">' . (($result['priceSale'] > 0) ? convert_price($result['priceSale'], true) : convert_price($result['price'], true)) . 'đ</div>';
-        if ($result['priceSale'] !== $result['price']) {
-            $result['html'] .= '<div class="price-old">' . convert_price($result['price'], true) . 'đ <div class="percent"><div class="percent-value">-' . $result['percent'] . '%</div></div></div>';
+            $result['html'] .= '
+                <div class="price-sale">'
+                . convert_price($result['priceSale'], true) . 'đ
+                </div>
+                <div class="price-old">'
+                . convert_price($result['price'], true) . 'đ
+                </div>
+                <div class="price-save">
+                    Tiết kiệm <strong>'
+                . convert_price($result['price'] - $result['priceSale'], true)
+                . '</strong>
+                    (<span style="color:red">-' . $result['percent'] . '%</span>)
+                </div>';
+        } else {
+
+            $result['html'] .= '
+                <div class="price-sale">'
+                . convert_price($result['price'], true) . 'đ
+                </div>';
         }
+
         return $result;
     }
 }

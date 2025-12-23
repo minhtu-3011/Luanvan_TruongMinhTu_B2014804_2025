@@ -50,7 +50,7 @@
                                 <div class="form-row">
                                     <label for="" class="control-lable text-right">Nhóm thành viên</label>
                                     <span class="text-danger">(*)</span>
-                                    <select name="user_catalogue_id" id="">
+                                    <select name="user_catalogue_id " id="" class="select2">
                                         <option value="">[Chọn nhóm thành viên]</option>
                                         @foreach($userCatalogues as $catalogue)
                                             <option value="{{ $catalogue->id }}"
@@ -126,7 +126,7 @@
                                 <div class="form-row">
                                     <label for="" class="control-lable text-right">Thành phố</label>
                                     <span class="text-danger">(*)</span>
-                                    <select name="province_id" id="" class="province location" data-target="districts">
+                                    <select name="province_id" id="" class="select2 province location" data-target="districts">
                                         <option value="0">[Chọn thành phố]</option>
                                         @if(isset($provinces))
                                             @foreach ($provinces as $province)
@@ -144,7 +144,7 @@
                                 <div class="form-row">
                                     <label for="" class="control-lable text-right">Quận huyện</label>
                                     <span class="text-danger"></span>
-                                    <select name="district_id" id="" class="districts location" data-target="wards">
+                                    <select name="district_id" id="" class="districts location select2" data-target="wards">
                                         <option value="0">[Chọn quận huyện]</option>
                                         
                                     </select>

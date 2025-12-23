@@ -17,7 +17,7 @@ return [
         ],
 
         [
-            'title' => 'QL San pham',
+            'title' => 'QL Sản phẩm',
             'icon' => 'fa fa-cube',
             'name' => ['product', 'attribute'],
             'subModule' => [

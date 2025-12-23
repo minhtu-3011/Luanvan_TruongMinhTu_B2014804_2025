@@ -176,8 +176,8 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         if (count($relation)) {
             $query->with($relation);
         }
-        $query->orderBy('id', 'desc');
-        $query->groupBy('products.id');
+        $query->orderBy('tb3.id', 'desc');
+        // $query->groupBy('products.id');
         return $query->paginate(20);
     }
 

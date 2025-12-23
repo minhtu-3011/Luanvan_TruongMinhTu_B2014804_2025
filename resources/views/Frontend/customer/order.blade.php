@@ -6,7 +6,7 @@
 @endphp
 
 <div class="order-wrapper">
-    <div class="row">
+    <div class="row order-detail">
         <div class="col-lg-8">
             <div class="ibox">
                 <div class="ibox-title">
@@ -99,13 +99,19 @@
                         </div>
                         <div class="cancle-block">
                             
-                            @if($order->confirm == 'confirm' && $order->payment != 'paid')
-                                <button class="button updateField" data-field="confirm" data-value="cancle" data-title="ĐÃ HỦY THANH TOÁN ĐƠN HÀNG">Hủy đơn</button>
+                            @if($order->confirm == 'cancle')
+                                Đơn hàng đã hủy
+
                             @elseif($order->payment == 'paid')
                                 Đơn hàng đã thanh toán
-                            @elseif($order->confirm == 'cancle')
-                                Đơn hàng đã hủy
+
+                            @elseif($order->confirm != 'confirm')
+                                <button class="button updateField" data-field="confirm" data-value="cancle" data-title="ĐÃ HỦY THANH TOÁN ĐƠN HÀNG">
+                                    Hủy đơn
+                                </button>
                             @endif
+
+
 
 
                         </div>

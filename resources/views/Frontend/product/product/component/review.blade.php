@@ -192,7 +192,7 @@
                                         <input 
                                             type="text" 
                                             name="fullname" 
-                                            value="" 
+                                            value="{{ old('fullname', $customer->name ?? '') }}" 
                                             class="review-text"
                                             placeholder="Nhập vào họ tên"
                                         >
@@ -203,7 +203,7 @@
                                         <input 
                                             type="text" 
                                             name="phone" 
-                                            value="" 
+                                            value="{{ old('phone', $customer->phone ?? '') }}" 
                                             class="review-text"
                                             placeholder="Nhập vào số điện thoại"
                                         >
@@ -214,7 +214,7 @@
                                 <input 
                                     type="text" 
                                     name="email" 
-                                    value="" 
+                                    value="{{ old('email', ($customer->email) ?? '' ) }}" 
                                     class="review-text"
                                     placeholder="Nhập vào email"
                                 >

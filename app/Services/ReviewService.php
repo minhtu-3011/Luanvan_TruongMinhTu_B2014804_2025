@@ -45,7 +45,25 @@ class ReviewService extends BaseService implements ReviewServiceInterface
         DB::beginTransaction();
         try {
             $payload = $request->except('_token');
-            $review = $this->reviewRepository->create($payload);
+
+            $review = $this->reviewRepository->findByCondition([
+                ['email', '=', $payload['email']],
+                ['reviewable_type', '=', $payload['reviewable_type']],
+                ['reviewable_id', '=', $payload['reviewable_id']],
+            ], false); // false = lấy 1 bản ghi
+            if ($review) {
+                $review = $this->reviewRepository->update($review->id, [
+                    'fullname'    => $payload['fullname'],
+                    'phone'       => $payload['phone'],
+                    'gender'      => $payload['gender'],
+                    'description' => $payload['description'],
+                    'score'       => $payload['score'],
+                    'parent_id'   => $payload['parent_id'],
+                ]);
+            } else {
+                $review = $this->reviewRepository->create($payload);
+            }
+            // $review = $this->reviewRepository->create($payload);
             // dd($payload);
 
             $this->reviewNestedset = new ReviewNested([

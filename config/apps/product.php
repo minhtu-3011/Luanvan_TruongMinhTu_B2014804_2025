@@ -2,18 +2,18 @@
 
 return [
     'index' => [
-        'title' => 'Quản lý  San pham',
-        'table' => 'Danh sach  San pham'
+        'title' => 'Quản lý  Sản phẩm',
+        'table' => 'Danh sach  Sản phẩm'
     ],
 
     'create' => [
-        'title' => 'Thêm mới  San pham',
+        'title' => 'Thêm mới  Sản phẩm',
     ],
     'edit' => [
-        'title' => 'Cap nhat  San pham',
+        'title' => 'Cap nhat  Sản phẩm',
     ],
     'delete' => [
-        'title' => 'Xoa   San pham',
+        'title' => 'Xoa   Sản phẩm',
     ]
 
 

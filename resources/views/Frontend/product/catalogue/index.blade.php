@@ -36,7 +36,7 @@
                                         $price = getPrice($product);
                                     @endphp
                                     <div class="aside-product uk-clearfix">
-                                        <a href="" class="image img-cover"><img src="{{ $image }}" alt="{{ $name }}"></a>
+                                        <a href="{{ $canonical }}" class="image img-cover"><img src="{{ $image }}" alt="{{ $name }}"></a>
                                         <div class="info">
                                             <h3 class="title"><a href="{{ $canonical }}" title="{{ $name }}">{{ $name }}</a></h3>
                                             {!! $price['html'] !!}

@@ -37,7 +37,8 @@
 
         @endphp     
 
-        <div class="variant-wrapper mt20 {{ count($variantCatalogue)  ? '' : 'hidden' }}">
+        <div class="variant-wrapper mt20 {{ count($variantCatalogue ?? []) ? '' : 'hidden' }}">
+
             <div class="row variant-container">
             <div class="col-lg-3">
                 <div class="attribute-title">Chọn thuộc tính</div>

@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Classes\Nestedsetbie;
+use Illuminate\Support\Str;
 
 /**
  * Class UserCatalogueService
@@ -65,7 +66,7 @@ class BaseService implements BaseServiceInterface
     public function formatRouterPayload($model, $request, $controllerName, $languageId)
     {
         $router = [
-            'canonical' => $request->input('canonical'),
+            'canonical' => Str::slug($request->input('canonical')),
             'module_id' => $model->id,
             'language_id' => $languageId,
             'controllers' => 'App\Http\Controllers\Frontend\\' . $controllerName . '',

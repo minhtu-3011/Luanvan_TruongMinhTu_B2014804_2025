@@ -19,7 +19,7 @@
         }
         if (setting.autoplay === "accept") {
             option.autoplay = {
-                delay: 50000,
+                delay: 3000,
                 disableOnInteraction: false,
             };
         }

@@ -13,7 +13,7 @@
 
     // dd( write_url($product->canonical) );
     // dd(url($product->canonical));
-
+    // dd($price);
 
 @endphp
 <div class="panel-body">
@@ -68,9 +68,9 @@
                         <div class="a-left">
                             {!! $price['html'] !!}
                             @if($price['price']  != $price['priceSale'])
-                            <div class="price-save">
+                            {{-- <div class="price-save">
                                 Tiết kiệm: <strong>{{ convert_price($price['price'] - $price['priceSale'], true) }}</strong> (<span style="color:red">-{{ $price['percent'] }}%</span>)
-                            </div>
+                            </div> --}}
                             @endif
                         
                             @include('frontend.product.product.component.variant')
@@ -141,7 +141,7 @@
                             $price = getPrice($product);
                         @endphp
                         <div class="aside-product uk-clearfix">
-                            <a href="" class="image img-cover"><img src="{{ $image }}" alt="{{ $name }}"></a>
+                            <a href="{{ $canonical }}" class="image img-cover"><img src="{{ $image }}" alt="{{ $name }}"></a>
                             <div class="info">
                                 <h3 class="title"><a href="{{ $canonical }}" title="{{ $name }}">{{ $name }}</a></h3>
                                 {!! $price['html'] !!}

@@ -6,6 +6,7 @@ use App\Models\Promotion;
 use App\Repositories\Interfaces\PromotionRepositoryInterface;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
 
 /**
  * Class UserService
@@ -25,6 +26,7 @@ class PromotionRepository extends BaseRepository implements PromotionRepositoryI
     public function findByProduct(array $productId = [])
     {
         DB::statement("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+
         return $this->model->select(
             'promotions.id as promotion_id',
             'promotions.discountValue',
@@ -59,10 +61,11 @@ class PromotionRepository extends BaseRepository implements PromotionRepositoryI
             ->where('products.publish', 1)
             ->where('promotions.publish', 1)
             ->whereIn('ppv.product_id', $productId)
-            ->whereDate('promotions.endDate', '>', now())
-            ->whereDate('promotions.startDate', '<', now())
+            ->whereDate('promotions.startDate', '<=', now())
+            ->whereDate('promotions.endDate', '>=', now())
             ->groupBy('ppv.product_id',)
             ->get();
+        // ->toSql();
     }
 
     public function findPromotionByVariantUuid($uuid = '')

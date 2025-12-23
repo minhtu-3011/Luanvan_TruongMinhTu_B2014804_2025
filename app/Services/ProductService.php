@@ -400,6 +400,7 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         $promotions = $this->promotionRepository->findByProduct($productId);
 
+        // dd($promotions);
         if ($promotions) {
 
             if ($flag == true) {

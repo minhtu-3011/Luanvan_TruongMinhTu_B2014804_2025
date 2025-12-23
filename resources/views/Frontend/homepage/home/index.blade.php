@@ -3,7 +3,7 @@
 @section('content')
     <div id="homepage" class="homepage">
         <div class="panel-main-slide">
-            <div class="uk-container uk-container-center">
+            <div class="uk-container2 uk-container-center">
                 <div class="uk-grid uk-grid-medium">
                     @php
                         use App\Enums\SlideEnum;
@@ -42,7 +42,7 @@
                 <div class="uk-container uk-container-center">
                     <div class="main-heading">
                         <div class="panel-head">
-                            <h2 class="heading-1"><span>{{ $widgets['flash-sale']->name }}</span></h2>
+                            <h2 class="heading-1">🔥<span>{{ $widgets['flash-sale']->name }}</span>🔥</h2>
                         </div>
                     </div>
                     <div class="panel-body">
@@ -75,7 +75,9 @@
                             </div>
                         </div>
                         <div class="panel-body">
-                            
+                            @php
+                                // dd($category);
+                            @endphp
                             @if(isset($category->products))
                             <div class="uk-grid uk-grid-medium">
                                 @foreach($category->products as $index => $product)

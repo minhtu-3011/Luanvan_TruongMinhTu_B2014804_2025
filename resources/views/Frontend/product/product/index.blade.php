@@ -3,7 +3,7 @@
 
 <div class="product-container">
     @include('frontend.component.breadcrumb', ['model' => $productCatalogue, 'breadcrumb' => $breadcrumb])
-    <div class="uk-container uk-container-center mt30">
+    <div class="uk-container uk-container-center mt10">
         <div class="panel-body">
             @include('frontend.product.product.component.detail', ['product' => $product, 'productCatalogue' => $productCatalogue])
         </div>

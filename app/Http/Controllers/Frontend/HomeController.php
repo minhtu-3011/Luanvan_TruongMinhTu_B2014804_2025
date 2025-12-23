@@ -45,7 +45,7 @@ class HomeController extends FrontendController
 
         $config = $this->config();
         $widgets = $this->widgetService->getWidget([
-            // ['keyword' => 'category', 'countObject' => true],
+            ['keyword' => 'category', 'countObject' => true],
             // ['keyword' => 'homepage-customer', 'children' => true],
             // ['keyword' => 'category-highlight'],
             ['keyword' => 'product', 'children' => true, 'promotion' => TRUE, 'object' => TRUE],

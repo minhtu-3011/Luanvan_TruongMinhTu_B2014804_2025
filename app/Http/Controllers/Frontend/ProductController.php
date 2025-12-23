@@ -52,6 +52,8 @@ class ProductController extends FrontendController
             abort(404);
         }
         $product = $this->productService->combineProductAndPromotion([$id], $product, true);
+        // dd($product);
+
         $product = $this->productService->getAttribute($product, $this->language);
         $productCatalogue = $this->productCatalogueRepository->getProductCatalogueById($product->product_catalogue_id, $this->language);
         $breadcrumb = $this->productCatalogueRepository->breadcrumb($productCatalogue, $this->language);
@@ -65,7 +67,7 @@ class ProductController extends FrontendController
         );
 
         $wishlist = Cart::instance('wishlist')->content();
-
+        $customer = auth('customer')->user();
         $widgets = $this->widgetService->getWidget([
             // ['keyword' => 'category', 'countObject' => true],
             // ['keyword' => 'homepage-customer', 'children' => true],
@@ -117,6 +119,7 @@ class ProductController extends FrontendController
             'widgets',
             'wishlist',
             'cartSeen',
+            'customer'
         ));
     }
 
