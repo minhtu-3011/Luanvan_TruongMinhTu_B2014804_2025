@@ -1865,6 +1865,11 @@ a.ui-button:active,
 .panel-product .panel-head .heading-1 {
     margin: 0;
 }
+.panel-head h2.heading-1 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
 .main-heading {
     padding-left: 130px;
@@ -3423,7 +3428,7 @@ a.ui-button:active,
     margin-bottom: 20px;
 }
 .cart-container h2.heading-1 > * {
-    font-size: 20px;
+    font-size: 20px !important;
     text-transform: uppercase;
     line-height: 30px;
     font-weight: bold;

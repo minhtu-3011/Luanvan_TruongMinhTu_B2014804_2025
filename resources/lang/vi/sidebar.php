@@ -52,18 +52,6 @@ return [
         ],
 
         [
-            'title' => 'QL Bình Luận',
-            'icon' => 'fa fa-comment',
-            'name' => ['reviews'],
-            'subModule' => [
-                [
-                    'title' => 'QL Bình Luận',
-                    'route' => 'review/index'
-                ]
-            ]
-        ],
-
-        [
             'title' => 'QL Bài viết',
             'icon' => 'fa fa-file',
             'name' => ['post'],

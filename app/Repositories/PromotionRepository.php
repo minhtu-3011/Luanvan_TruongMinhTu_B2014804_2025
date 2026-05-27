@@ -61,8 +61,12 @@ class PromotionRepository extends BaseRepository implements PromotionRepositoryI
             ->where('products.publish', 1)
             ->where('promotions.publish', 1)
             ->whereIn('ppv.product_id', $productId)
-            ->whereDate('promotions.startDate', '<=', now())
-            ->whereDate('promotions.endDate', '>=', now())
+            // ->whereDate('promotions.startDate', '<=', now())
+            // ->whereDate('promotions.endDate', '>=', now())
+            ->where(function ($query) {  // ✅ Fix ở đây
+                $query->where('promotions.neverEndDate', 'accept')
+                    ->orWhereDate('promotions.endDate', '>=', now());
+            })
             ->groupBy('ppv.product_id',)
             ->get();
         // ->toSql();
@@ -104,8 +108,12 @@ class PromotionRepository extends BaseRepository implements PromotionRepositoryI
             ->join('product_variants as pv', 'pv.uuid', '=', 'ppv.variant_uuid')
             ->where('promotions.publish', 1)
             ->where('ppv.variant_uuid', $uuid)
-            ->whereDate('promotions.endDate', '>', now())
-            ->whereDate('promotions.startDate', '<', now())
+            // ->whereDate('promotions.endDate', '>', now())
+            // ->whereDate('promotions.startDate', '<', now())
+            ->where(function ($query) {  // ✅ Fix ở đây
+                $query->where('promotions.neverEndDate', 'accept')
+                    ->orWhereDate('promotions.endDate', '>=', now());
+            })
             ->orderByDesc('discount')
             ->first();
     }

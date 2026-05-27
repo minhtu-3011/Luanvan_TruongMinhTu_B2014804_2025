@@ -103,6 +103,12 @@ if (!function_exists('getPrice')) {
                 $result['priceSale'] = getPromotionPrice($product->price, $product->promotions->discount);
             }
         }
+        // if (isset($product->promotions) && isset($product->promotions->discount)) {
+        //     if ($product->promotions->discount > 0) {
+        //         $result['percent'] = getPercent($product, $product->promotions->discount);
+        //         $result['priceSale'] = getPromotionPrice($product->price, $product->promotions->discount);
+        //     }
+        // }
         $result['html'] .= '<div class="price  mt10">';
         $result['html'] .= '<div class="price-sale">' . (($result['priceSale'] > 0) ? convert_price($result['priceSale'], true) : convert_price($result['price'], true)) . 'đ</div>';
         if ($result['priceSale'] > 0) {
